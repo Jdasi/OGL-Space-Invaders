@@ -1,16 +1,16 @@
 #pragma once
 
 /**
-**   A loaded font. A font that's loaded in the game engine.
+**   A font that's loaded in the game engine.
 */
 
 struct GameFont
 {
-	GameFont(int idx, char* n, int ptm);
+	GameFont(int idx, char* n, int sz);
 
-	int id = 0;             /**< Font ID. The ID assigned to the font from the graphics engine. */
-	int size = 0;           /**< The font size. The size of the font that was loaded. */
-	char* name = "";        /**< Name. The name of the font. */
-	static GameFont*  fonts[5]; /**< Loaded Fonts. Cheap and nasty way of globalising five loaded fonts. */
+	int id = 0;             /**< The ID assigned to the font from the graphics engine. */
+	int size = 0;           /**< The size of the font that was loaded. */
+	char* name = "";        /**< The name of the font. */
+	static GameFont* fonts[5]; /**< Nasty way of globalising five loaded fonts. */
 };
 

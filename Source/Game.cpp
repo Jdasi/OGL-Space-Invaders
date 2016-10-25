@@ -1,18 +1,17 @@
+#include <Engine/Input.h>
+#include <Engine/Keys.h>
+#include <Engine/Sprite.h>
+
 #include "Game.h"
 #include "Actions.h"
 #include "Constants.h"
 #include "GameFont.h"
-
-#include <Engine/Input.h>
-#include <Engine/Keys.h>
-#include <Engine/Sprite.h>
 
 /**
 *   @brief   Default Constructor.
 */
 InvadersGame::InvadersGame()
 {
-
 }
 
 
@@ -46,19 +45,20 @@ bool InvadersGame::init()
 	renderer->setClearColour(ASGE::COLOURS::BLACK);
 	toggleFPS();
 
-	// input callback function
+	// Input callback function.
 	callback_id = this->inputs->addCallbackFnc(&InvadersGame::input, this);
 	
-	// load fonts we need
+	// Load fonts we need.
 	GameFont::fonts[0] = new GameFont(
 		renderer->loadFont("..\\..\\Resources\\Fonts\\Comic.ttf", 42), "default", 42);
+    renderer->setFont(GameFont::fonts[0]->id);
 	
 	if (GameFont::fonts[0]->id == -1)
 	{
 		return false;
 	}
 
-	// load space invader sprite
+	// Load space invader sprite.
 	sprite = renderer->createSprite();
 	sprite->position[0] = 700;
 	sprite->position[1] = 250;
@@ -94,7 +94,7 @@ bool InvadersGame::run()
 /**
 *   @brief   Should the game exit?
 *   @details Has the renderer terminated or the game requesting to exit?
-*   @return  True if the game should exit
+*   @return  True if the game should exit.
 */
 bool InvadersGame::shouldExit() const
 {
@@ -103,7 +103,7 @@ bool InvadersGame::shouldExit() const
 
 
 /**
-*   @brief   Renders the scene
+*   @brief   Renders the scene.
 *   @details Prepares the renderer subsystem before drawing the 
 			 current frame. Once the current frame is has finished
 			 the buffers are swapped accordingly and the image shown.
@@ -118,7 +118,7 @@ void InvadersGame::render()
 
 
 /**
-*   @brief   Renderers the contents for this frame 
+*   @brief   Renderers the contents for this frame.
 *   @details All game objects that need rendering should be done
 			 in this function, as it ensures they are completed
 			 before the buffers are swapped.
@@ -126,19 +126,19 @@ void InvadersGame::render()
 */
 void InvadersGame::drawFrame()
 {
-	renderer->setFont(GameFont::fonts[0]->id);
-	renderer->renderText("Space Invaders\nSTART", 375, 325, 1.0, ASGE::COLOURS::DARKORANGE);
+	renderer->renderText("Space Invaders\nSTART", 375, 325, 1.0, 
+                         ASGE::COLOURS::DARKORANGE);
 	sprite->render(renderer);
 }
 
 
 /**
-*   @brief   Processes any key inputs and translates them to a GameAction
+*   @brief   Processes any key inputs and translates them to a GameAction.
 *   @details This function is added as a callback to handle the game's 
 			 input. Key presseses are translated in to GameActions which 
 			 are then processed by the main game loop.
-*   @param   key is the key the action relates to
-*   @param   action whether the key was released or pressed
+*   @param   key is the key the action relates to.
+*   @param   action whether the key was released or pressed.
 *   @return  void
 */
 void InvadersGame::input(int key, int action) const
@@ -154,7 +154,7 @@ void InvadersGame::input(int key, int action) const
 
 
 /**
-*   @brief   Processes the next game action
+*   @brief   Processes the next game action.
 *   @details Uses the game action that was a direct result of 
 *            user input. It allows input to processed in a different
              thread and the game actions performed in the main thread. 
@@ -169,3 +169,4 @@ void InvadersGame::processGameActions()
 
 	game_action = GameAction::NONE;
 }
+
