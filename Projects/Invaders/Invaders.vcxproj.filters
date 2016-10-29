@@ -28,6 +28,9 @@
     <ClCompile Include="..\..\Source\TextObject.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\CollisionObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -84,6 +87,12 @@
       <Filter>Headers\States</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TextObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CollisionObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GameObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -30,5 +30,4 @@ private:
 
 	int  callback_id;           /**< The callback ID assigned by the game engine. */
 	bool m_exit;                /**< If true the game loop will exit. */
-	std::unique_ptr<ASGE::Sprite> sprite;   /**< The space invader sprite. */
 };

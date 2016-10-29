@@ -21,14 +21,11 @@
 InvadersGame::InvadersGame()
     : callback_id(-1)
     , m_exit(false)
-    , sprite(nullptr)
 {
-    registerState(GameState::START, std::make_unique<StateStart>());
-    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>());
-    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>());
-    registerState(GameState::PAUSE, std::make_unique<StatePause>());
-
-    triggerState(GameState::START);
+    registerState(GameState::START, std::make_unique<StateStart>(m_renderer));
+    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(m_renderer));
+    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(m_renderer));
+    registerState(GameState::PAUSE, std::make_unique<StatePause>(m_renderer));
 }
 
 
@@ -73,15 +70,7 @@ bool InvadersGame::init()
 		return false;
 	}
 
-    // Load space invader sprite.
-    sprite = m_renderer->createSprite();
-    sprite->position[0] = 700;
-    sprite->position[1] = 250;
-
-    if (!sprite->loadTexture("..\\..\\Resources\\Textures\\Invader.jpg"))
-    {
-        return false;
-    }
+    triggerState(GameState::START);
 
 	return true;
 }
@@ -141,8 +130,7 @@ void InvadersGame::render()
 */
 void InvadersGame::drawFrame()
 {
-    m_renderer->renderText("Space Invaders\nStart Game", 375, 325, 1.0f, ASGE::COLOURS::DARKORANGE);
-    sprite->render(m_renderer);
+    draw();
 }
 
 

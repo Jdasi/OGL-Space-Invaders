@@ -1,6 +1,7 @@
 #include "StateGameOver.h"
 
-StateGameOver::StateGameOver()
+StateGameOver::StateGameOver(std::shared_ptr<ASGE::Renderer>& r)
+    : State(r)
 {
 }
 

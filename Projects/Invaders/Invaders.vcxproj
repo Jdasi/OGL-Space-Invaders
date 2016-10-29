@@ -91,6 +91,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Actions.cpp" />
+    <ClCompile Include="..\..\Source\CollisionObject.cpp" />
     <ClCompile Include="..\..\Source\GameFont.cpp" />
     <ClCompile Include="..\..\Source\main.cpp" />
     <ClCompile Include="..\..\Source\StateGameOver.cpp" />
@@ -99,10 +100,12 @@
     <ClCompile Include="..\..\Source\StateStart.cpp" />
     <ClCompile Include="..\..\Source\TextObject.cpp" />
     <ClInclude Include="..\..\Source\Actions.h" />
+    <ClInclude Include="..\..\Source\CollisionObject.h" />
     <ClInclude Include="..\..\Source\Commands.h" />
     <ClInclude Include="..\..\Source\Constants.h" />
     <ClInclude Include="..\..\Source\Game.h" />
     <ClInclude Include="..\..\Source\GameFont.h" />
+    <ClInclude Include="..\..\Source\GameObject.h" />
     <ClInclude Include="..\..\Source\State.h" />
     <ClInclude Include="..\..\Source\StateGameOver.h" />
     <ClInclude Include="..\..\Source\StateGameplay.h" />

@@ -50,6 +50,14 @@ public:
         }
     }
 
+    void draw() const
+    {
+        if (m_current_state)
+        {
+            m_current_state->draw();
+        }
+    }
+
     void onCommand(const Command c, const CommandState s) const
     {
         if (m_current_state)

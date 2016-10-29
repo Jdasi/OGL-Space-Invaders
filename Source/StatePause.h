@@ -5,7 +5,7 @@
 class StatePause : public State
 {
 public:
-    StatePause();
+    StatePause(std::shared_ptr<ASGE::Renderer>& r);
     ~StatePause();
 
     void onStateEnter() override;
