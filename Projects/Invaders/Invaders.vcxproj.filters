@@ -13,6 +13,21 @@
     <ClCompile Include="..\..\Source\GameFont.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\StateStart.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StateGameplay.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StateGameOver.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StatePause.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TextObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -20,6 +35,18 @@
     </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{150ff3c8-9b98-46c7-9e2b-ccd67ca720c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\States">
+      <UniqueIdentifier>{0170e498-2c3a-4868-a571-7933ad253e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\States">
+      <UniqueIdentifier>{1d30622b-8866-49c4-ba85-3e9b9bce17b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Utility">
+      <UniqueIdentifier>{4fd3a991-71c7-4384-b4df-0d92171684cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Utility">
+      <UniqueIdentifier>{f4bf9ace-f87b-491d-b45a-73a6d91236f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +60,30 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GameFont.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Commands.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\State.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StateHandler.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StateStart.h">
+      <Filter>Headers\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StateGameplay.h">
+      <Filter>Headers\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StateGameOver.h">
+      <Filter>Headers\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StatePause.h">
+      <Filter>Headers\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TextObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <Engine/Input.h>
 #include <Engine/Keys.h>
 #include <Engine/Sprite.h>
@@ -6,15 +8,27 @@
 #include "Actions.h"
 #include "Constants.h"
 #include "GameFont.h"
+#include "TextObject.h"
+
+#include "StateStart.h"
+#include "StateGameplay.h"
+#include "StateGameOver.h"
+#include "StatePause.h"
 
 /**
 *   @brief   Default Constructor.
 */
 InvadersGame::InvadersGame()
     : callback_id(-1)
-    , exit(false)
+    , m_exit(false)
     , sprite(nullptr)
 {
+    registerState(GameState::START, std::make_unique<StateStart>());
+    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>());
+    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>());
+    registerState(GameState::PAUSE, std::make_unique<StatePause>());
+
+    triggerState(GameState::START);
 }
 
 
@@ -24,7 +38,7 @@ InvadersGame::InvadersGame()
 */
 InvadersGame::~InvadersGame()
 {
-	this->inputs->unregisterCallback(callback_id);
+	inputs->unregisterCallback(callback_id);
 }
 
 
@@ -44,32 +58,30 @@ bool InvadersGame::init()
 		return false;
 	}
 
-	renderer->setWindowTitle("Invaders - Exercise 1");
-	renderer->setClearColour(ASGE::COLOURS::BLACK);
-	toggleFPS();
+	m_renderer->setWindowTitle("Invaders - Exercise 1");
+	m_renderer->setClearColour(ASGE::COLOURS::BLACK);
 
 	// Input callback function.
-	callback_id = this->inputs->addCallbackFnc(&InvadersGame::input, this);
+	callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
 	
 	// Load fonts we need.
-	GameFont::fonts[0] = new GameFont(
-		renderer->loadFont("..\\..\\Resources\\Fonts\\Comic.ttf", 42), "default", 42);
-    renderer->setFont(GameFont::fonts[0]->id);
-	
+	GameFont::fonts[0] = new GameFont(m_renderer->loadFont("..\\..\\Resources\\Fonts\\Comic.ttf", 42), "default", 42);
+    m_renderer->setFont(GameFont::fonts[0]->id);
+    	
 	if (GameFont::fonts[0]->id == -1)
 	{
 		return false;
 	}
 
-	// Load space invader sprite.
-	sprite = renderer->createSprite();
-	sprite->position[0] = 700;
-	sprite->position[1] = 250;
+    // Load space invader sprite.
+    sprite = m_renderer->createSprite();
+    sprite->position[0] = 700;
+    sprite->position[1] = 250;
 
-	if (!sprite->loadTexture("..\\..\\Resources\\Textures\\Invader.jpg"))
-	{
-		return false;
-	}
+    if (!sprite->loadTexture("..\\..\\Resources\\Textures\\Invader.jpg"))
+    {
+        return false;
+    }
 
 	return true;
 }
@@ -101,7 +113,7 @@ bool InvadersGame::run()
 */
 bool InvadersGame::shouldExit() const
 {
-	return (renderer->exit() || this->exit);
+	return (m_renderer->exit() || m_exit);
 }
 
 
@@ -129,9 +141,8 @@ void InvadersGame::render()
 */
 void InvadersGame::drawFrame()
 {
-	renderer->renderText("Space Invaders\nSTART", 375, 325, 1.0, 
-                         ASGE::COLOURS::DARKORANGE);
-	sprite->render(renderer);
+    m_renderer->renderText("Space Invaders\nStart Game", 375, 325, 1.0f, ASGE::COLOURS::DARKORANGE);
+    sprite->render(m_renderer);
 }
 
 
@@ -146,13 +157,59 @@ void InvadersGame::drawFrame()
 */
 void InvadersGame::input(int key, int action) const
 {
-	if (action == ASGE::KEYS::KEY_PRESS)
-	{
-		if (key == ASGE::KEYS::KEY_ESCAPE)
-		{
-			game_action = GameAction::EXIT;
-		}
-	}
+    // There is no constexpr for "Holding" or "Released" in the library;
+    // So there's no point in checking for "Pressed" either.
+    CommandState command_state = CommandState::RELEASED;
+    if (action == 1 || action == 2)
+    {
+        command_state = CommandState::PRESSED;
+    }
+
+    switch (key)
+    {
+        case ASGE::KEYS::KEY_A:
+        {
+            onCommand(Command::MOVE_LEFT, command_state);
+            break;
+        }
+
+        case ASGE::KEYS::KEY_D:
+        {
+            onCommand(Command::MOVE_RIGHT, command_state);
+            break;
+        }
+
+        case ASGE::KEYS::KEY_W:
+        {
+            onCommand(Command::MOVE_UP, command_state);
+            break;
+        }
+
+        case ASGE::KEYS::KEY_S:
+        {
+            onCommand(Command::MOVE_DOWN, command_state);
+            break;
+        }
+
+        case ASGE::KEYS::KEY_ENTER:
+        case ASGE::KEYS::KEY_SPACE:
+        {
+            onCommand(Command::SHOOT, command_state);
+            break;
+        }
+
+        case ASGE::KEYS::KEY_P:
+        {
+            onCommand(Command::PAUSE, command_state);
+            break;
+        }
+
+        case ASGE::KEYS::KEY_ESCAPE:
+        {
+            onCommand(Command::QUIT, command_state);
+            break;
+        }
+    }
 }
 
 
@@ -167,7 +224,7 @@ void InvadersGame::processGameActions()
 {
 	if (game_action == GameAction::EXIT)
 	{
-		this->exit = true;
+		m_exit = true;
 	}
 
 	game_action = GameAction::NONE;
