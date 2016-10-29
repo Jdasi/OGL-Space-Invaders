@@ -26,8 +26,7 @@ private:
 	void processGameActions(); 
 	void input(int key, int action) const;
 
-	int  callback_id = -1;          /**< The callback ID assigned by the game engine. */
-	bool exit = false;              /**< If true the game loop will exit. */
-	std::unique_ptr<ASGE::Sprite> sprite = nullptr;    /**< The space invader sprite. */
+	int  callback_id;          /**< The callback ID assigned by the game engine. */
+	bool exit;              /**< If true the game loop will exit. */
+	std::unique_ptr<ASGE::Sprite> sprite;    /**< The space invader sprite. */
 };
-

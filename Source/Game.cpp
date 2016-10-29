@@ -11,6 +11,9 @@
 *   @brief   Default Constructor.
 */
 InvadersGame::InvadersGame()
+    : callback_id(-1)
+    , exit(false)
+    , sprite(nullptr)
 {
 }
 
