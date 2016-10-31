@@ -24,6 +24,8 @@ public:
 	virtual bool init() override;
 	virtual void drawFrame() override;
 
+    std::shared_ptr<ASGE::Renderer>& getRenderer();
+
 private:
 	void processGameActions(); 
 	void input(int key, int action) const;

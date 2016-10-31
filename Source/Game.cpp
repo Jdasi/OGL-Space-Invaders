@@ -22,10 +22,10 @@ InvadersGame::InvadersGame()
     : callback_id(-1)
     , m_exit(false)
 {
-    registerState(GameState::START, std::make_unique<StateStart>(m_renderer));
-    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(m_renderer));
-    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(m_renderer));
-    registerState(GameState::PAUSE, std::make_unique<StatePause>(m_renderer));
+    registerState(GameState::START, std::make_unique<StateStart>(*this));
+    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*this));
+    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*this));
+    registerState(GameState::PAUSE, std::make_unique<StatePause>(*this));
 }
 
 
@@ -133,12 +133,16 @@ void InvadersGame::drawFrame()
     draw();
 }
 
+std::shared_ptr<ASGE::Renderer>& InvadersGame::getRenderer()
+{
+    return m_renderer;
+}
 
 /**
 *   @brief   Processes any key inputs and translates them to a GameAction.
 *   @details This function is added as a callback to handle the game's 
-			 input. Key presseses are translated in to GameActions which 
-			 are then processed by the main game loop.
+             input. Key presseses are translated in to GameActions which 
+             are then processed by the main game loop.
 *   @param   key is the key the action relates to.
 *   @param   action whether the key was released or pressed.
 *   @return  void

@@ -1,7 +1,7 @@
 #include "StateGameplay.h"
 
-StateGameplay::StateGameplay(std::shared_ptr<ASGE::Renderer>& r)
-    : State(r)
+StateGameplay::StateGameplay(InvadersGame& game)
+    : State(game)
 {
 }
 

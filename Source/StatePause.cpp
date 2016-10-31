@@ -1,7 +1,7 @@
 #include "StatePause.h"
 
-StatePause::StatePause(std::shared_ptr<ASGE::Renderer>& r)
-    : State(r)
+StatePause::StatePause(InvadersGame& game)
+    : State(game)
 {
 }
 

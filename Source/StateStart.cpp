@@ -1,9 +1,10 @@
-#include "StateStart.h"
-
 #include <iostream>
 
-StateStart::StateStart(std::shared_ptr<ASGE::Renderer>& r)
-    : State(r)
+#include "StateStart.h"
+#include "Game.h"
+
+StateStart::StateStart(InvadersGame& game)
+    : State(game)
 {
 }
 
@@ -14,7 +15,7 @@ StateStart::~StateStart()
 void StateStart::onStateEnter()
 {
     // Load space invader sprite.
-    sprites.push_back(m_renderer->createSprite());
+    sprites.push_back(m_game.getRenderer()->createSprite());
     sprites[0]->position[0] = 700;
     sprites[0]->position[1] = 250;
 

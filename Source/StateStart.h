@@ -5,7 +5,7 @@
 class StateStart : public State
 {
 public:
-    StateStart(std::shared_ptr<ASGE::Renderer>& r);
+    StateStart(InvadersGame& game);
     ~StateStart();
 
     void onStateEnter() override;
