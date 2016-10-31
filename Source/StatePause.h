@@ -5,8 +5,8 @@
 class StatePause : public State
 {
 public:
-    StatePause(InvadersGame& game);
-    ~StatePause();
+    explicit StatePause(ObjectFactory& factory);
+    virtual ~StatePause();
 
     void onStateEnter() override;
     void onStateLeave() override;

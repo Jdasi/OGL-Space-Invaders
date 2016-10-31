@@ -4,21 +4,18 @@
 
 #include <Engine/Colours.h>
 
-class TextObject
+#include "Renderable.h"
+
+class TextObject : public Renderable
 {
 public:
-    TextObject();
-    TextObject(const std::string& s, int x, int y, float sz, const float colour[3]);
-    ~TextObject() = default;
+    TextObject(const std::shared_ptr<ASGE::Renderer>& renderer);
+    TextObject(const std::shared_ptr<ASGE::Renderer>& renderer, const std::string& s, 
+               const Position position, const float size, const float colour[3]);
+    virtual ~TextObject() = default;
 
     void setString(const std::string &s);
     std::string getString() const;
-
-    void setX(int x);
-    int getX() const;
-
-    void setY(int y);
-    int getY() const;
 
     void setScale(float f);
     float getScale() const;
@@ -26,9 +23,15 @@ public:
     void setColour(const float colour[3]);
     ASGE::Colour getColour() const;
 
+    void setPosition(const Position position) override;
+    Position getPosition() const override;
+
 private:
-    std::string str;
-    std::array<int, 2> pos;
-    float scale;
-    ASGE::Colour rgb;
+    void render() override;
+
+    Position m_position;
+    std::string m_str;
+    std::array<int, 2> m_pos;
+    float m_scale;
+    ASGE::Colour m_rgb;
 };

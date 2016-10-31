@@ -4,7 +4,6 @@
 
 #include "State.h"
 
-
 enum class GameState
 {
     START,
@@ -47,14 +46,6 @@ public:
         if (m_current_state)
         {
             m_current_state->tick();
-        }
-    }
-
-    void draw() const
-    {
-        if (m_current_state)
-        {
-            m_current_state->draw();
         }
     }
 

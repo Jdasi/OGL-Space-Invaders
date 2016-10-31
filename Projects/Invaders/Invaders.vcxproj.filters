@@ -7,12 +7,6 @@
     <ClCompile Include="..\..\Source\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Actions.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\GameFont.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\StateStart.cpp">
       <Filter>Source\States</Filter>
     </ClCompile>
@@ -28,8 +22,14 @@
     <ClCompile Include="..\..\Source\TextObject.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\CollisionObject.cpp">
+    <ClCompile Include="..\..\Source\SpriteObject.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ObjectRenderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GameFont.cpp">
+      <Filter>Source\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,19 +56,7 @@
     <ClInclude Include="..\..\Source\Game.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Constants.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Actions.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\GameFont.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Commands.h">
-      <Filter>Headers\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\State.h">
       <Filter>Headers\Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\StateHandler.h">
@@ -89,11 +77,29 @@
     <ClInclude Include="..\..\Source\TextObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\CollisionObject.h">
+    <ClInclude Include="..\..\Source\SpriteObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\GameObject.h">
+    <ClInclude Include="..\..\Source\ObjectRenderer.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ObjectFactory.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\State.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Constants.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GameFont.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Renderable.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Position.h">
+      <Filter>Headers\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

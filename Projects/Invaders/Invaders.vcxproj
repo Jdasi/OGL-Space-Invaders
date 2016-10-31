@@ -90,22 +90,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Actions.cpp" />
-    <ClCompile Include="..\..\Source\CollisionObject.cpp" />
     <ClCompile Include="..\..\Source\GameFont.cpp" />
     <ClCompile Include="..\..\Source\main.cpp" />
+    <ClCompile Include="..\..\Source\ObjectRenderer.cpp" />
+    <ClCompile Include="..\..\Source\SpriteObject.cpp" />
     <ClCompile Include="..\..\Source\StateGameOver.cpp" />
     <ClCompile Include="..\..\Source\StateGameplay.cpp" />
     <ClCompile Include="..\..\Source\StatePause.cpp" />
     <ClCompile Include="..\..\Source\StateStart.cpp" />
     <ClCompile Include="..\..\Source\TextObject.cpp" />
-    <ClInclude Include="..\..\Source\Actions.h" />
-    <ClInclude Include="..\..\Source\CollisionObject.h" />
     <ClInclude Include="..\..\Source\Commands.h" />
     <ClInclude Include="..\..\Source\Constants.h" />
     <ClInclude Include="..\..\Source\Game.h" />
     <ClInclude Include="..\..\Source\GameFont.h" />
-    <ClInclude Include="..\..\Source\GameObject.h" />
+    <ClInclude Include="..\..\Source\ObjectFactory.h" />
+    <ClInclude Include="..\..\Source\ObjectRenderer.h" />
+    <ClInclude Include="..\..\Source\Position.h" />
+    <ClInclude Include="..\..\Source\Renderable.h" />
+    <ClInclude Include="..\..\Source\SpriteObject.h" />
     <ClInclude Include="..\..\Source\State.h" />
     <ClInclude Include="..\..\Source\StateGameOver.h" />
     <ClInclude Include="..\..\Source\StateGameplay.h" />

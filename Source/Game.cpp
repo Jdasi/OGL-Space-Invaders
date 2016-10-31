@@ -2,13 +2,10 @@
 
 #include <Engine/Input.h>
 #include <Engine/Keys.h>
-#include <Engine/Sprite.h>
 
 #include "Game.h"
-#include "Actions.h"
 #include "Constants.h"
 #include "GameFont.h"
-#include "TextObject.h"
 
 #include "StateStart.h"
 #include "StateGameplay.h"
@@ -19,14 +16,12 @@
 *   @brief   Default Constructor.
 */
 InvadersGame::InvadersGame()
-    : callback_id(-1)
+    : m_callback_id(-1)
     , m_exit(false)
+    , m_objectRenderer(nullptr)
 {
-    registerState(GameState::START, std::make_unique<StateStart>(*this));
-    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*this));
-    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*this));
-    registerState(GameState::PAUSE, std::make_unique<StatePause>(*this));
 }
+
 
 
 /**
@@ -35,8 +30,9 @@ InvadersGame::InvadersGame()
 */
 InvadersGame::~InvadersGame()
 {
-	inputs->unregisterCallback(callback_id);
+	inputs->unregisterCallback(m_callback_id);
 }
+
 
 
 /**
@@ -59,7 +55,7 @@ bool InvadersGame::init()
 	m_renderer->setClearColour(ASGE::COLOURS::BLACK);
 
 	// Input callback function.
-	callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
+	m_callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
 	
 	// Load fonts we need.
 	GameFont::fonts[0] = new GameFont(m_renderer->loadFont("..\\..\\Resources\\Fonts\\Comic.ttf", 42), "default", 42);
@@ -70,10 +66,18 @@ bool InvadersGame::init()
 		return false;
 	}
 
+    m_objectRenderer = std::make_unique<ObjectRenderer>(m_renderer);
+
+    registerState(GameState::START, std::make_unique<StateStart>(*m_objectRenderer));
+    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*m_objectRenderer));
+    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*m_objectRenderer));
+    registerState(GameState::PAUSE, std::make_unique<StatePause>(*m_objectRenderer));
+
     triggerState(GameState::START);
 
 	return true;
 }
+
 
 
 /**
@@ -87,12 +91,13 @@ bool InvadersGame::run()
 {
 	while (!shouldExit())
 	{
-		processGameActions();
+        tick();
 		render();
 	}
 
 	return true;
 }
+
 
 
 /**
@@ -104,6 +109,7 @@ bool InvadersGame::shouldExit() const
 {
 	return (m_renderer->exit() || m_exit);
 }
+
 
 
 /**
@@ -121,6 +127,7 @@ void InvadersGame::render()
 }
 
 
+
 /**
 *   @brief   Renderers the contents for this frame.
 *   @details All game objects that need rendering should be done
@@ -130,13 +137,13 @@ void InvadersGame::render()
 */
 void InvadersGame::drawFrame()
 {
-    draw();
+    if (m_objectRenderer)
+    {
+        m_objectRenderer->render();
+    }
 }
 
-std::shared_ptr<ASGE::Renderer>& InvadersGame::getRenderer()
-{
-    return m_renderer;
-}
+
 
 /**
 *   @brief   Processes any key inputs and translates them to a GameAction.
@@ -204,21 +211,4 @@ void InvadersGame::input(int key, int action) const
     }
 }
 
-
-/**
-*   @brief   Processes the next game action.
-*   @details Uses the game action that was a direct result of 
-*            user input. It allows input to processed in a different
-             thread and the game actions performed in the main thread. 
-*   @return  void
-*/
-void InvadersGame::processGameActions()
-{
-	if (game_action == GameAction::EXIT)
-	{
-		m_exit = true;
-	}
-
-	game_action = GameAction::NONE;
-}
 

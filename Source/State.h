@@ -1,23 +1,16 @@
 #pragma once
-#include <vector>
-
-#include <Engine/Sprite.h>
-#include <Engine/Renderer.h>
-
 #include "Commands.h"
-#include "TextObject.h"
-
-class InvadersGame;
 
 class StateHandler;
+class ObjectFactory;
 
 class State
 {
 friend class StateHandler;
 
 public:
-    State(InvadersGame &game)
-        : m_game(game)
+    State(ObjectFactory &factory)
+        : m_factory(factory)
         , m_handler(nullptr)
     {
     }
@@ -38,10 +31,10 @@ protected:
         return m_handler;
     }
 
-    InvadersGame& m_game;
-
-    std::vector<std::unique_ptr<ASGE::Sprite>> sprites;
-    std::vector<TextObject> textObjects;
+    ObjectFactory& getObjectFactory() const
+    {
+        return m_factory;
+    }
 
 private:
     void setHandler(StateHandler* handler)
@@ -49,21 +42,6 @@ private:
         m_handler = handler;
     }
 
-    virtual void draw()
-    {
-    /*
-        for (auto& spr : sprites)
-        {
-            spr->render(game.getRenderer());
-        }
-
-        for (auto& txt : textObjects)
-        {
-            game.getRenderer()->renderText(txt.getString().c_str(), txt.getX(), txt.getY(),
-                                   txt.getScale(), txt.getColour());
-        }
-        */
-    }
-
+    ObjectFactory& m_factory;
     StateHandler* m_handler;
 };

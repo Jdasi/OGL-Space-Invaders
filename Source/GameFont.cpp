@@ -19,4 +19,3 @@ GameFont::GameFont(int idx, char* n, int sz)
 
 // Static variables for fonts.
 GameFont* GameFont::fonts[5];
-

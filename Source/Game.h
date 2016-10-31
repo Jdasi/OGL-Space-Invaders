@@ -2,18 +2,16 @@
 #include <Engine/OGLGame.h>
 
 #include "StateHandler.h"
-
-struct GameFont;
+#include "ObjectRenderer.h"
 
 /**
 *  An OpenGL Game based on ASGE.
 */
-
 class InvadersGame : public ASGE::OGLGame, public StateHandler
 {
 public:
-	InvadersGame();
-	~InvadersGame();
+    InvadersGame();
+	virtual ~InvadersGame();
 
 	// Inherited via Game.
 	virtual bool run() override;
@@ -24,12 +22,10 @@ public:
 	virtual bool init() override;
 	virtual void drawFrame() override;
 
-    std::shared_ptr<ASGE::Renderer>& getRenderer();
-
 private:
-	void processGameActions(); 
 	void input(int key, int action) const;
 
-	int  callback_id;           /**< The callback ID assigned by the game engine. */
-	bool m_exit;                /**< If true the game loop will exit. */
+	int  m_callback_id;           /**< The callback ID assigned by the game engine. */
+	bool m_exit;                  /**< If true the game loop will exit. */
+    std::unique_ptr<ObjectRenderer> m_objectRenderer;
 };

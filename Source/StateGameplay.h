@@ -5,8 +5,8 @@
 class StateGameplay : public State
 {
 public:
-    StateGameplay(InvadersGame& game);
-    ~StateGameplay();
+    explicit StateGameplay(ObjectFactory& factory);
+    virtual ~StateGameplay();
 
     void onStateEnter() override;
     void onStateLeave() override;
