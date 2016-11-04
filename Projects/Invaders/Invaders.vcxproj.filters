@@ -98,7 +98,7 @@
     <ClInclude Include="..\..\Source\Renderable.h">
       <Filter>Headers\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Position.h">
+    <ClInclude Include="..\..\Source\Vector2.h">
       <Filter>Headers\Utility</Filter>
     </ClInclude>
   </ItemGroup>

@@ -73,7 +73,7 @@ bool InvadersGame::init()
     registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*m_objectRenderer));
     registerState(GameState::PAUSE, std::make_unique<StatePause>(*m_objectRenderer));
 
-    triggerState(GameState::START);
+    triggerState(GameState::GAMEPLAY);
 
 	return true;
 }

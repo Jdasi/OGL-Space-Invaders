@@ -1,7 +1,7 @@
 #pragma once
 #include <Engine/Renderer.h>
 
-#include "Position.h"
+#include "Vector2.h"
 
 class Renderable
 {
@@ -18,8 +18,9 @@ public:
         return m_visible;
     }
 
-    virtual void setPosition(const Position position) = 0;
-    virtual Position getPosition() const = 0;
+    virtual Vector2 getPosition() const = 0;
+    virtual void setPosition(const Vector2 position) = 0;
+    virtual void modifyPosition(const Vector2 position) = 0;
 
     virtual void render() = 0;
 

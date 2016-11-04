@@ -3,7 +3,6 @@
 TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& renderer)
     : Renderable(renderer)
     , m_position()
-    , m_pos({ 0, 0 })
     , m_scale(0.0f)
     , m_rgb(ASGE::COLOURS::WHITE)
 {
@@ -11,20 +10,15 @@ TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& renderer)
 
 
 
-TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& renderer, const std::string& s, const Position position, const float size, const float colour[3])
+TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& renderer,
+                       const std::string& str, const Vector2 position, const float scale,
+                       const float colour[3])
     : Renderable(renderer)
     , m_position(position)
-    , m_str(s)
-    , m_scale(size)
+    , m_str(str)
+    , m_scale(scale)
     , m_rgb(colour)
 {
-}
-
-
-
-void TextObject::setString(const std::string& s)
-{
-    m_str = s;
 }
 
 
@@ -36,9 +30,30 @@ std::string TextObject::getString() const
 
 
 
-void TextObject::setScale(float f)
+void TextObject::setString(const std::string& str)
 {
-    m_scale = f;
+    m_str = str;
+}
+
+
+
+Vector2 TextObject::getPosition() const
+{
+    return m_position;
+}
+
+
+
+void TextObject::setPosition(const Vector2 position)
+{
+    m_position = position;
+}
+
+
+
+void TextObject::modifyPosition(const Vector2 position)
+{
+    m_position = m_position + position;
 }
 
 
@@ -50,9 +65,9 @@ float TextObject::getScale() const
 
 
 
-void TextObject::setColour(const float colour[3])
+void TextObject::setScale(float f)
 {
-    m_rgb = colour;
+    m_scale = f;
 }
 
 
@@ -64,16 +79,9 @@ ASGE::Colour TextObject::getColour() const
 
 
 
-void TextObject::setPosition(const Position position)
+void TextObject::setColour(const float colour[3])
 {
-    m_position = position;
-}
-
-
-
-Position TextObject::getPosition() const
-{
-    return m_position;
+    m_rgb = colour;
 }
 
 

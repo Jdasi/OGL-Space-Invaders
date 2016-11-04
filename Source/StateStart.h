@@ -18,6 +18,6 @@ public:
     void onCommand(const Command c, const CommandState s) override;
 
 private:
-    std::shared_ptr<SpriteObject> m_invader;
+    std::shared_ptr<SpriteObject> m_logo;
     std::shared_ptr<TextObject> m_text;
 };

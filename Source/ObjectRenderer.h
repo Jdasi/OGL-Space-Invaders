@@ -12,10 +12,10 @@ public:
     virtual ~ObjectRenderer() = default;
 
     std::shared_ptr<SpriteObject> createSprite
-        (const std::string& texture, const Position position) override;
+        (const std::string& texture, const Vector2 position) override;
 
     std::shared_ptr<TextObject> createText
-        (const std::string& s, const Position position, const float size, 
+        (const std::string& s, const Vector2 position, const float size, 
          const float colour[3]) override;
 
     void render();

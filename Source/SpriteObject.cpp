@@ -1,6 +1,6 @@
 #include "SpriteObject.h"
 
-SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& renderer, const std::string& texture, const Position position)
+SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& renderer, const std::string& texture, const Vector2 position)
     : Renderable(renderer)
 {
     m_sprite = renderer->createSprite();
@@ -15,7 +15,14 @@ SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& renderer, cons
 
 
 
-void SpriteObject::setPosition(const Position position)
+Vector2 SpriteObject::getPosition() const
+{
+    return { m_sprite->position[0], m_sprite->position[1] };
+}
+
+
+
+void SpriteObject::setPosition(const Vector2 position)
 {
     m_sprite->position[0] = position.x;
     m_sprite->position[1] = position.y;
@@ -23,9 +30,25 @@ void SpriteObject::setPosition(const Position position)
 
 
 
-Position SpriteObject::getPosition() const
+void SpriteObject::modifyPosition(const Vector2 position)
 {
-    return { m_sprite->position[0], m_sprite->position[1] };
+    m_sprite->position[0] += position.x;
+    m_sprite->position[1] += position.y;
+}
+
+
+
+Vector2 SpriteObject::getSize() const
+{
+    return { m_sprite->size[0], m_sprite->size[1] };
+}
+
+
+
+void SpriteObject::setSize(const Vector2 size)
+{
+    m_sprite->size[0] = size.x;
+    m_sprite->size[1] = size.y;
 }
 
 
