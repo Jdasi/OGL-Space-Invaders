@@ -7,7 +7,7 @@
 StateGameplay::StateGameplay(ObjectFactory& factory)
     : State(factory)
     , m_player_start({ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 })
-    , m_player_speed(WINDOW_WIDTH / 100)
+    , m_player_speed(500)
     , m_player_shooting(false)
     , m_player_direction(MoveDirection::NONE)
 {
@@ -37,7 +37,7 @@ void StateGameplay::onStateLeave()
 
 
 
-void StateGameplay::tick()
+void StateGameplay::tick(float dt)
 {
     if (m_player_shooting && !m_player_projectile)
     {
@@ -46,9 +46,9 @@ void StateGameplay::tick()
 
     if (m_player_projectile)
     {
-        m_player_projectile->modifyPosition(0, -5);
+        m_player_projectile->modifyPosition(0, -m_player_speed * dt);
 
-        if (m_player_projectile->getPosition().y <= 0)
+        if (m_player_projectile->getPosition().y <= WINDOW_MARGIN)
         {
             m_player_projectile = nullptr;
         }
@@ -58,7 +58,7 @@ void StateGameplay::tick()
     {
         if (m_player->getPosition().x > WINDOW_LEFT_BOUNDARY)
         {
-            m_player->modifyPosition(-m_player_speed, 0);
+            m_player->modifyPosition(-m_player_speed * dt, 0);
         }
     }
 
@@ -66,7 +66,7 @@ void StateGameplay::tick()
     {
         if (m_player->getPosition().x + m_player->getSize().x < WINDOW_RIGHT_BOUNDARY)
         {
-            m_player->modifyPosition(m_player_speed, 0);
+            m_player->modifyPosition(m_player_speed * dt, 0);
         }
     }
 }

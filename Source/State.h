@@ -21,7 +21,7 @@ public:
 
     virtual void onStateEnter() = 0;
     virtual void onStateLeave() = 0;
-    virtual void tick() = 0;
+    virtual void tick(float dt) = 0;
 
     virtual void onCommand(const Command c, const CommandState s) = 0;
 

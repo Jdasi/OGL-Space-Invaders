@@ -25,7 +25,7 @@ void StateGameOver::onStateLeave()
 
 
 
-void StateGameOver::tick()
+void StateGameOver::tick(float dt)
 {
 }
 

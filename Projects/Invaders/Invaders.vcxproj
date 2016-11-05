@@ -105,6 +105,7 @@
     <ClInclude Include="..\..\Source\GameFont.h" />
     <ClInclude Include="..\..\Source\ObjectFactory.h" />
     <ClInclude Include="..\..\Source\ObjectRenderer.h" />
+    <ClInclude Include="..\..\Source\Timer.h" />
     <ClInclude Include="..\..\Source\Vector2.h" />
     <ClInclude Include="..\..\Source\Renderable.h" />
     <ClInclude Include="..\..\Source\SpriteObject.h" />

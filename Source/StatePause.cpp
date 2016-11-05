@@ -25,7 +25,7 @@ void StatePause::onStateLeave()
 
 
 
-void StatePause::tick()
+void StatePause::tick(float dt)
 {
 }
 

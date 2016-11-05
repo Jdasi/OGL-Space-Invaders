@@ -3,6 +3,7 @@
 
 #include "StateHandler.h"
 #include "ObjectRenderer.h"
+#include "Timer.h"
 
 /**
 *  An OpenGL Game based on ASGE.
@@ -28,4 +29,5 @@ private:
 	int  m_callback_id;           /**< The callback ID assigned by the game engine. */
 	bool m_exit;                  /**< If true the game loop will exit. */
     std::unique_ptr<ObjectRenderer> m_objectRenderer;
+    Timer m_timer;
 };

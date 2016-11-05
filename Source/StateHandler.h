@@ -41,11 +41,11 @@ public:
         m_current_state->onStateEnter();
     }
 
-    void tick() const
+    void tick(float dt) const
     {
         if (m_current_state)
         {
-            m_current_state->tick();
+            m_current_state->tick(dt);
         }
     }
 

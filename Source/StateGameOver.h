@@ -10,7 +10,7 @@ public:
 
     void onStateEnter() override;
     void onStateLeave() override;
-    void tick() override;
+    void tick(float dt) override;
     void onCommand(const Command c, const CommandState s) override;
 
 private:

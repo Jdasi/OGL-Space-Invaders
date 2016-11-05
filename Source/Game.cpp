@@ -91,7 +91,9 @@ bool InvadersGame::run()
 {
 	while (!shouldExit())
 	{
-        tick();
+        tick(m_timer.get_time_difference());
+        m_timer.reset();
+
 		render();
 	}
 

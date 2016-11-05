@@ -29,7 +29,7 @@ void StateStart::onStateLeave()
 
 
 
-void StateStart::tick()
+void StateStart::tick(float dt)
 {
 }
 

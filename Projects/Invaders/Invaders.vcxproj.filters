@@ -101,5 +101,8 @@
     <ClInclude Include="..\..\Source\Vector2.h">
       <Filter>Headers\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Timer.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
