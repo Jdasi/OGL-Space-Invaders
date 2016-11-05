@@ -9,7 +9,7 @@ class State
 friend class StateHandler;
 
 public:
-    State(ObjectFactory &factory)
+    explicit State(ObjectFactory& factory)
         : m_factory(factory)
         , m_handler(nullptr)
     {

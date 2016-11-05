@@ -32,7 +32,7 @@ private:
 
     std::shared_ptr<TextObject> m_text;
 
-    std::vector<std::shared_ptr<SpriteObject>> row1;
+    std::vector<std::shared_ptr<SpriteObject>> m_aliens;
 
     Vector2 m_player_start;
     int m_player_speed;

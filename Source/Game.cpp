@@ -18,7 +18,7 @@
 InvadersGame::InvadersGame()
     : m_callback_id(-1)
     , m_exit(false)
-    , m_objectRenderer(nullptr)
+    , m_object_renderer(nullptr)
 {
 }
 
@@ -66,12 +66,13 @@ bool InvadersGame::init()
 		return false;
 	}
 
-    m_objectRenderer = std::make_unique<ObjectRenderer>(m_renderer);
+    // Delay object_renderer creation until m_renderer is initialised.
+    m_object_renderer = std::make_unique<ObjectRenderer>(m_renderer);
 
-    registerState(GameState::START, std::make_unique<StateStart>(*m_objectRenderer));
-    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*m_objectRenderer));
-    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*m_objectRenderer));
-    registerState(GameState::PAUSE, std::make_unique<StatePause>(*m_objectRenderer));
+    registerState(GameState::START, std::make_unique<StateStart>(*m_object_renderer));
+    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*m_object_renderer));
+    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*m_object_renderer));
+    registerState(GameState::PAUSE, std::make_unique<StatePause>(*m_object_renderer));
 
     triggerState(GameState::GAMEPLAY);
 
@@ -139,9 +140,9 @@ void InvadersGame::render()
 */
 void InvadersGame::drawFrame()
 {
-    if (m_objectRenderer)
+    if (m_object_renderer)
     {
-        m_objectRenderer->render();
+        m_object_renderer->render();
     }
 }
 

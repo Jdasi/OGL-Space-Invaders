@@ -23,10 +23,24 @@ StateGameplay::~StateGameplay()
 
 void StateGameplay::onStateEnter()
 {
-    m_player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\Player.png", m_player_start);
+    m_player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", m_player_start);
     m_text = getObjectFactory().createText("Test", { 375, 325 }, 1.0f, ASGE::COLOURS::DARKORANGE);
 
-    row1.push_back(getObjectFactory().createSprite("..\\..\\Resources\\Textures\\Player.png", { 300, 300 }));
+    int max_rows = 5;
+    int max_columns = 11;
+    int padding = 20;
+    Vector2 alien_start{ 100, 100 };
+
+    for (int row = 0; row < max_rows; ++row)
+    {
+        for (int col = 0; col < max_columns; ++col)
+        {
+            m_aliens.push_back(getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", alien_start));
+
+            auto spr = m_aliens[(row * max_columns) + col];
+            spr->modifyPosition((col * spr->getSize().x) + (col * padding), (row * spr->getSize().y) + (row * padding));
+        }
+    }
 }
 
 
@@ -41,7 +55,10 @@ void StateGameplay::tick(float dt)
 {
     if (m_player_shooting && !m_player_projectile)
     {
-        m_player_projectile = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\Player.png", m_player->getPosition());
+        m_player_projectile = getObjectFactory().createSprite(
+            "..\\..\\Resources\\Textures\\projectile.png",
+            { m_player->getPosition().x + (m_player->getSize().x / 2), 
+              m_player->getPosition().y - 5 });
     }
 
     if (m_player_projectile)

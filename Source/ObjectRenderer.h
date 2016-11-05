@@ -8,7 +8,7 @@
 class ObjectRenderer : public ObjectFactory
 {
 public:
-    explicit ObjectRenderer(const std::shared_ptr<ASGE::Renderer>& renderer);
+    explicit ObjectRenderer(std::shared_ptr<ASGE::Renderer>& renderer);
     virtual ~ObjectRenderer() = default;
 
     std::shared_ptr<SpriteObject> createSprite
@@ -24,5 +24,5 @@ private:
     void garbageCollect();
 
     std::shared_ptr<ASGE::Renderer> m_renderer;
-    std::vector<std::weak_ptr<Renderable>> m_renderObjects;
+    std::vector<std::weak_ptr<Renderable>> m_render_objects;
 };

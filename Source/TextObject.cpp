@@ -3,7 +3,7 @@
 TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& renderer)
     : Renderable(renderer)
     , m_position()
-    , m_scale(0.0f)
+    , m_scale(1.0f)
     , m_rgb(ASGE::COLOURS::WHITE)
 {
 }

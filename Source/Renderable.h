@@ -8,14 +8,14 @@ class Renderable
 public:
     virtual ~Renderable() = default;
 
-    void setIsVisible(bool visible)
-    {
-        m_visible = visible;
-    }
-
-    bool getIsVisible() const
+    bool isVisible() const
     {
         return m_visible;
+    }
+
+    void setVisible(bool visible)
+    {
+        m_visible = visible;
     }
 
     virtual Vector2 getPosition() const = 0;

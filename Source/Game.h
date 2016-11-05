@@ -28,6 +28,6 @@ private:
 
 	int  m_callback_id;           /**< The callback ID assigned by the game engine. */
 	bool m_exit;                  /**< If true the game loop will exit. */
-    std::unique_ptr<ObjectRenderer> m_objectRenderer;
+    std::unique_ptr<ObjectRenderer> m_object_renderer;
     Timer m_timer;
 };
