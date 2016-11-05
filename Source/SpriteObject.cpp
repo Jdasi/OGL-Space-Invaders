@@ -30,10 +30,10 @@ void SpriteObject::setPosition(const Vector2 position)
 
 
 
-void SpriteObject::modifyPosition(const Vector2 position)
+void SpriteObject::modifyPosition(int x, int y)
 {
-    m_sprite->position[0] += position.x;
-    m_sprite->position[1] += position.y;
+    m_sprite->position[0] += x;
+    m_sprite->position[1] += y;
 }
 
 

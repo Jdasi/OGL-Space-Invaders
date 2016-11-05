@@ -1,7 +1,15 @@
 #pragma once
 namespace ASGE {
+	/**
+	*  Input Keys. Redefinition based on renderer used.
+	*  http://www.glfw.org/docs/latest/group__keys.html
+	*/
+
 	namespace KEYS {
-		constexpr int KEY_PRESS = 1;
+		constexpr int KEY_RELEASED = 0;      /**< Key Release. The key or mouse button was pressed. */
+		constexpr int KEY_PRESSED = 1;       /**< Key Press. The key or mouse button was released. */
+		constexpr int KEY_REPEATED = 2;      /**< Key Repeat. The key was held down until it repeated. */
+
 		constexpr int KEY_SPACE = 32;
 		constexpr int KEY_APOSTROPHE = 39;
 		constexpr int KEY_COMMA = 44;

@@ -7,7 +7,7 @@ namespace ASGE {
 	public:
 		// Inherited via Game
 		virtual bool initAPI() override final;
-		virtual bool exitAPI() override final;;
+		virtual bool exitAPI() override final;
 		virtual void beginFrame() override final;
 		virtual void endFrame() override final;
 	};

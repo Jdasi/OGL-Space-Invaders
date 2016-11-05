@@ -31,7 +31,7 @@ namespace ASGE {
 			return this->registerCallback(std::bind(fncPtr, _1, _2));
 		}
 
-		void unregisterCallback(int id);
+		void unregisterCallback(unsigned int id);
 
 	private:
 		using InputFnc = std::function<void(int, int)>;

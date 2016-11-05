@@ -14,7 +14,7 @@ public:
 
     Vector2 getPosition() const override;
     void setPosition(const Vector2 position) override;
-    void modifyPosition(const Vector2 position) override;
+    void modifyPosition(int x, int y) override;
 
     Vector2 getSize() const;
     void setSize(const Vector2 size);

@@ -52,7 +52,7 @@ bool InvadersGame::init()
 	}
 
 	m_renderer->setWindowTitle("Invaders - Exercise 1");
-	m_renderer->setClearColour(ASGE::COLOURS::BLACK);
+    m_renderer->setClearColour(ASGE::COLOURS::BLACK);
 
 	// Input callback function.
 	m_callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
@@ -156,13 +156,7 @@ void InvadersGame::drawFrame()
 */
 void InvadersGame::input(int key, int action) const
 {
-    // There is no constexpr for "Holding" or "Released" in the library;
-    // So there's no point in checking for "Pressed" either.
-    CommandState command_state = CommandState::RELEASED;
-    if (action == 1 || action == 2)
-    {
-        command_state = CommandState::PRESSED;
-    }
+    CommandState command_state = static_cast<CommandState>(action);
 
     switch (key)
     {

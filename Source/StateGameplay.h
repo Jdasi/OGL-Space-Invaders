@@ -1,11 +1,19 @@
 #pragma once
 #include <memory>
+#include <vector>
 
 #include "State.h"
 #include "Vector2.h"
 
 class SpriteObject;
 class TextObject;
+
+enum class MoveDirection
+{
+    LEFT,
+    RIGHT,
+    NONE
+};
 
 class StateGameplay : public State
 {
@@ -20,8 +28,14 @@ public:
 
 private:
     std::shared_ptr<SpriteObject> m_player;
+    std::shared_ptr<SpriteObject> m_player_projectile;
+
     std::shared_ptr<TextObject> m_text;
 
+    std::vector<std::shared_ptr<SpriteObject>> row1;
+
     Vector2 m_player_start;
-    float m_player_speed;
+    int m_player_speed;
+    bool m_player_shooting;
+    MoveDirection m_player_direction;
 };

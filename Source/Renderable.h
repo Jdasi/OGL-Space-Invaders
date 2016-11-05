@@ -20,7 +20,7 @@ public:
 
     virtual Vector2 getPosition() const = 0;
     virtual void setPosition(const Vector2 position) = 0;
-    virtual void modifyPosition(const Vector2 position) = 0;
+    virtual void modifyPosition(int x, int y) = 0;
 
     virtual void render() = 0;
 

@@ -11,8 +11,9 @@ enum class Command
     QUIT
 };
 
-enum class CommandState
+enum class CommandState : int
 {
-    RELEASED,
-    PRESSED
+    RELEASED = 0,
+    PRESSED,
+    REPEATING
 };

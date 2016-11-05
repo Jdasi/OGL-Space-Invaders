@@ -51,9 +51,10 @@ void TextObject::setPosition(const Vector2 position)
 
 
 
-void TextObject::modifyPosition(const Vector2 position)
+void TextObject::modifyPosition(int x, int y)
 {
-    m_position = m_position + position;
+    m_position.x += x;
+    m_position.y += y;
 }
 
 

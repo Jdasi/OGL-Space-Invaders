@@ -8,17 +8,12 @@ public:
     {
     }
 
-    Vector2(const float x, const float y)
+    Vector2(unsigned int x, unsigned int y)
         : x(x)
         , y(y)
     {
     }
 
-    Vector2 operator+(const Vector2& v) const
-    {
-        return Vector2({ x + v.x, y + v.y });
-    }
-
-    float x = 0;
-    float y = 0;
+    unsigned int x = 0;
+    unsigned int y = 0;
 };
