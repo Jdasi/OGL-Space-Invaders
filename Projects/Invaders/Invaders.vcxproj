@@ -92,6 +92,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\GameFont.cpp" />
     <ClCompile Include="..\..\Source\main.cpp" />
+    <ClCompile Include="..\..\Source\ObjectBlock.cpp" />
     <ClCompile Include="..\..\Source\ObjectRenderer.cpp" />
     <ClCompile Include="..\..\Source\SpriteObject.cpp" />
     <ClCompile Include="..\..\Source\StateGameOver.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="..\..\Source\Constants.h" />
     <ClInclude Include="..\..\Source\Game.h" />
     <ClInclude Include="..\..\Source\GameFont.h" />
+    <ClInclude Include="..\..\Source\ObjectBlock.h" />
     <ClInclude Include="..\..\Source\ObjectFactory.h" />
     <ClInclude Include="..\..\Source\ObjectRenderer.h" />
     <ClInclude Include="..\..\Source\Timer.h" />

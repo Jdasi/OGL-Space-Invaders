@@ -31,6 +31,9 @@
     <ClCompile Include="..\..\Source\GameFont.cpp">
       <Filter>Source\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\ObjectBlock.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Timer.h">
       <Filter>Headers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ObjectBlock.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 
 class SpriteObject;
 class TextObject;
+class ObjectBlock;
 
 enum class MoveDirection
 {
@@ -30,9 +31,8 @@ private:
     std::shared_ptr<SpriteObject> m_player;
     std::shared_ptr<SpriteObject> m_player_projectile;
 
-    std::shared_ptr<TextObject> m_text;
-
-    std::vector<std::shared_ptr<SpriteObject>> m_aliens;
+    std::shared_ptr<TextObject> m_score_text;
+    std::unique_ptr<ObjectBlock> m_aliens;
 
     Vector2 m_player_start;
     int m_player_speed;
