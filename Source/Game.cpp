@@ -58,7 +58,7 @@ bool InvadersGame::init()
 	m_callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
 	
 	// Load fonts we need.
-	GameFont::fonts[0] = new GameFont(m_renderer->loadFont("..\\..\\Resources\\Fonts\\Comic.ttf", 42), "default", 42);
+	GameFont::fonts[0] = new GameFont(m_renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), "default", 42);
     m_renderer->setFont(GameFont::fonts[0]->id);
     	
 	if (GameFont::fonts[0]->id == -1)

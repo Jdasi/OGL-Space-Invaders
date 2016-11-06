@@ -7,7 +7,8 @@
 StateGameplay::StateGameplay(ObjectFactory& factory)
     : State(factory)
     , m_player_start({ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 })
-    , m_player_speed(500)
+    , m_player_speed(400)
+    , m_player_projectile_speed(600)
     , m_player_shooting(false)
     , m_player_direction(MoveDirection::NONE)
 {
@@ -24,21 +25,33 @@ StateGameplay::~StateGameplay()
 void StateGameplay::onStateEnter()
 {
     m_player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", m_player_start);
-    m_text = getObjectFactory().createText("Test", { 375, 325 }, 1.0f, ASGE::COLOURS::DARKORANGE);
+    m_text = getObjectFactory().createText("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
 
     int max_rows = 5;
     int max_columns = 11;
-    int padding = 20;
+    int paddingX = 10;
+    int paddingY = 20;
     Vector2 alien_start{ 100, 100 };
 
+    std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
     for (int row = 0; row < max_rows; ++row)
     {
+        if (row == 1)
+        {
+            alien_img = "..\\..\\Resources\\Textures\\middle_alien_0.png";
+        }
+        
+        if (row == 3)
+        {
+            alien_img = "..\\..\\Resources\\Textures\\bottom_alien_0.png";
+        }
+
         for (int col = 0; col < max_columns; ++col)
         {
-            m_aliens.push_back(getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", alien_start));
+            m_aliens.push_back(getObjectFactory().createSprite(alien_img, alien_start));
 
             auto spr = m_aliens[(row * max_columns) + col];
-            spr->modifyPosition((col * spr->getSize().x) + (col * padding), (row * spr->getSize().y) + (row * padding));
+            spr->modifyPosition((col * spr->getSize().x) + (col * paddingX), (row * spr->getSize().y) + (row * paddingY));
         }
     }
 }
@@ -63,9 +76,24 @@ void StateGameplay::tick(float dt)
 
     if (m_player_projectile)
     {
-        m_player_projectile->modifyPosition(0, -m_player_speed * dt);
+        m_player_projectile->modifyPosition(0, -m_player_projectile_speed * dt);
 
-        if (m_player_projectile->getPosition().y <= WINDOW_MARGIN)
+        // Collision test with alien block.
+        for (auto& alien : m_aliens)
+        {
+            if (alien)
+            {
+                if (m_player_projectile->collisionTest(alien))
+                {
+                    alien = nullptr;
+                    m_player_projectile = nullptr;
+                    break;
+                }
+            }
+        }
+
+        // If projectile hasn't hit anything, delete it at the top of the screen.
+        if (m_player_projectile && m_player_projectile->getPosition().y <= WINDOW_MARGIN)
         {
             m_player_projectile = nullptr;
         }
@@ -128,7 +156,15 @@ void StateGameplay::onCommand(const Command c, const CommandState s)
         }
     }
 
-    std::cout << "command: " << static_cast<int>(c) << " " << static_cast<int>(s) << " " << m_player->getPosition().x << ", " << m_player->getPosition().y << std::endl;
+    if (c == Command::PAUSE)
+    {
+        if (s == CommandState::PRESSED)
+        {
+            // pause
+        }
+    }
+
+    std::cout << "command: " << static_cast<int>(c) << " " << static_cast<int>(s) << std::endl;
 }
 
 

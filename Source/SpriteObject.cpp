@@ -53,6 +53,21 @@ void SpriteObject::setSize(const Vector2 size)
 
 
 
+bool SpriteObject::collisionTest(const std::shared_ptr<SpriteObject> other)
+{
+    if (m_sprite->position[0] + m_sprite->size[0] >= other->getPosition().x &&
+        m_sprite->position[0] <= (other->getPosition().x + other->getSize().x) &&
+        m_sprite->position[1] + m_sprite->size[1] >= other->getPosition().y &&
+        m_sprite->position[1] <= (other->getPosition().y + other->getSize().y))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
+
 void SpriteObject::render()
 {
     if (m_visible)

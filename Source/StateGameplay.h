@@ -36,6 +36,7 @@ private:
 
     Vector2 m_player_start;
     int m_player_speed;
+    int m_player_projectile_speed;
     bool m_player_shooting;
     MoveDirection m_player_direction;
 };

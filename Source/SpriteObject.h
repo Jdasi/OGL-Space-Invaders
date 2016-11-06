@@ -19,6 +19,8 @@ public:
     Vector2 getSize() const;
     void setSize(const Vector2 size);
 
+    bool collisionTest(const std::shared_ptr<SpriteObject> other);
+
 private:
     void render() override;
 
