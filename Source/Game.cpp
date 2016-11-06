@@ -18,7 +18,6 @@
 InvadersGame::InvadersGame()
     : m_callback_id(-1)
     , m_exit(false)
-    , m_object_renderer(nullptr)
 {
 }
 
@@ -206,6 +205,9 @@ void InvadersGame::input(int key, int action) const
             break;
         }
     }
+
+    // Input debug.
+    std::cout << "command: " << static_cast<int>(key) << " " << static_cast<int>(action) << std::endl;
 }
 
 

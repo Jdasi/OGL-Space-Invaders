@@ -61,6 +61,8 @@ void ObjectBlock::updateLayout()
             ++column;
         }
     }
+
+    updateEdges();
 }
 
 
