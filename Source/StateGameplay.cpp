@@ -8,7 +8,7 @@
 StateGameplay::StateGameplay(ObjectFactory& factory)
     : State(factory)
     , m_player_speed(400)
-    , m_player_projectile_speed(600)
+    , m_player_projectile_speed(500)
     , m_player_shooting(false)
     , m_player_direction(MoveDirection::NONE)
     , m_alien_tick_delay(1.0f)
@@ -111,7 +111,7 @@ void StateGameplay::initHUD()
 
 void StateGameplay::initAliens()
 {
-    Vector2 alien_start{ 250, 100 };
+    Vector2 alien_start{ 100, 100 };
     int max_columns = 11;
     int padding_x = 10;
     int padding_y = 20;
@@ -121,20 +121,26 @@ void StateGameplay::initAliens()
     std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
     for (int i = 0; i < max_columns; ++i)
     {
-        m_aliens->addObject(getObjectFactory().createSprite(alien_img, alien_start));
+        auto alien = getObjectFactory().createSprite(alien_img, alien_start);
+
+        m_aliens->addObject(alien);
     }
 
     int double_row = max_columns * 2;
     alien_img = "..\\..\\Resources\\Textures\\middle_alien_0.png";
     for (int i = 0; i < double_row; ++i)
     {
-        m_aliens->addObject(getObjectFactory().createSprite(alien_img, alien_start));
+        auto alien = getObjectFactory().createSprite(alien_img, alien_start);
+
+        m_aliens->addObject(alien);
     }
 
     alien_img = "..\\..\\Resources\\Textures\\bottom_alien_0.png";
     for (int i = 0; i < double_row; ++i)
     {
-        m_aliens->addObject(getObjectFactory().createSprite(alien_img, alien_start));
+        auto alien = getObjectFactory().createSprite(alien_img, alien_start);
+
+        m_aliens->addObject(alien);
     }
 
     m_aliens->updateLayout();
@@ -161,9 +167,15 @@ void StateGameplay::updatePlayerProjectile(float dt)
     {
         m_player_projectile->modifyPosition(0, -m_player_projectile_speed * dt);
 
-        // Destroy the projectile if it collides with something or hits the top edge.
-        if (m_aliens->collisionTest(m_player_projectile) ||
-            m_player_projectile->getPosition().y <= WINDOW_MARGIN)
+        // Destroy projectile if it collides with something.
+        if (m_aliens->collisionTest(m_player_projectile))
+        {
+            m_player_projectile = nullptr;
+            m_alien_tick_delay -= dt;
+        }
+
+        // Destroy projectile if it reaches the top of the screen.
+        if (m_player_projectile && m_player_projectile->getPosition().y <= WINDOW_MARGIN)
         {
             m_player_projectile = nullptr;
         }
@@ -208,6 +220,7 @@ void StateGameplay::updateAliensDirection(float dt)
         if (left_edge_hit && m_aliens_direction != MoveDirection::DOWN)
         {
             m_aliens_direction = MoveDirection::DOWN;
+            m_alien_tick_delay -= dt;
         }
         else if (left_edge_hit)
         {
@@ -219,6 +232,7 @@ void StateGameplay::updateAliensDirection(float dt)
         if (right_edge_hit && m_aliens_direction != MoveDirection::DOWN)
         {
             m_aliens_direction = MoveDirection::DOWN;
+            m_alien_tick_delay -= dt;
         }
         else if (right_edge_hit)
         {

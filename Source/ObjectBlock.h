@@ -12,7 +12,7 @@ public:
     ObjectBlock(Vector2 start_pos, int max_columns, int padding_x, int padding_y);
     ~ObjectBlock() = default;
 
-    std::shared_ptr<SpriteObject> getObject(int id) const;
+    std::shared_ptr<SpriteObject> getObject(unsigned int id) const;
     void addObject(const std::shared_ptr<SpriteObject> object);
     void updateLayout();
 

@@ -19,9 +19,9 @@ ObjectBlock::ObjectBlock(Vector2 start_pos, int max_columns, int padding_x, int 
 
 
 
-std::shared_ptr<SpriteObject> ObjectBlock::getObject(int id) const
+std::shared_ptr<SpriteObject> ObjectBlock::getObject(unsigned int id) const
 {
-    if (m_objects.empty() || id < 0 || id > m_objects.size())
+    if (m_objects.empty() || id > m_objects.size())
     {
         throw std::runtime_error("Error in ObjectBlock::getObject()");
     }
@@ -99,6 +99,7 @@ void ObjectBlock::moveBlock(int x, int y)
         }
 
         obj->modifyPosition(x, y);
+        //obj->nextTexture();
     }
 
     m_edge_left += x;
