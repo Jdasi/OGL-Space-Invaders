@@ -98,7 +98,6 @@ void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
     player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", player_start);
-    player->setScale(5.0f);
 }
 
 
