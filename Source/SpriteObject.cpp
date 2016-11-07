@@ -1,13 +1,13 @@
 #include "SpriteObject.h"
 
-SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& renderer, const std::string& texture, const Vector2 position)
-    : Renderable(renderer)
+SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, const std::string& _texture, const Vector2 _pos)
+    : Renderable(_renderer)
 {
-    m_sprite = renderer->createSprite();
-    m_sprite->position[0] = position.x;
-    m_sprite->position[1] = position.y;
+    sprite = renderer->createSprite();
+    sprite->position[0] = _pos.x;
+    sprite->position[1] = _pos.y;
 
-    if (!m_sprite->loadTexture(texture.c_str()))
+    if (!sprite->loadTexture(_texture.c_str()))
     {
         throw std::runtime_error("Error loading sprite texture.");
     }
@@ -17,48 +17,63 @@ SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& renderer, cons
 
 Vector2 SpriteObject::getPosition() const
 {
-    return { m_sprite->position[0], m_sprite->position[1] };
+    return { sprite->position[0], sprite->position[1] };
 }
 
 
 
-void SpriteObject::setPosition(const Vector2 position)
+void SpriteObject::setPosition(const Vector2 _pos)
 {
-    m_sprite->position[0] = position.x;
-    m_sprite->position[1] = position.y;
+    sprite->position[0] = _pos.x;
+    sprite->position[1] = _pos.y;
 }
 
 
 
-void SpriteObject::modifyPosition(int x, int y)
+void SpriteObject::modifyPosition(int _x, int _y)
 {
-    m_sprite->position[0] += x;
-    m_sprite->position[1] += y;
+    sprite->position[0] += _x;
+    sprite->position[1] += _y;
 }
 
 
 
 Vector2 SpriteObject::getSize() const
 {
-    return { m_sprite->size[0], m_sprite->size[1] };
+    int scale = static_cast<int>(sprite->scale);
+    return { sprite->size[0] * scale, sprite->size[1] * scale };
 }
 
 
 
-void SpriteObject::setSize(const Vector2 size)
+void SpriteObject::setSize(const Vector2 _size)
 {
-    m_sprite->size[0] = size.x;
-    m_sprite->size[1] = size.y;
+    sprite->size[0] = _size.x;
+    sprite->size[1] = _size.y;
 }
 
 
 
-bool SpriteObject::collisionTest(const std::shared_ptr<SpriteObject> other)
+float SpriteObject::getScale() const
 {
-    if (m_sprite->position[0] + m_sprite->size[0] >= other->getPosition().x &&
-        m_sprite->position[0] <= (other->getPosition().x + other->getSize().x) &&
-        m_sprite->position[1] + m_sprite->size[1] >= other->getPosition().y &&
-        m_sprite->position[1] <= (other->getPosition().y + other->getSize().y))
+    return sprite->scale;
+}
+
+
+
+void SpriteObject::setScale(float _scale)
+{
+    sprite->scale = _scale;
+}
+
+
+
+bool SpriteObject::collisionTest(const SpriteObject& _other) const
+{
+    if (sprite->position[0] + sprite->size[0] >= _other.getPosition().x &&
+        sprite->position[0] <= (_other.getPosition().x + _other.getSize().x) &&
+        sprite->position[1] + sprite->size[1] >= _other.getPosition().y &&
+        sprite->position[1] <= (_other.getPosition().y + _other.getSize().y))
     {
         return true;
     }
@@ -70,9 +85,9 @@ bool SpriteObject::collisionTest(const std::shared_ptr<SpriteObject> other)
 
 void SpriteObject::render()
 {
-    if (m_visible)
+    if (visible)
     {
-        m_sprite->render(m_renderer);
+        sprite->render(renderer);
     }
 }
 

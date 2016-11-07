@@ -10,27 +10,27 @@ public:
 
     bool isVisible() const
     {
-        return m_visible;
+        return visible;
     }
 
-    void setVisible(bool visible)
+    void setVisible(bool _visible)
     {
-        m_visible = visible;
+        visible = _visible;
     }
 
     virtual Vector2 getPosition() const = 0;
-    virtual void setPosition(const Vector2 position) = 0;
-    virtual void modifyPosition(int x, int y) = 0;
+    virtual void setPosition(const Vector2 _pos) = 0;
+    virtual void modifyPosition(int _x, int _y) = 0;
 
     virtual void render() = 0;
 
 protected:
-    Renderable(const std::shared_ptr<ASGE::Renderer>& renderer)
-        : m_renderer(renderer)
-        , m_visible(true)
+    Renderable(const std::shared_ptr<ASGE::Renderer>& _renderer)
+        : renderer(_renderer)
+        , visible(true)
     {
     }
 
-    std::shared_ptr<ASGE::Renderer> m_renderer;
-    bool m_visible;
+    std::shared_ptr<ASGE::Renderer> renderer;
+    bool visible;
 };

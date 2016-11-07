@@ -4,8 +4,8 @@
 #include "Game.h"
 #include "Constants.h"
 
-StateStart::StateStart(ObjectFactory& factory)
-    : State(factory)
+StateStart::StateStart(ObjectFactory& _factory)
+    : State(_factory)
 {
 }
 
@@ -29,13 +29,13 @@ void StateStart::onStateLeave()
 
 
 
-void StateStart::tick(float dt)
+void StateStart::tick(float _dt)
 {
 }
 
 
 
-void StateStart::onCommand(const Command c, const CommandState s)
+void StateStart::onCommand(const Command _command, const CommandState _command_state)
 {
 }
 

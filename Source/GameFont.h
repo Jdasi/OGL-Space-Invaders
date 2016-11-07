@@ -6,7 +6,7 @@
 
 struct GameFont
 {
-	GameFont(int idx, char* n, int sz);
+	GameFont(int _id, int _size, char* _name);
 
 	int id = 0;             /**< The ID assigned to the font from the graphics engine. */
 	int size = 0;           /**< The size of the font that was loaded. */

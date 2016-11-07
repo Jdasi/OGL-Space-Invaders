@@ -24,7 +24,7 @@ namespace ASGE {
 		void toggleFPS();
 		void updateFPS();
 
-		std::shared_ptr<Renderer> m_renderer;
+		std::shared_ptr<Renderer> renderer;
 		std::shared_ptr<Input>    inputs;
 
 		int  width      = 640;

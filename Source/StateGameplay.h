@@ -1,9 +1,7 @@
 #pragma once
 #include <memory>
-#include <vector>
 
 #include "State.h"
-#include "Vector2.h"
 
 class SpriteObject;
 class TextObject;
@@ -20,13 +18,13 @@ enum class MoveDirection
 class StateGameplay : public State
 {
 public:
-    explicit StateGameplay(ObjectFactory& factory);
+    explicit StateGameplay(ObjectFactory& _factory);
     virtual ~StateGameplay();
     void onStateEnter() override;
     void onStateLeave() override;
 
-    void tick(float dt) override;
-    void onCommand(const Command c, const CommandState s) override;
+    void tick(float _dt) override;
+    void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
     void initPlayer();
@@ -34,27 +32,27 @@ private:
     void initAliens();
 
     void playerShoot();
-    void updatePlayerProjectile(float dt);
-    void movePlayer(float dt) const;
+    void updatePlayerProjectile(float _dt);
+    void movePlayer(float _dt) const;
 
-    void updateAliensDirection(float dt);
-    void moveAliens(float dt) const;
+    void updateAliensDirection(float _dt);
+    void moveAliens(float _dt) const;
 
-    std::shared_ptr<SpriteObject> m_player;
-    std::shared_ptr<SpriteObject> m_player_projectile;
+    std::shared_ptr<SpriteObject> player;
+    std::shared_ptr<SpriteObject> player_projectile;
 
-    std::shared_ptr<TextObject> m_score_text;
-    std::unique_ptr<ObjectBlock> m_aliens;
+    std::shared_ptr<TextObject> score_text;
+    std::unique_ptr<ObjectBlock> aliens;
 
-    int m_player_speed;
-    int m_player_projectile_speed;
-    bool m_player_shooting;
-    MoveDirection m_player_direction;
+    int player_speed;
+    int player_projectile_speed;
+    bool player_shooting;
+    MoveDirection player_direction;
 
-    float m_alien_tick_delay;
-    float m_alien_timer;
-    int m_alien_side_speed;
-    int m_alien_down_speed;
-    int m_alien_projectile_speed;
-    MoveDirection m_aliens_direction;
+    float alien_tick_delay;
+    float alien_timer;
+    int alien_side_speed;
+    int alien_down_speed;
+    int alien_projectile_speed;
+    MoveDirection aliens_direction;
 };

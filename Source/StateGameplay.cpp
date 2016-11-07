@@ -5,18 +5,18 @@
 #include "Constants.h"
 #include "ObjectBlock.h"
 
-StateGameplay::StateGameplay(ObjectFactory& factory)
-    : State(factory)
-    , m_player_speed(400)
-    , m_player_projectile_speed(500)
-    , m_player_shooting(false)
-    , m_player_direction(MoveDirection::NONE)
-    , m_alien_tick_delay(1.0f)
-    , m_alien_timer(0)
-    , m_alien_side_speed(400)
-    , m_alien_down_speed(800)
-    , m_alien_projectile_speed(600)
-    , m_aliens_direction(MoveDirection::RIGHT)
+StateGameplay::StateGameplay(ObjectFactory& _factory)
+    : State(_factory)
+    , player_speed(400)
+    , player_projectile_speed(500)
+    , player_shooting(false)
+    , player_direction(MoveDirection::NONE)
+    , alien_tick_delay(1.0f)
+    , alien_timer(0)
+    , alien_side_speed(400)
+    , alien_down_speed(800)
+    , alien_projectile_speed(600)
+    , aliens_direction(MoveDirection::RIGHT)
 {
 }
 
@@ -43,51 +43,51 @@ void StateGameplay::onStateLeave()
 
 
 
-void StateGameplay::tick(float dt)
+void StateGameplay::tick(float _dt)
 {
     playerShoot();
-    updatePlayerProjectile(dt);
-    movePlayer(dt);
-    updateAliensDirection(dt);
+    updatePlayerProjectile(_dt);
+    movePlayer(_dt);
+    updateAliensDirection(_dt);
 }
 
 
 
-void StateGameplay::onCommand(const Command c, const CommandState s)
+void StateGameplay::onCommand(const Command _command, const CommandState _command_state)
 {
-    if (c == Command::MOVE_LEFT)
+    if (_command == Command::MOVE_LEFT)
     {
-        if (s == CommandState::PRESSED || s == CommandState::REPEATING)
+        if (_command_state == CommandState::PRESSED || _command_state == CommandState::REPEATING)
         {
-            m_player_direction = MoveDirection::LEFT;
+            player_direction = MoveDirection::LEFT;
         }
         else
         {
-            m_player_direction = MoveDirection::NONE;
+            player_direction = MoveDirection::NONE;
         }
     }
 
-    if (c == Command::MOVE_RIGHT)
+    if (_command == Command::MOVE_RIGHT)
     {
-        if (s == CommandState::PRESSED || s == CommandState::REPEATING)
+        if (_command_state == CommandState::PRESSED || _command_state == CommandState::REPEATING)
         {
-            m_player_direction = MoveDirection::RIGHT;
+            player_direction = MoveDirection::RIGHT;
         }
         else
         {
-            m_player_direction = MoveDirection::NONE;
+            player_direction = MoveDirection::NONE;
         }
     }
 
-    if (c == Command::SHOOT)
+    if (_command == Command::SHOOT)
     {
-        if (s == CommandState::PRESSED || s == CommandState::REPEATING)
+        if (_command_state == CommandState::PRESSED || _command_state == CommandState::REPEATING)
         {
-            m_player_shooting = true;
+            player_shooting = true;
         }
         else
         {
-            m_player_shooting = false;
+            player_shooting = false;
         }
     }
 }
@@ -97,14 +97,15 @@ void StateGameplay::onCommand(const Command c, const CommandState s)
 void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
-    m_player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", player_start);
+    player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", player_start);
+    player->setScale(5.0f);
 }
 
 
 
 void StateGameplay::initHUD()
 {
-    m_score_text = getObjectFactory().createText("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+    score_text = getObjectFactory().createText("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
 }
 
 
@@ -112,154 +113,149 @@ void StateGameplay::initHUD()
 void StateGameplay::initAliens()
 {
     Vector2 alien_start{ 100, 100 };
+    int max_rows = 5;
     int max_columns = 11;
     int padding_x = 10;
     int padding_y = 20;
 
-    m_aliens = std::make_unique<ObjectBlock>(alien_start, max_columns, padding_x, padding_y);
+    aliens = std::make_unique<ObjectBlock>(alien_start, max_columns, padding_x, padding_y, max_rows * max_columns);
 
     std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
-    for (int i = 0; i < max_columns; ++i)
+    for (int row = 0; row < max_rows; ++row)
     {
-        auto alien = getObjectFactory().createSprite(alien_img, alien_start);
+        if (row == 1)
+        {
+            alien_img = "..\\..\\Resources\\Textures\\middle_alien_0.png";
+        }
 
-        m_aliens->addObject(alien);
+        if (row == 3)
+        {
+            alien_img = "..\\..\\Resources\\Textures\\bottom_alien_0.png";
+        }
+
+        for (int col = 0; col < max_columns; ++col)
+        {
+            aliens->addObject(getObjectFactory().createSprite(alien_img, alien_start));
+        }
     }
 
-    int double_row = max_columns * 2;
-    alien_img = "..\\..\\Resources\\Textures\\middle_alien_0.png";
-    for (int i = 0; i < double_row; ++i)
-    {
-        auto alien = getObjectFactory().createSprite(alien_img, alien_start);
-
-        m_aliens->addObject(alien);
-    }
-
-    alien_img = "..\\..\\Resources\\Textures\\bottom_alien_0.png";
-    for (int i = 0; i < double_row; ++i)
-    {
-        auto alien = getObjectFactory().createSprite(alien_img, alien_start);
-
-        m_aliens->addObject(alien);
-    }
-
-    m_aliens->updateLayout();
+    aliens->updateLayout();
 }
 
 
 
 void StateGameplay::playerShoot()
 {
-    if (m_player_shooting && !m_player_projectile)
+    if (player_shooting && !player_projectile)
     {
-        m_player_projectile = getObjectFactory().createSprite(
+        player_projectile = getObjectFactory().createSprite(
             "..\\..\\Resources\\Textures\\projectile.png",
-            { m_player->getPosition().x + (m_player->getSize().x / 2),
-            m_player->getPosition().y - 5 });
+            { player->getPosition().x + (player->getSize().x / 2),
+            player->getPosition().y - 5 });
     }
 }
 
 
 
-void StateGameplay::updatePlayerProjectile(float dt)
+void StateGameplay::updatePlayerProjectile(float _dt)
 {
-    if (m_player_projectile)
+    if (player_projectile)
     {
-        m_player_projectile->modifyPosition(0, -m_player_projectile_speed * dt);
+        player_projectile->modifyPosition(0, -player_projectile_speed * _dt);
 
         // Destroy projectile if it collides with something.
-        if (m_aliens->collisionTest(m_player_projectile))
+        if (aliens->collisionTest(*player_projectile))
         {
-            m_player_projectile = nullptr;
-            m_alien_tick_delay -= dt;
+            player_projectile = nullptr;
+            alien_tick_delay -= _dt;
         }
 
         // Destroy projectile if it reaches the top of the screen.
-        if (m_player_projectile && m_player_projectile->getPosition().y <= WINDOW_MARGIN)
+        if (player_projectile && player_projectile->getPosition().y <= WINDOW_MARGIN)
         {
-            m_player_projectile = nullptr;
+            player_projectile = nullptr;
         }
     }
 }
 
 
 
-void StateGameplay::movePlayer(float dt) const
+void StateGameplay::movePlayer(float _dt) const
 {
-    if (m_player_direction == MoveDirection::LEFT)
+    if (player_direction == MoveDirection::LEFT)
     {
-        if (m_player->getPosition().x > WINDOW_LEFT_BOUNDARY)
+        if (player->getPosition().x > WINDOW_LEFT_BOUNDARY)
         {
-            m_player->modifyPosition(-m_player_speed * dt, 0);
+            player->modifyPosition(-player_speed * _dt, 0);
         }
     }
 
-    if (m_player_direction == MoveDirection::RIGHT)
+    if (player_direction == MoveDirection::RIGHT)
     {
-        if (m_player->getPosition().x + m_player->getSize().x < WINDOW_RIGHT_BOUNDARY)
+        if (player->getPosition().x + player->getSize().x < WINDOW_RIGHT_BOUNDARY)
         {
-            m_player->modifyPosition(m_player_speed * dt, 0);
+            player->modifyPosition(player_speed * _dt, 0);
         }
     }
 }
 
 
 
-void StateGameplay::updateAliensDirection(float dt)
+void StateGameplay::updateAliensDirection(float _dt)
 {
-    if (m_alien_timer < m_alien_tick_delay)
+    if (alien_timer < alien_tick_delay)
     {
-        m_alien_timer += dt;
+        alien_timer += _dt;
     }
     else
     {
-        m_alien_timer = 0;
+        alien_timer = 0;
 
         // Move aliens down at left edge.
-        bool left_edge_hit = m_aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY;
-        if (left_edge_hit && m_aliens_direction != MoveDirection::DOWN)
+        bool left_edge_hit = aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY;
+        if (left_edge_hit && aliens_direction != MoveDirection::DOWN)
         {
-            m_aliens_direction = MoveDirection::DOWN;
-            m_alien_tick_delay -= dt;
+            aliens_direction = MoveDirection::DOWN;
+            alien_tick_delay -= _dt;
         }
         else if (left_edge_hit)
         {
-            m_aliens_direction = MoveDirection::RIGHT;
+            aliens_direction = MoveDirection::RIGHT;
         }
 
         // Move aliens down at right edge.
-        bool right_edge_hit = m_aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY;
-        if (right_edge_hit && m_aliens_direction != MoveDirection::DOWN)
+        bool right_edge_hit = aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY;
+        if (right_edge_hit && aliens_direction != MoveDirection::DOWN)
         {
-            m_aliens_direction = MoveDirection::DOWN;
-            m_alien_tick_delay -= dt;
+            aliens_direction = MoveDirection::DOWN;
+            alien_tick_delay -= _dt;
         }
         else if (right_edge_hit)
         {
-            m_aliens_direction = MoveDirection::LEFT;
+            aliens_direction = MoveDirection::LEFT;
         }
 
-        moveAliens(dt);
+        moveAliens(_dt);
     }
 }
 
 
 
-void StateGameplay::moveAliens(float dt) const
+void StateGameplay::moveAliens(float _dt) const
 {
-    if (m_aliens_direction == MoveDirection::DOWN)
+    if (aliens_direction == MoveDirection::DOWN)
     {
-        m_aliens->moveBlock(0, m_alien_down_speed * dt);
+        aliens->moveBlock(0, alien_down_speed * _dt);
     }
 
-    if (m_aliens_direction == MoveDirection::LEFT)
+    if (aliens_direction == MoveDirection::LEFT)
     {
-        m_aliens->moveBlock(-m_alien_side_speed * dt, 0);
+        aliens->moveBlock(-alien_side_speed * _dt, 0);
     }
 
-    if (m_aliens_direction == MoveDirection::RIGHT)
+    if (aliens_direction == MoveDirection::RIGHT)
     {
-        m_aliens->moveBlock(m_alien_side_speed * dt, 0);
+        aliens->moveBlock(alien_side_speed * _dt, 0);
     }
 }
 

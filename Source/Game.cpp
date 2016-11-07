@@ -16,8 +16,8 @@
 *   @brief   Default Constructor.
 */
 InvadersGame::InvadersGame()
-    : m_callback_id(-1)
-    , m_exit(false)
+    : callback_id(-1)
+    , exit(false)
 {
 }
 
@@ -29,7 +29,7 @@ InvadersGame::InvadersGame()
 */
 InvadersGame::~InvadersGame()
 {
-	inputs->unregisterCallback(m_callback_id);
+	inputs->unregisterCallback(callback_id);
 }
 
 
@@ -50,15 +50,15 @@ bool InvadersGame::init()
 		return false;
 	}
 
-	m_renderer->setWindowTitle("Invaders - Exercise 1");
-    m_renderer->setClearColour(ASGE::COLOURS::BLACK);
+	renderer->setWindowTitle("Invaders - Exercise 1");
+    renderer->setClearColour(ASGE::COLOURS::BLACK);
 
 	// Input callback function.
-	m_callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
+	callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
 	
 	// Load fonts we need.
-	GameFont::fonts[0] = new GameFont(m_renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), "default", 42);
-    m_renderer->setFont(GameFont::fonts[0]->id);
+	GameFont::fonts[0] = new GameFont(renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), 42, "default");
+    renderer->setFont(GameFont::fonts[0]->id);
     	
 	if (GameFont::fonts[0]->id == -1)
 	{
@@ -66,12 +66,12 @@ bool InvadersGame::init()
 	}
 
     // Delay object_renderer creation until m_renderer is initialised.
-    m_object_renderer = std::make_unique<ObjectRenderer>(m_renderer);
+    object_renderer = std::make_unique<ObjectRenderer>(renderer);
 
-    registerState(GameState::START, std::make_unique<StateStart>(*m_object_renderer));
-    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*m_object_renderer));
-    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*m_object_renderer));
-    registerState(GameState::PAUSE, std::make_unique<StatePause>(*m_object_renderer));
+    registerState(GameState::START, std::make_unique<StateStart>(*object_renderer));
+    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
+    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
+    registerState(GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
 
     triggerState(GameState::GAMEPLAY);
 
@@ -91,8 +91,8 @@ bool InvadersGame::run()
 {
 	while (!shouldExit())
 	{
-        tick(m_timer.get_time_difference());
-        m_timer.reset();
+        tick(timer.get_time_difference());
+        timer.reset();
 
 		render();
 	}
@@ -109,7 +109,7 @@ bool InvadersGame::run()
 */
 bool InvadersGame::shouldExit() const
 {
-	return (m_renderer->exit() || m_exit);
+	return (renderer->exit() || exit);
 }
 
 
@@ -139,9 +139,9 @@ void InvadersGame::render()
 */
 void InvadersGame::drawFrame()
 {
-    if (m_object_renderer)
+    if (object_renderer)
     {
-        m_object_renderer->render();
+        object_renderer->render();
     }
 }
 
@@ -156,11 +156,11 @@ void InvadersGame::drawFrame()
 *   @param   action whether the key was released or pressed.
 *   @return  void
 */
-void InvadersGame::input(int key, int action) const
+void InvadersGame::input(int _key, int _action) const
 {
-    CommandState command_state = static_cast<CommandState>(action);
+    CommandState command_state = static_cast<CommandState>(_action);
 
-    switch (key)
+    switch (_key)
     {
         case ASGE::KEYS::KEY_A:
         {
@@ -207,7 +207,7 @@ void InvadersGame::input(int key, int action) const
     }
 
     // Input debug.
-    std::cout << "command: " << static_cast<int>(key) << " " << static_cast<int>(action) << std::endl;
+    std::cout << "command: " << static_cast<int>(_key) << " " << static_cast<int>(_action) << std::endl;
 }
 
 

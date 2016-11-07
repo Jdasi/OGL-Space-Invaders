@@ -2,26 +2,26 @@
 
 #include "ObjectRenderer.h"
 
-ObjectRenderer::ObjectRenderer(std::shared_ptr<ASGE::Renderer>& renderer)
-    : m_renderer(renderer)
+ObjectRenderer::ObjectRenderer(std::shared_ptr<ASGE::Renderer>& _renderer)
+    : renderer(_renderer)
 {
 }
 
 
 
-std::shared_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& texture, const Vector2 position)
+std::shared_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _texture, const Vector2 _pos)
 {
-    auto object = std::make_shared<SpriteObject>(m_renderer, texture, position);
-    m_render_objects.push_back(object);
+    auto object = std::make_shared<SpriteObject>(renderer, _texture, _pos);
+    render_objects.push_back(object);
     return object;
 }
 
 
 
-std::shared_ptr<TextObject> ObjectRenderer::createText(const std::string& s, const Vector2 position, const float size, const float colour[3])
+std::shared_ptr<TextObject> ObjectRenderer::createText(const std::string& _str, const Vector2 _pos, const float _size, const float _colour[3])
 {
-    auto object = std::make_shared<TextObject>(m_renderer, s, position, size, colour);
-    m_render_objects.push_back(object);
+    auto object = std::make_shared<TextObject>(renderer, _str, _pos, _size, _colour);
+    render_objects.push_back(object);
     return object;
 }
 
@@ -31,7 +31,7 @@ void ObjectRenderer::render()
 {
     garbageCollect();
 
-    for (auto& r : m_render_objects)
+    for (auto& r : render_objects)
     {
         if (auto renderable = r.lock())
         {
@@ -44,12 +44,12 @@ void ObjectRenderer::render()
 
 void ObjectRenderer::garbageCollect()
 {
-    m_render_objects.erase(
+    render_objects.erase(
         std::remove_if(
-            m_render_objects.begin(),
-            m_render_objects.end(),
+            render_objects.begin(),
+            render_objects.end(),
             [](const std::weak_ptr<Renderable>& renderable) { return renderable.expired(); }
-        ), m_render_objects.end());
+        ), render_objects.end());
 }
 
 

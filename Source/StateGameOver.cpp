@@ -1,7 +1,7 @@
 #include "StateGameOver.h"
 
-StateGameOver::StateGameOver(ObjectFactory& factory)
-    : State(factory)
+StateGameOver::StateGameOver(ObjectFactory& _factory)
+    : State(_factory)
 {
 }
 
@@ -25,13 +25,13 @@ void StateGameOver::onStateLeave()
 
 
 
-void StateGameOver::tick(float dt)
+void StateGameOver::tick(float _dt)
 {
 }
 
 
 
-void StateGameOver::onCommand(const Command c, const CommandState s)
+void StateGameOver::onCommand(const Command _command, const CommandState _command_state)
 {
 }
 

@@ -8,29 +8,29 @@
 class TextObject : public Renderable
 {
 public:
-    TextObject(const std::shared_ptr<ASGE::Renderer>& renderer);
-    TextObject(const std::shared_ptr<ASGE::Renderer>& renderer, const std::string& str, 
-               const Vector2 position, const float scale, const float colour[3]);
+    TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer);
+    TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer, const std::string& _str, 
+               const Vector2 _pos, const float _scale, const float _colour[3]);
     virtual ~TextObject() = default;
 
     std::string getString() const;
-    void setString(const std::string& str);
+    void setString(const std::string& _str);
 
     Vector2 getPosition() const override;
-    void setPosition(const Vector2 position) override;
-    void modifyPosition(int x, int y) override;
+    void setPosition(const Vector2 _pos) override;
+    void modifyPosition(int _x, int _y) override;
 
     float getScale() const;
-    void setScale(float f);
+    void setScale(float _scale);
 
     ASGE::Colour getColour() const;
-    void setColour(const float colour[3]);
+    void setColour(const float _colour[3]);
 
 private:
     void render() override;
 
-    Vector2 m_position;
-    std::string m_str;
-    float m_scale;
-    ASGE::Colour m_rgb;
+    Vector2 position;
+    std::string str;
+    float scale;
+    ASGE::Colour rgb;
 };

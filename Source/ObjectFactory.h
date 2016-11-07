@@ -11,9 +11,9 @@ public:
     virtual ~ObjectFactory() = default;
 
     virtual std::shared_ptr<SpriteObject> createSprite
-        (const std::string& texture, const Vector2 position) = 0;
+        (const std::string& _texture, const Vector2 _pos) = 0;
 
     virtual std::shared_ptr<TextObject> createText
-        (const std::string& s, const Vector2 position, const float size, 
-         const float colour[3]) = 0;
+        (const std::string& _str, const Vector2 _pos, const float _size, 
+         const float _colour[3]) = 0;
 };

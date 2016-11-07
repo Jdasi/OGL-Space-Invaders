@@ -9,9 +9,9 @@ class State
 friend class StateHandler;
 
 public:
-    explicit State(ObjectFactory& factory)
-        : m_factory(factory)
-        , m_handler(nullptr)
+    explicit State(ObjectFactory& _factory)
+        : factory(_factory)
+        , handler(nullptr)
     {
     }
 
@@ -23,25 +23,25 @@ public:
     virtual void onStateLeave() = 0;
     virtual void tick(float dt) = 0;
 
-    virtual void onCommand(const Command c, const CommandState s) = 0;
+    virtual void onCommand(const Command _command, const CommandState _command_state) = 0;
 
 protected:
     StateHandler* getHandler() const
     {
-        return m_handler;
+        return handler;
     }
 
     ObjectFactory& getObjectFactory() const
     {
-        return m_factory;
+        return factory;
     }
 
 private:
-    void setHandler(StateHandler* handler)
+    void setHandler(StateHandler* _handler)
     {
-        m_handler = handler;
+        handler = _handler;
     }
 
-    ObjectFactory& m_factory;
-    StateHandler* m_handler;
+    ObjectFactory& factory;
+    StateHandler* handler;
 };

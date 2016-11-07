@@ -9,15 +9,15 @@ class TextObject;
 class StateStart : public State
 {
 public:
-    explicit StateStart(ObjectFactory& factory);
+    explicit StateStart(ObjectFactory& _factory);
     virtual ~StateStart();
 
     void onStateEnter() override;
     void onStateLeave() override;
-    void tick(float dt) override;
-    void onCommand(const Command c, const CommandState s) override;
+    void tick(float _dt) override;
+    void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
-    std::shared_ptr<SpriteObject> m_logo;
-    std::shared_ptr<TextObject> m_text;
+    std::shared_ptr<SpriteObject> logo;
+    std::shared_ptr<TextObject> text;
 };

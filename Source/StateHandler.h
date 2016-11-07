@@ -16,55 +16,55 @@ class StateHandler
 {
 public:
     StateHandler()
-        : m_current_state(nullptr)
+        : current_state(nullptr)
     {
     }
 
     virtual ~StateHandler() = default;
 
-    void triggerState(const GameState state)
+    void triggerState(const GameState _state)
     {
-        auto result = m_state_map.find(state);
+        auto result = state_map.find(_state);
 
-        if (result == m_state_map.end())
+        if (result == state_map.end())
         {
             throw std::runtime_error("Unknown state.");
         }
 
-        if (m_current_state)
+        if (current_state)
         {
-            m_current_state->onStateLeave();
+            current_state->onStateLeave();
         }
 
-        m_current_state = result->second.get();
+        current_state = result->second.get();
 
-        m_current_state->onStateEnter();
+        current_state->onStateEnter();
     }
 
-    void tick(float dt) const
+    void tick(float _dt) const
     {
-        if (m_current_state)
+        if (current_state)
         {
-            m_current_state->tick(dt);
+            current_state->tick(_dt);
         }
     }
 
-    void onCommand(const Command c, const CommandState s) const
+    void onCommand(const Command _command, const CommandState _command_state) const
     {
-        if (m_current_state)
+        if (current_state)
         {
-            m_current_state->onCommand(c, s);
+            current_state->onCommand(_command, _command_state);
         }
     }
 
 protected:
-    void registerState(GameState game_state, std::unique_ptr<State> state)
+    void registerState(GameState _game_state, std::unique_ptr<State> _state)
     {
-        state->setHandler(this);
-        m_state_map[game_state] = std::move(state);
+        _state->setHandler(this);
+        state_map[_game_state] = std::move(_state);
     }
 
 private:
-    std::map<GameState, std::unique_ptr<State>> m_state_map;
-    State* m_current_state;
+    std::map<GameState, std::unique_ptr<State>> state_map;
+    State* current_state;
 };

@@ -1,57 +1,58 @@
+#include <algorithm>
+
 #include "ObjectBlock.h"
 #include "SpriteObject.h"
 #include "Constants.h"
 
-ObjectBlock::ObjectBlock(Vector2 start_pos, int max_columns, int padding_x, int padding_y)
-    : m_start_pos(start_pos)
-    , m_max_columns(max_columns - 1)
-    , m_padding_x(padding_x)
-    , m_padding_y(padding_y)
-    , m_edge_left(0)
-    , m_edge_right(0)
-    , m_edge_bottom(0)
+ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, int _padding_y, int _reserve_size)
+    : start_pos(_start_pos)
+    , max_columns(_max_columns - 1)
+    , padding_x(_padding_x)
+    , padding_y(_padding_y)
+    , edge_left(0)
+    , edge_right(0)
+    , edge_bottom(0)
 {
-    if (m_max_columns < 0)
+    if (max_columns < 0)
     {
         throw std::runtime_error("Error in ObjectBlock::ObjectBlock()");
     }
+
+    objects.reserve(_reserve_size);
 }
 
 
 
-std::shared_ptr<SpriteObject> ObjectBlock::getObject(unsigned int id) const
+std::shared_ptr<SpriteObject> ObjectBlock::getObject(unsigned int _id) const
 {
-    if (m_objects.empty() || id > m_objects.size())
+    if (objects.empty() || _id > objects.size())
     {
         throw std::runtime_error("Error in ObjectBlock::getObject()");
     }
 
-    return m_objects[id];
+    return objects[_id];
 }
 
 
 
-void ObjectBlock::addObject(const std::shared_ptr<SpriteObject> object)
+void ObjectBlock::addObject(const std::shared_ptr<SpriteObject>& _object)
 {
-    m_objects.push_back(object);
+    objects.push_back(_object);
 }
+
+
 
 void ObjectBlock::updateLayout()
 {
     int column = 0;
     int row = 0;
-    for (auto& obj : m_objects)
+    for (auto& obj : objects)
     {
-        if (!obj)
-        {
-            continue;
-        }
+        obj->setPosition(start_pos);
+        obj->modifyPosition((column * obj->getSize().x) + (column * padding_x), 
+                            (row * obj->getSize().y) + (row * padding_y));
 
-        obj->setPosition(m_start_pos);
-        obj->modifyPosition((column * obj->getSize().x) + (column * m_padding_x), 
-                            (row * obj->getSize().y) + (row * m_padding_y));
-
-        if (column == m_max_columns)
+        if (column == max_columns)
         {
             column = 0;
             ++row;
@@ -66,18 +67,14 @@ void ObjectBlock::updateLayout()
 }
 
 
-bool ObjectBlock::collisionTest(std::shared_ptr<SpriteObject> other)
-{
-    for (auto& obj : m_objects)
-    {
-        if (!obj)
-        {
-            continue;
-        }
 
-        if (other->collisionTest(obj))
+bool ObjectBlock::collisionTest(const SpriteObject& _other)
+{
+    for (auto iter = objects.begin(); iter != objects.end(); ++iter)
+    {
+        if ((*iter)->collisionTest(_other))
         {
-            obj = nullptr;
+            objects.erase(iter);
             updateEdges();
 
             return true;
@@ -89,76 +86,65 @@ bool ObjectBlock::collisionTest(std::shared_ptr<SpriteObject> other)
 
 
 
-void ObjectBlock::moveBlock(int x, int y)
+void ObjectBlock::moveBlock(int _x, int _y)
 {
-    for (auto& obj : m_objects)
+    for (auto& obj : objects)
     {
-        if (!obj)
-        {
-            continue;
-        }
-
-        obj->modifyPosition(x, y);
-        //obj->nextTexture();
+        obj->modifyPosition(_x, _y);
     }
 
-    m_edge_left += x;
-    m_edge_right += x;
-    m_edge_bottom += y;
+    edge_left += _x;
+    edge_right += _x;
+    edge_bottom += _y;
 }
 
 
 
 int ObjectBlock::getEdgeLeft() const
 {
-    return m_edge_left;
+    return edge_left;
 }
 
 
 
 int ObjectBlock::getEdgeRight() const
 {
-    return m_edge_right;
+    return edge_right;
 }
 
 
 
 int ObjectBlock::getEdgeBottom() const
 {
-    return m_edge_bottom;
+    return edge_bottom;
 }
 
 
 
 void ObjectBlock::updateEdges()
 {
-    m_edge_left = WINDOW_WIDTH;
-    m_edge_right = 0;
-    m_edge_bottom = 0;
+    edge_left = WINDOW_WIDTH;
+    edge_right = 0;
+    edge_bottom = 0;
 
-    for (auto& obj : m_objects)
+    for (auto& obj : objects)
     {
-        if (!obj)
-        {
-            continue;
-        }
-
         int obj_pos_left = obj->getPosition().x;
-        if (obj_pos_left < m_edge_left)
+        if (obj_pos_left < edge_left)
         {
-            m_edge_left = obj_pos_left;
+            edge_left = obj_pos_left;
         }
 
         int obj_pos_right = obj_pos_left + obj->getSize().x;
-        if (obj_pos_right > m_edge_right)
+        if (obj_pos_right > edge_right)
         {
-            m_edge_right = obj_pos_right;
+            edge_right = obj_pos_right;
         }
 
         int obj_pos_bottom = obj->getPosition().y + obj->getSize().y;
-        if (obj_pos_bottom > m_edge_bottom)
+        if (obj_pos_bottom > edge_bottom)
         {
-            m_edge_bottom = obj_pos_bottom;
+            edge_bottom = obj_pos_bottom;
         }
     }
 }

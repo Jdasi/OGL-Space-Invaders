@@ -10,10 +10,10 @@
 *   @param   sz is the size of the loaded font.
 *   @return  void
 */
-GameFont::GameFont(int idx, char* n, int sz)
-    : id(idx)
-    , size(sz)
-    , name(n)
+GameFont::GameFont(int _id, int _size, char* _name)
+    : id(_id)
+    , size(_size)
+    , name(_name)
 {
 }
 

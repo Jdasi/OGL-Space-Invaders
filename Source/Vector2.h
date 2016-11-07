@@ -8,9 +8,9 @@ public:
     {
     }
 
-    Vector2(unsigned int x, unsigned int y)
-        : x(x)
-        , y(y)
+    Vector2(unsigned int _x, unsigned int _y)
+        : x(_x)
+        , y(_y)
     {
     }
 

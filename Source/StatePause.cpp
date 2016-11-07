@@ -1,7 +1,7 @@
 #include "StatePause.h"
 
-StatePause::StatePause(ObjectFactory& factory)
-    : State(factory)
+StatePause::StatePause(ObjectFactory& _factory)
+    : State(_factory)
 {
 }
 
@@ -25,13 +25,13 @@ void StatePause::onStateLeave()
 
 
 
-void StatePause::tick(float dt)
+void StatePause::tick(float _dt)
 {
 }
 
 
 
-void StatePause::onCommand(const Command c, const CommandState s)
+void StatePause::onCommand(const Command _command, const CommandState _command_state)
 {
 }
 

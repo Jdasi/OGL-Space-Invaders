@@ -9,15 +9,15 @@ class ObjectBlock
 {
 public:
     ObjectBlock() = delete;
-    ObjectBlock(Vector2 start_pos, int max_columns, int padding_x, int padding_y);
+    ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, int _padding_y, int _reserve_size = 0);
     ~ObjectBlock() = default;
 
-    std::shared_ptr<SpriteObject> getObject(unsigned int id) const;
-    void addObject(const std::shared_ptr<SpriteObject> object);
+    std::shared_ptr<SpriteObject> getObject(unsigned int _id) const;
+    void addObject(const std::shared_ptr<SpriteObject>& _object);
     void updateLayout();
 
-    bool collisionTest(const std::shared_ptr<SpriteObject> other);
-    void moveBlock(int x, int y);
+    bool collisionTest(const SpriteObject& _other);
+    void moveBlock(int _x, int _y);
 
     int getEdgeLeft() const;
     int getEdgeRight() const;
@@ -26,14 +26,14 @@ public:
 private:
     void updateEdges();
 
-    std::vector<std::shared_ptr<SpriteObject>> m_objects;
+    std::vector<std::shared_ptr<SpriteObject>> objects;
 
-    Vector2 m_start_pos;
-    int m_max_columns;
-    int m_padding_x;
-    int m_padding_y;
+    Vector2 start_pos;
+    int max_columns;
+    int padding_x;
+    int padding_y;
 
-    int m_edge_left;
-    int m_edge_right;
-    int m_edge_bottom;
+    int edge_left;
+    int edge_right;
+    int edge_bottom;
 };
