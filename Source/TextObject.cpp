@@ -1,9 +1,9 @@
 #include "TextObject.h"
 #include "ObjectRenderer.h"
 
-TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer, ObjectRendererDeleter& _object_renderer_deleter,
-                       const std::string& _str, const Vector2 _pos, const float _scale,
-                       const float _colour[3])
+TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
+    ObjectRendererDeleter& _object_renderer_deleter, const std::string& _str, 
+    const Vector2 _pos, const float _scale, const float _colour[3])
     : Renderable(_renderer, _object_renderer_deleter)
     , position(_pos)
     , str(_str)

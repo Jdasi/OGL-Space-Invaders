@@ -19,7 +19,7 @@ public:
         (const std::string& _str, const Vector2 _pos, const float _size, 
          const float _colour[3]) override;
 
-    void DeleteRenderObject(Renderable* object) override;
+    void DeleteRenderObject(Renderable* _object) override;
 
     void render();
 

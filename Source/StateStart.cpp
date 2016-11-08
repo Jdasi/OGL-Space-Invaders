@@ -1,8 +1,5 @@
-#include <iostream>
-
 #include "StateStart.h"
 #include "Game.h"
-#include "Constants.h"
 
 StateStart::StateStart(ObjectFactory& _factory)
     : State(_factory)

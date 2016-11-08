@@ -61,7 +61,8 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 {
     if (_command == Command::MOVE_LEFT)
     {
-        if (_command_state == CommandState::PRESSED || _command_state == CommandState::REPEATING)
+        if (_command_state == CommandState::PRESSED || 
+            _command_state == CommandState::REPEATING)
         {
             player_direction = MoveDirection::LEFT;
         }
@@ -73,7 +74,8 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 
     if (_command == Command::MOVE_RIGHT)
     {
-        if (_command_state == CommandState::PRESSED || _command_state == CommandState::REPEATING)
+        if (_command_state == CommandState::PRESSED || 
+            _command_state == CommandState::REPEATING)
         {
             player_direction = MoveDirection::RIGHT;
         }
@@ -85,7 +87,8 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 
     if (_command == Command::SHOOT)
     {
-        if (_command_state == CommandState::PRESSED || _command_state == CommandState::REPEATING)
+        if (_command_state == CommandState::PRESSED || 
+            _command_state == CommandState::REPEATING)
         {
             player_shooting = true;
         }
@@ -101,14 +104,16 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
-    player = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\player.png", player_start);
+    player = getObjectFactory().createSprite
+        ("..\\..\\Resources\\Textures\\player.png", player_start);
 }
 
 
 
 void StateGameplay::initHUD()
 {
-    score_text = getObjectFactory().createText("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+    score_text = getObjectFactory().createText
+        ("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
 }
 
 
@@ -121,7 +126,8 @@ void StateGameplay::initAliens()
     int padding_x = 10;
     int padding_y = 20;
 
-    aliens = std::make_unique<ObjectBlock>(alien_start, max_columns, padding_x, padding_y, max_rows * max_columns);
+    aliens = std::make_unique<ObjectBlock>
+        (alien_start, max_columns, padding_x, padding_y, max_rows * max_columns);
 
     std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
     for (int row = 0; row < max_rows; ++row)
@@ -138,7 +144,8 @@ void StateGameplay::initAliens()
 
         for (int col = 0; col < max_columns; ++col)
         {
-            aliens->addObject(std::move(getObjectFactory().createSprite(alien_img, alien_start)));
+            aliens->addObject
+                (std::move(getObjectFactory().createSprite(alien_img, alien_start)));
         }
     }
 
@@ -151,8 +158,8 @@ void StateGameplay::playerShoot()
 {
     if (player_shooting && !player_projectile)
     {
-        player_projectile = getObjectFactory().createSprite(
-            "..\\..\\Resources\\Textures\\projectile.png",
+        player_projectile = getObjectFactory().createSprite
+            ("..\\..\\Resources\\Textures\\projectile.png",
             { player->getPosition().x + (player->getSize().x / 2),
             player->getPosition().y - 5 });
     }

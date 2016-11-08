@@ -29,7 +29,8 @@ public:
     virtual void render() = 0;
 
 protected:
-    Renderable(const std::shared_ptr<ASGE::Renderer>& _renderer, ObjectRendererDeleter& _object_renderer_deleter)
+    Renderable(const std::shared_ptr<ASGE::Renderer>& _renderer, 
+        ObjectRendererDeleter& _object_renderer_deleter)
         : renderer(_renderer)
         , object_renderer_deleter(_object_renderer_deleter)
         , visible(true)

@@ -18,7 +18,7 @@ public:
 
     float get_time_difference() const
     {
-        std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+        auto now = std::chrono::system_clock::now();
         std::chrono::duration<float> elapsed_seconds = now - start;
 
         return elapsed_seconds.count();

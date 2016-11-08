@@ -13,4 +13,3 @@ struct GameFont
 	char* name = "";        /**< The name of the font. */
 	static GameFont* fonts[5]; /**< Nasty way of globalising five loaded fonts. */
 };
-

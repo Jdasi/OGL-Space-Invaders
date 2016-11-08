@@ -8,8 +8,9 @@
 class SpriteObject : public Renderable
 {
 public:
-    SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer,  ObjectRendererDeleter& _object_renderer_deleter,
-                 const std::string& _texture, const Vector2 _pos);
+    SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
+        ObjectRendererDeleter& _object_renderer_deleter, const std::string& _texture, 
+        const Vector2 _pos);
     virtual ~SpriteObject() = default;
 
     Vector2 getPosition() const override;

@@ -1,6 +1,8 @@
 #include "SpriteObject.h"
 
-SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, ObjectRendererDeleter& _object_renderer_deleter, const std::string& _texture, const Vector2 _pos)
+SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
+    ObjectRendererDeleter& _object_renderer_deleter, const std::string& _texture, 
+    const Vector2 _pos)
     : Renderable(_renderer, _object_renderer_deleter)
 {
     sprite = renderer->createSprite();

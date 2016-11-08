@@ -9,7 +9,8 @@ class ObjectBlock
 {
 public:
     ObjectBlock() = delete;
-    ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, int _padding_y, int _reserve_size = 0);
+    ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, int _padding_y,
+        int _reserve_size = 0);
     ~ObjectBlock() = default;
 
     SpriteObject* getObject(unsigned int _id) const;

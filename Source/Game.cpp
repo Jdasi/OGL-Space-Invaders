@@ -31,7 +31,7 @@ InvadersGame::~InvadersGame()
 {
 	inputs->unregisterCallback(callback_id);
 
-    // The state handler must be cleaned up before object renderer, since it will remove
+    // The state handler must be cleaned up before object renderer, since it removes
     // objects from the object renderer while deleting sprites.
     state_handler = nullptr;
     object_renderer = nullptr;;
@@ -63,7 +63,8 @@ bool InvadersGame::init()
 	callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
 	
 	// Load fonts we need.
-	GameFont::fonts[0] = new GameFont(renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), 42, "default");
+	GameFont::fonts[0] = new GameFont
+        (renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), 42, "default");
     renderer->setFont(GameFont::fonts[0]->id);
     	
 	if (GameFont::fonts[0]->id == -1)
@@ -75,10 +76,14 @@ bool InvadersGame::init()
     object_renderer = std::make_unique<ObjectRenderer>(renderer);
     state_handler = std::make_unique<StateHandler>();
 
-    state_handler->registerState(GameState::START, std::make_unique<StateStart>(*object_renderer));
-    state_handler->registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
-    state_handler->registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
-    state_handler->registerState(GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
+    state_handler->registerState
+        (GameState::START, std::make_unique<StateStart>(*object_renderer));
+    state_handler->registerState
+        (GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
+    state_handler->registerState
+        (GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
+    state_handler->registerState
+        (GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
 
     state_handler->triggerState(GameState::GAMEPLAY);
 
@@ -214,7 +219,8 @@ void InvadersGame::input(int _key, int _action) const
     }
 
     // Input debug.
-    std::cout << "command: " << static_cast<int>(_key) << " " << static_cast<int>(_action) << std::endl;
+    std::cout << "command: " << static_cast<int>(_key) << " " 
+              << static_cast<int>(_action) << std::endl;
 }
 
 
