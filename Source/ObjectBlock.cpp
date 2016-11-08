@@ -23,21 +23,21 @@ ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, i
 
 
 
-std::shared_ptr<SpriteObject> ObjectBlock::getObject(unsigned int _id) const
+SpriteObject* ObjectBlock::getObject(unsigned int _id) const
 {
     if (objects.empty() || _id > objects.size())
     {
         throw std::runtime_error("Error in ObjectBlock::getObject()");
     }
 
-    return objects[_id];
+    return objects[_id].get();
 }
 
 
 
-void ObjectBlock::addObject(const std::shared_ptr<SpriteObject>& _object)
+void ObjectBlock::addObject(std::unique_ptr<SpriteObject> _object)
 {
-    objects.push_back(_object);
+    objects.emplace_back(std::move(_object));
 }
 
 

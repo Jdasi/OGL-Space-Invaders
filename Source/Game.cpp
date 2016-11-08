@@ -30,6 +30,12 @@ InvadersGame::InvadersGame()
 InvadersGame::~InvadersGame()
 {
 	inputs->unregisterCallback(callback_id);
+
+    // The state handler must be cleaned up before object renderer, since it will remove
+    // objects from the object renderer while deleting sprites.
+    state_handler = nullptr;
+    object_renderer = nullptr;;
+    
 }
 
 
@@ -67,13 +73,14 @@ bool InvadersGame::init()
 
     // Delay object_renderer creation until m_renderer is initialised.
     object_renderer = std::make_unique<ObjectRenderer>(renderer);
+    state_handler = std::make_unique<StateHandler>();
 
-    registerState(GameState::START, std::make_unique<StateStart>(*object_renderer));
-    registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
-    registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
-    registerState(GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
+    state_handler->registerState(GameState::START, std::make_unique<StateStart>(*object_renderer));
+    state_handler->registerState(GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
+    state_handler->registerState(GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
+    state_handler->registerState(GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
 
-    triggerState(GameState::GAMEPLAY);
+    state_handler->triggerState(GameState::GAMEPLAY);
 
 	return true;
 }
@@ -91,7 +98,7 @@ bool InvadersGame::run()
 {
 	while (!shouldExit())
 	{
-        tick(timer.get_time_difference());
+        state_handler->tick(timer.get_time_difference());
         timer.reset();
 
 		render();
@@ -164,44 +171,44 @@ void InvadersGame::input(int _key, int _action) const
     {
         case ASGE::KEYS::KEY_A:
         {
-            onCommand(Command::MOVE_LEFT, command_state);
+            state_handler->onCommand(Command::MOVE_LEFT, command_state);
             break;
         }
 
         case ASGE::KEYS::KEY_D:
         {
-            onCommand(Command::MOVE_RIGHT, command_state);
+            state_handler->onCommand(Command::MOVE_RIGHT, command_state);
             break;
         }
 
         case ASGE::KEYS::KEY_W:
         {
-            onCommand(Command::MOVE_UP, command_state);
+            state_handler->onCommand(Command::MOVE_UP, command_state);
             break;
         }
 
         case ASGE::KEYS::KEY_S:
         {
-            onCommand(Command::MOVE_DOWN, command_state);
+            state_handler->onCommand(Command::MOVE_DOWN, command_state);
             break;
         }
 
         case ASGE::KEYS::KEY_ENTER:
         case ASGE::KEYS::KEY_SPACE:
         {
-            onCommand(Command::SHOOT, command_state);
+            state_handler->onCommand(Command::SHOOT, command_state);
             break;
         }
 
         case ASGE::KEYS::KEY_P:
         {
-            onCommand(Command::PAUSE, command_state);
+            state_handler->onCommand(Command::PAUSE, command_state);
             break;
         }
 
         case ASGE::KEYS::KEY_ESCAPE:
         {
-            onCommand(Command::QUIT, command_state);
+            state_handler->onCommand(Command::QUIT, command_state);
             break;
         }
     }

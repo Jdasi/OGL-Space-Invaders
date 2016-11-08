@@ -38,10 +38,10 @@ private:
     void updateAliensDirection(float _dt);
     void moveAliens(float _dt) const;
 
-    std::shared_ptr<SpriteObject> player;
-    std::shared_ptr<SpriteObject> player_projectile;
+    std::unique_ptr<SpriteObject> player;
+    std::unique_ptr<SpriteObject> player_projectile;
 
-    std::shared_ptr<TextObject> score_text;
+    std::unique_ptr<TextObject> score_text;
     std::unique_ptr<ObjectBlock> aliens;
 
     int player_speed;

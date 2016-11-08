@@ -7,6 +7,10 @@
 
 StateGameplay::StateGameplay(ObjectFactory& _factory)
     : State(_factory)
+    , player(nullptr)
+    , player_projectile(nullptr)
+    , score_text(nullptr)
+    , aliens(nullptr)
     , player_speed(400)
     , player_projectile_speed(500)
     , player_shooting(false)
@@ -134,7 +138,7 @@ void StateGameplay::initAliens()
 
         for (int col = 0; col < max_columns; ++col)
         {
-            aliens->addObject(getObjectFactory().createSprite(alien_img, alien_start));
+            aliens->addObject(std::move(getObjectFactory().createSprite(alien_img, alien_start)));
         }
     }
 

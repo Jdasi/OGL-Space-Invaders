@@ -9,47 +9,51 @@ ObjectRenderer::ObjectRenderer(std::shared_ptr<ASGE::Renderer>& _renderer)
 
 
 
-std::shared_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _texture, const Vector2 _pos)
+ObjectRenderer::~ObjectRenderer()
 {
-    auto object = std::make_shared<SpriteObject>(renderer, _texture, _pos);
-    render_objects.push_back(object);
-    return object;
 }
 
 
 
-std::shared_ptr<TextObject> ObjectRenderer::createText(const std::string& _str, const Vector2 _pos, const float _size, const float _colour[3])
+std::unique_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _texture, const Vector2 _pos)
 {
-    auto object = std::make_shared<TextObject>(renderer, _str, _pos, _size, _colour);
-    render_objects.push_back(object);
-    return object;
+    auto object = std::make_unique<SpriteObject>(renderer, *this, _texture, _pos);
+    render_objects.push_back(object.get());
+    return std::move(object);
 }
 
 
 
-void ObjectRenderer::render()
+std::unique_ptr<TextObject> ObjectRenderer::createText(const std::string& _str, const Vector2 _pos, const float _size, const float _colour[3])
 {
-    garbageCollect();
+    auto object = std::make_unique<TextObject>(renderer, *this, _str, _pos, _size, _colour);
+    render_objects.push_back(object.get());
+    return std::move(object);
+}
 
-    for (auto& r : render_objects)
+
+
+void ObjectRenderer::DeleteRenderObject(Renderable* object)
+{
+    for (auto iter = render_objects.begin(); iter != render_objects.end(); ++iter)
     {
-        if (auto renderable = r.lock())
+        if (object == (*iter))
         {
-            renderable->render();
+            render_objects.erase(iter);
+            break;
         }
     }
 }
 
 
 
-void ObjectRenderer::garbageCollect()
+void ObjectRenderer::render()
 {
-    render_objects.erase(
-        std::remove_if(
-            render_objects.begin(),
-            render_objects.end(),
-            [](const std::weak_ptr<Renderable>& renderable) { return renderable.expired(); }
-        ), render_objects.end());
+    for (auto& r : render_objects)
+    {
+        if (r)        
+        {
+            r->render();
+        }
+    }
 }
-
-

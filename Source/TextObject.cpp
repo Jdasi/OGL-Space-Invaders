@@ -1,19 +1,10 @@
 #include "TextObject.h"
+#include "ObjectRenderer.h"
 
-TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer)
-    : Renderable(_renderer)
-    , position()
-    , scale(1.0f)
-    , rgb(ASGE::COLOURS::WHITE)
-{
-}
-
-
-
-TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer,
+TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer, ObjectRendererDeleter& _object_renderer_deleter,
                        const std::string& _str, const Vector2 _pos, const float _scale,
                        const float _colour[3])
-    : Renderable(_renderer)
+    : Renderable(_renderer, _object_renderer_deleter)
     , position(_pos)
     , str(_str)
     , scale(_scale)

@@ -10,10 +10,10 @@ public:
     ObjectFactory() = default;
     virtual ~ObjectFactory() = default;
 
-    virtual std::shared_ptr<SpriteObject> createSprite
+    virtual std::unique_ptr<SpriteObject> createSprite
         (const std::string& _texture, const Vector2 _pos) = 0;
 
-    virtual std::shared_ptr<TextObject> createText
+    virtual std::unique_ptr<TextObject> createText
         (const std::string& _str, const Vector2 _pos, const float _size, 
          const float _colour[3]) = 0;
 };

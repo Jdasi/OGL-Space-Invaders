@@ -57,7 +57,6 @@ public:
         }
     }
 
-protected:
     void registerState(GameState _game_state, std::unique_ptr<State> _state)
     {
         _state->setHandler(this);

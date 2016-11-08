@@ -2,11 +2,15 @@
 #include <Engine/Renderer.h>
 
 #include "Vector2.h"
+#include "ObjectRendererDeleter.h"
 
 class Renderable
 {
 public:
-    virtual ~Renderable() = default;
+    virtual ~Renderable()
+    {
+        object_renderer_deleter.DeleteRenderObject(this);
+    }
 
     bool isVisible() const
     {
@@ -25,12 +29,14 @@ public:
     virtual void render() = 0;
 
 protected:
-    Renderable(const std::shared_ptr<ASGE::Renderer>& _renderer)
+    Renderable(const std::shared_ptr<ASGE::Renderer>& _renderer, ObjectRendererDeleter& _object_renderer_deleter)
         : renderer(_renderer)
+        , object_renderer_deleter(_object_renderer_deleter)
         , visible(true)
     {
     }
 
     std::shared_ptr<ASGE::Renderer> renderer;
+    ObjectRendererDeleter& object_renderer_deleter;
     bool visible;
 };

@@ -8,7 +8,7 @@
 /**
 *  An OpenGL Game based on ASGE.
 */
-class InvadersGame : public ASGE::OGLGame, public StateHandler
+class InvadersGame : public ASGE::OGLGame
 {
 public:
     InvadersGame();
@@ -29,5 +29,6 @@ private:
 	int  callback_id;           /**< The callback ID assigned by the game engine. */
 	bool exit;                  /**< If true the game loop will exit. */
     std::unique_ptr<ObjectRenderer> object_renderer;
+    std::unique_ptr<StateHandler> state_handler;
     Timer timer;
 };

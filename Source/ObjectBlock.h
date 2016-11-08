@@ -12,8 +12,8 @@ public:
     ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, int _padding_y, int _reserve_size = 0);
     ~ObjectBlock() = default;
 
-    std::shared_ptr<SpriteObject> getObject(unsigned int _id) const;
-    void addObject(const std::shared_ptr<SpriteObject>& _object);
+    SpriteObject* getObject(unsigned int _id) const;
+    void addObject(std::unique_ptr<SpriteObject> _object);
     void updateLayout();
 
     bool collisionTest(const SpriteObject& _other);
@@ -26,7 +26,7 @@ public:
 private:
     void updateEdges();
 
-    std::vector<std::shared_ptr<SpriteObject>> objects;
+    std::vector<std::unique_ptr<SpriteObject>> objects;
 
     Vector2 start_pos;
     int max_columns;
