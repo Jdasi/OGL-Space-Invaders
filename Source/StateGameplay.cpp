@@ -177,7 +177,15 @@ void StateGameplay::updatePlayerProjectile(float _dt)
         if (aliens->collisionTest(*player_projectile))
         {
             player_projectile = nullptr;
-            alien_tick_delay -= _dt;
+
+            if (aliens->remainingObjects() == 0)
+            {
+                resetRound();
+            }
+            else
+            {
+                decreaseAlienTickDelay(_dt);
+            }
         }
 
         // Destroy projectile if it reaches the top of the screen.
@@ -226,7 +234,6 @@ void StateGameplay::updateAliensDirection(float _dt)
         if (left_edge_hit && aliens_direction != MoveDirection::DOWN)
         {
             aliens_direction = MoveDirection::DOWN;
-            alien_tick_delay -= _dt;
         }
         else if (left_edge_hit)
         {
@@ -238,11 +245,15 @@ void StateGameplay::updateAliensDirection(float _dt)
         if (right_edge_hit && aliens_direction != MoveDirection::DOWN)
         {
             aliens_direction = MoveDirection::DOWN;
-            alien_tick_delay -= _dt;
         }
         else if (right_edge_hit)
         {
             aliens_direction = MoveDirection::LEFT;
+        }
+
+        if (aliens_direction == MoveDirection::DOWN)
+        {
+            decreaseAlienTickDelay(_dt);
         }
 
         moveAliens(_dt);
@@ -267,6 +278,24 @@ void StateGameplay::moveAliens(float _dt) const
     {
         aliens->moveBlock(alien_side_speed * _dt, 0);
     }
+}
+
+
+
+void StateGameplay::decreaseAlienTickDelay(float _dt)
+{
+    if (alien_tick_delay >= 0.1f)
+    {
+        alien_tick_delay -= _dt / 2;
+    }
+}
+
+
+
+void StateGameplay::resetRound()
+{
+    initAliens();
+    alien_tick_delay += 0.35f;
 }
 
 

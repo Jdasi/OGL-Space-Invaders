@@ -1,9 +1,9 @@
 #include "SpriteObject.h"
 
 SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
-    ObjectRendererDeleter& _object_renderer_deleter, const std::string& _texture, 
+    std::function<void(Renderable*)> _delete_render_object, const std::string& _texture,
     const Vector2 _pos)
-    : Renderable(_renderer, _object_renderer_deleter)
+    : Renderable(_renderer, _delete_render_object)
 {
     sprite = renderer->createSprite();
     sprite->position[0] = _pos.x;

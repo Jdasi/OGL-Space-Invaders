@@ -122,6 +122,13 @@ int ObjectBlock::getEdgeBottom() const
 
 
 
+int ObjectBlock::remainingObjects() const
+{
+    return objects.size();
+}
+
+
+
 void ObjectBlock::updateEdges()
 {
     edge_left = WINDOW_WIDTH;

@@ -1,15 +1,16 @@
 #pragma once
+#include <functional>
+
 #include <Engine/Renderer.h>
 
 #include "Vector2.h"
-#include "ObjectRendererDeleter.h"
 
 class Renderable
 {
 public:
     virtual ~Renderable()
     {
-        object_renderer_deleter.DeleteRenderObject(this);
+        delete_render_object(this);
     }
 
     bool isVisible() const
@@ -30,14 +31,14 @@ public:
 
 protected:
     Renderable(const std::shared_ptr<ASGE::Renderer>& _renderer, 
-        ObjectRendererDeleter& _object_renderer_deleter)
+        std::function<void(Renderable*)> _delete_render_object)
         : renderer(_renderer)
-        , object_renderer_deleter(_object_renderer_deleter)
+        , delete_render_object(_delete_render_object)
         , visible(true)
     {
     }
 
     std::shared_ptr<ASGE::Renderer> renderer;
-    ObjectRendererDeleter& object_renderer_deleter;
+    std::function<void(Renderable*)> delete_render_object;
     bool visible;
 };

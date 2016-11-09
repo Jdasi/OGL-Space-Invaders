@@ -38,6 +38,9 @@ private:
     void updateAliensDirection(float _dt);
     void moveAliens(float _dt) const;
 
+    void decreaseAlienTickDelay(float _dt);
+    void resetRound();
+
     std::unique_ptr<SpriteObject> player;
     std::unique_ptr<SpriteObject> player_projectile;
 

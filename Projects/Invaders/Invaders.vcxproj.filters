@@ -110,8 +110,5 @@
     <ClInclude Include="..\..\Source\ObjectBlock.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ObjectRendererDeleter.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,9 +4,8 @@
 #include <Engine/Renderer.h>
 
 #include "ObjectFactory.h"
-#include "ObjectRendererDeleter.h"
 
-class ObjectRenderer : public ObjectFactory, public ObjectRendererDeleter
+class ObjectRenderer : public ObjectFactory
 {
 public:
     explicit ObjectRenderer(std::shared_ptr<ASGE::Renderer>& _renderer);
@@ -19,9 +18,9 @@ public:
         (const std::string& _str, const Vector2 _pos, const float _size, 
          const float _colour[3]) override;
 
-    void DeleteRenderObject(Renderable* _object) override;
+    void deleteRenderObject(Renderable* _object);
 
-    void render();
+    void render() const;
 
 private:
     std::shared_ptr<ASGE::Renderer> renderer;

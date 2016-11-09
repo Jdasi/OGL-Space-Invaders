@@ -24,6 +24,8 @@ public:
     int getEdgeRight() const;
     int getEdgeBottom() const;
 
+    int remainingObjects() const;
+
 private:
     void updateEdges();
 
