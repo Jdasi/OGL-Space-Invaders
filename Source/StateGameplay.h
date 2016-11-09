@@ -32,14 +32,14 @@ private:
     void initHUD();
     void initAliens();
 
-    void playerShoot();
+    void handlePlayerShot();
     void updatePlayerProjectile(float _dt);
-    void movePlayer(float _dt) const;
+    void handlePlayerMovement(float _dt) const;
 
-    void updateAliensDirection(float _dt);
-    void moveAliens(float _dt) const;
+    void handleAlienMovement(float _dt);
+    void moveAliens(float _dt);
 
-    void alienShoot(float _dt);
+    void handleAlienShot(float _dt);
     void updateAlienProjectiles(float _dt);
 
     void decreaseAlienTickDelay(float _dt);

@@ -20,8 +20,8 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , alien_move_timer(0)
     , alien_shoot_delay(5.0f)
     , alien_shoot_timer(0)
-    , alien_side_speed(400)
-    , alien_down_speed(800)
+    , alien_side_speed(5)
+    , alien_down_speed(10)
     , alien_projectile_speed(500)
     , aliens_direction(MoveDirection::RIGHT)
     , round_over(false)
@@ -54,11 +54,12 @@ void StateGameplay::onStateLeave()
 
 void StateGameplay::tick(float _dt)
 {
-    playerShoot();
+    handlePlayerMovement(_dt);
+    handlePlayerShot();
     updatePlayerProjectile(_dt);
-    movePlayer(_dt);
-    updateAliensDirection(_dt);
-    alienShoot(_dt);
+
+    handleAlienMovement(_dt);
+    handleAlienShot(_dt);
     updateAlienProjectiles(_dt);
 
     if (round_over)
@@ -166,7 +167,7 @@ void StateGameplay::initAliens()
 
 
 
-void StateGameplay::playerShoot()
+void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
     {
@@ -211,7 +212,7 @@ void StateGameplay::updatePlayerProjectile(float _dt)
 
 
 
-void StateGameplay::movePlayer(float _dt) const
+void StateGameplay::handlePlayerMovement(float _dt) const
 {
     if (player_direction == MoveDirection::LEFT)
     {
@@ -232,7 +233,7 @@ void StateGameplay::movePlayer(float _dt) const
 
 
 
-void StateGameplay::updateAliensDirection(float _dt)
+void StateGameplay::handleAlienMovement(float _dt)
 {
     if (alien_move_timer < alien_move_delay)
     {
@@ -240,62 +241,65 @@ void StateGameplay::updateAliensDirection(float _dt)
     }
     else
     {
-        alien_move_timer = 0;
+        MoveDirection aliens_prev_direction = aliens_direction;
 
-        // Move aliens down at left edge.
         bool left_edge_hit = aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY;
-        if (left_edge_hit && aliens_direction != MoveDirection::DOWN)
-        {
-            aliens_direction = MoveDirection::DOWN;
-        }
-        else if (left_edge_hit)
-        {
-            aliens_direction = MoveDirection::RIGHT;
-        }
-
-        // Move aliens down at right edge.
         bool right_edge_hit = aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY;
-        if (right_edge_hit && aliens_direction != MoveDirection::DOWN)
+        
+        if (left_edge_hit || right_edge_hit)
         {
             aliens_direction = MoveDirection::DOWN;
         }
-        else if (right_edge_hit)
-        {
-            aliens_direction = MoveDirection::LEFT;
-        }
 
-        if (aliens_direction == MoveDirection::DOWN)
+        if (aliens_prev_direction == MoveDirection::DOWN)
         {
-            decreaseAlienTickDelay(_dt);
+            if (left_edge_hit)
+            {
+                aliens_direction = MoveDirection::RIGHT;
+            }
+            else if (right_edge_hit)
+            {
+                aliens_direction = MoveDirection::LEFT;
+            }
         }
 
         moveAliens(_dt);
+        alien_move_timer = 0;
     }
 }
 
 
 
-void StateGameplay::moveAliens(float _dt) const
+void StateGameplay::moveAliens(float _dt)
 {
-    if (aliens_direction == MoveDirection::DOWN)
+    switch (aliens_direction)
     {
-        aliens->moveBlock(0, alien_down_speed * _dt);
-    }
+        case MoveDirection::DOWN:
+        {
+            aliens->moveBlock(0, alien_down_speed);
+            decreaseAlienTickDelay(_dt);
+            break;
+        }
 
-    if (aliens_direction == MoveDirection::LEFT)
-    {
-        aliens->moveBlock(-alien_side_speed * _dt, 0);
-    }
+        case MoveDirection::LEFT:
+        {
+            aliens->moveBlock(-alien_side_speed, 0);
+            break;
+        }
 
-    if (aliens_direction == MoveDirection::RIGHT)
-    {
-        aliens->moveBlock(alien_side_speed * _dt, 0);
+        case MoveDirection::RIGHT:
+        {
+            aliens->moveBlock(alien_side_speed, 0);
+            break;
+        }
+
+        default: {}
     }
 }
 
 
 
-void StateGameplay::alienShoot(float _dt)
+void StateGameplay::handleAlienShot(float _dt)
 {
     if (alien_shoot_timer < alien_shoot_delay)
     {
