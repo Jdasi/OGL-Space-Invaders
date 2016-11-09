@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "StateGameplay.h"
 #include "Game.h"
@@ -15,12 +16,16 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , player_projectile_speed(500)
     , player_shooting(false)
     , player_direction(MoveDirection::NONE)
-    , alien_tick_delay(1.0f)
-    , alien_timer(0)
+    , alien_move_delay(1.0f)
+    , alien_move_timer(0)
+    , alien_shoot_delay(5.0f)
+    , alien_shoot_timer(0)
     , alien_side_speed(400)
     , alien_down_speed(800)
-    , alien_projectile_speed(600)
+    , alien_projectile_speed(500)
     , aliens_direction(MoveDirection::RIGHT)
+    , round_over(false)
+    , round_won(false)
 {
 }
 
@@ -53,6 +58,13 @@ void StateGameplay::tick(float _dt)
     updatePlayerProjectile(_dt);
     movePlayer(_dt);
     updateAliensDirection(_dt);
+    alienShoot(_dt);
+    updateAlienProjectiles(_dt);
+
+    if (round_over)
+    {
+        resetRound();
+    }
 }
 
 
@@ -103,7 +115,7 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 
 void StateGameplay::initPlayer()
 {
-    Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
+    Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 50 };
     player = getObjectFactory().createSprite
         ("..\\..\\Resources\\Textures\\player.png", player_start);
 }
@@ -180,7 +192,8 @@ void StateGameplay::updatePlayerProjectile(float _dt)
 
             if (aliens->remainingObjects() == 0)
             {
-                resetRound();
+                round_over = true;
+                round_won = true;
             }
             else
             {
@@ -221,13 +234,13 @@ void StateGameplay::movePlayer(float _dt) const
 
 void StateGameplay::updateAliensDirection(float _dt)
 {
-    if (alien_timer < alien_tick_delay)
+    if (alien_move_timer < alien_move_delay)
     {
-        alien_timer += _dt;
+        alien_move_timer += _dt;
     }
     else
     {
-        alien_timer = 0;
+        alien_move_timer = 0;
 
         // Move aliens down at left edge.
         bool left_edge_hit = aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY;
@@ -282,11 +295,66 @@ void StateGameplay::moveAliens(float _dt) const
 
 
 
+void StateGameplay::alienShoot(float _dt)
+{
+    if (alien_shoot_timer < alien_shoot_delay)
+    {
+        alien_shoot_timer += _dt;
+    }
+    else
+    {
+        // Find the position of an alien that can shoot.
+        SpriteObject* alien = aliens->getRandomObject();
+        Vector2 shoot_pos = { alien->getPosition().x + (alien->getSize().x / 2),
+            alien->getPosition().y + alien->getSize().y };
+
+        alien_projectiles.push_back(std::move(getObjectFactory().createSprite
+            ("..\\..\\Resources\\Textures\\projectile.png", shoot_pos)));
+        
+        // Reset timer and generate new shoot delay.
+        alien_shoot_delay = _dt + static_cast<float>(rand()) / 
+                            static_cast<float>(RAND_MAX / 5);
+        alien_shoot_timer = 0;
+    }
+}
+
+
+
+void StateGameplay::updateAlienProjectiles(float _dt)
+{
+    for (auto& projectile : alien_projectiles)
+    {
+        projectile->modifyPosition(0, alien_projectile_speed * _dt);
+
+        if (projectile->collisionTest(*player))
+        {
+            projectile = nullptr;
+            round_over = true;
+            round_won = false;
+        }
+
+        // Destroy projectile if it reaches the bottom of the screen.
+        if (projectile && projectile->getPosition().y >= WINDOW_BOTTOM_BOUNDARY)
+        {
+            projectile = nullptr;
+        }
+    }
+
+    // Clean up any projectiles that don't point to data.
+    alien_projectiles.erase(std::remove_if(
+        alien_projectiles.begin(), 
+        alien_projectiles.end(), 
+        [](std::unique_ptr<SpriteObject>& spr) { return spr == nullptr; } ), 
+        alien_projectiles.end());
+}
+
+
+
 void StateGameplay::decreaseAlienTickDelay(float _dt)
 {
-    if (alien_tick_delay >= 0.1f)
+    if (alien_move_delay >= 0.1f)
     {
-        alien_tick_delay -= _dt / 2;
+        alien_move_delay -= _dt / 2;
     }
 }
 
@@ -294,8 +362,18 @@ void StateGameplay::decreaseAlienTickDelay(float _dt)
 
 void StateGameplay::resetRound()
 {
-    initAliens();
-    alien_tick_delay += 0.35f;
+    if (round_won)
+    {
+        initAliens();
+        alien_move_delay += 0.35f;
+    }
+    else
+    {
+        initPlayer();
+    }
+
+    round_over = false;
+    round_won = false;
 }
 
 

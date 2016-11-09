@@ -10,3 +10,4 @@ static constexpr int WINDOW_HEIGHT = 600;  /**< Defines the height of the game w
 static constexpr int WINDOW_MARGIN = 20;
 static constexpr int WINDOW_LEFT_BOUNDARY = WINDOW_MARGIN;
 static constexpr int WINDOW_RIGHT_BOUNDARY = WINDOW_WIDTH - WINDOW_LEFT_BOUNDARY;
+static constexpr int WINDOW_BOTTOM_BOUNDARY = WINDOW_HEIGHT - WINDOW_MARGIN;

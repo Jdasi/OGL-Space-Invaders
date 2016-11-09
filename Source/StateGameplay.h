@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 
 #include "State.h"
 
@@ -38,6 +39,9 @@ private:
     void updateAliensDirection(float _dt);
     void moveAliens(float _dt) const;
 
+    void alienShoot(float _dt);
+    void updateAlienProjectiles(float _dt);
+
     void decreaseAlienTickDelay(float _dt);
     void resetRound();
 
@@ -47,15 +51,22 @@ private:
     std::unique_ptr<TextObject> score_text;
     std::unique_ptr<ObjectBlock> aliens;
 
+    std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
+
     int player_speed;
     int player_projectile_speed;
     bool player_shooting;
     MoveDirection player_direction;
 
-    float alien_tick_delay;
-    float alien_timer;
+    float alien_move_delay;
+    float alien_move_timer;
+    float alien_shoot_delay;
+    float alien_shoot_timer;
     int alien_side_speed;
     int alien_down_speed;
     int alien_projectile_speed;
     MoveDirection aliens_direction;
+
+    bool round_over;
+    bool round_won;
 };

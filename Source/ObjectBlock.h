@@ -14,6 +14,7 @@ public:
     ~ObjectBlock() = default;
 
     SpriteObject* getObject(unsigned int _id) const;
+    SpriteObject* getRandomObject() const;
     void addObject(std::unique_ptr<SpriteObject> _object);
     void updateLayout();
 

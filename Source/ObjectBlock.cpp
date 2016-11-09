@@ -36,6 +36,13 @@ SpriteObject* ObjectBlock::getObject(unsigned int _id) const
 
 
 
+SpriteObject* ObjectBlock::getRandomObject() const
+{
+    return objects[rand() % objects.size()].get();
+}
+
+
+
 void ObjectBlock::addObject(std::unique_ptr<SpriteObject> _object)
 {
     objects.emplace_back(std::move(_object));
