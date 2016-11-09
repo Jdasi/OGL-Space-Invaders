@@ -39,6 +39,7 @@ private:
     void handleAlienMovement(float _dt);
     void moveAliens(float _dt);
 
+    void generateAlienShootDelay();
     void handleAlienShot(float _dt);
     void updateAlienProjectiles(float _dt);
 
