@@ -16,9 +16,9 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , player_projectile_speed(500)
     , player_shooting(false)
     , player_direction(MoveDirection::NONE)
-    , alien_move_delay(1.0f)
+    , alien_move_delay(1)
     , alien_move_timer(0)
-    , alien_shoot_delay(5.0f)
+    , alien_shoot_delay(5)
     , alien_shoot_timer(0)
     , alien_side_speed(5)
     , alien_down_speed(10)
@@ -308,16 +308,15 @@ void StateGameplay::handleAlienShot(float _dt)
     else
     {
         // Find the position of an alien that can shoot.
-        SpriteObject* alien = aliens->getRandomObject();
-        Vector2 shoot_pos = { alien->getPosition().x + (alien->getSize().x / 2),
-            alien->getPosition().y + alien->getSize().y };
+        Vector2 shoot_pos = aliens->getRandomShootingPosition();
 
         alien_projectiles.push_back(std::move(getObjectFactory().createSprite
             ("..\\..\\Resources\\Textures\\projectile.png", shoot_pos)));
         
-        // Reset timer and generate new shoot delay.
+        // Reset timer and generate new shoot delay based on remaining enemies.
         alien_shoot_delay = _dt + static_cast<float>(rand()) / 
-                            static_cast<float>(RAND_MAX / 5);
+            static_cast<float>(RAND_MAX / 5);
+
         alien_shoot_timer = 0;
     }
 }

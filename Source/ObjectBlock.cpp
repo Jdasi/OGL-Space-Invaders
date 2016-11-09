@@ -19,7 +19,8 @@ ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x,
         throw std::runtime_error("Error in ObjectBlock::ObjectBlock()");
     }
 
-    objects.reserve(_reserve_size);
+    objects.reserve(_max_columns);
+    shooting_positions.reserve(_max_columns);
 }
 
 
@@ -36,9 +37,9 @@ SpriteObject* ObjectBlock::getObject(unsigned int _id) const
 
 
 
-SpriteObject* ObjectBlock::getRandomObject() const
+Vector2 ObjectBlock::getRandomShootingPosition() const
 {
-    return objects[rand() % objects.size()].get();
+    return shooting_positions[rand() % shooting_positions.size()];
 }
 
 
@@ -72,6 +73,7 @@ void ObjectBlock::updateLayout()
     }
 
     updateEdges();
+    updateShootingPoints();
 }
 
 
@@ -84,6 +86,7 @@ bool ObjectBlock::collisionTest(const SpriteObject& _other)
         {
             objects.erase(iter);
             updateEdges();
+            updateShootingPoints();
 
             return true;
         }
@@ -99,6 +102,12 @@ void ObjectBlock::moveBlock(int _x, int _y)
     for (auto& obj : objects)
     {
         obj->modifyPosition(_x, _y);
+    }
+
+    for (auto& position : shooting_positions)
+    {
+        position.x += _x;
+        position.y += _y;
     }
 
     edge_left += _x;
@@ -160,6 +169,46 @@ void ObjectBlock::updateEdges()
         if (obj_pos_bottom > edge_bottom)
         {
             edge_bottom = obj_pos_bottom;
+        }
+    }
+}
+
+
+
+void ObjectBlock::updateShootingPoints()
+{
+    shooting_positions.clear();
+
+    // Find all the rows.
+    for (auto& obj : objects)
+    {
+        Vector2 obj_pos = { obj->getPosition().x + (obj->getSize().x / 2), 0 };
+
+        if (std::find(shooting_positions.begin(), shooting_positions.end(), obj_pos) 
+            == shooting_positions.end())
+        {
+            shooting_positions.push_back(obj_pos);
+        }
+        else
+        {
+            // We have all the rows.
+            break;
+        }
+    }
+
+    // Find the lowest position in each column, offset y position by object size.
+    for (auto& obj : objects)
+    {
+        Vector2 obj_size = obj->getSize();
+        Vector2 obj_pos = obj->getPosition();
+
+        for (auto& shooting_pos : shooting_positions)
+        {
+            if (obj_pos.x + (obj_size.x / 2) == shooting_pos.x && 
+                obj_pos.y > shooting_pos.y)
+            {
+                shooting_pos.y = obj_pos.y + obj_size.y;
+            }
         }
     }
 }

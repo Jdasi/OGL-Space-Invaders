@@ -14,6 +14,16 @@ public:
     {
     }
 
+    bool operator==(const Vector2& v) const
+    {
+        if (v.x == x && v.y == y)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     unsigned int x;
     unsigned int y;
 };

@@ -14,7 +14,7 @@ public:
     ~ObjectBlock() = default;
 
     SpriteObject* getObject(unsigned int _id) const;
-    SpriteObject* getRandomObject() const;
+    Vector2 getRandomShootingPosition() const;
     void addObject(std::unique_ptr<SpriteObject> _object);
     void updateLayout();
 
@@ -29,8 +29,7 @@ public:
 
 private:
     void updateEdges();
-
-    std::vector<std::unique_ptr<SpriteObject>> objects;
+    void updateShootingPoints();
 
     Vector2 start_pos;
     int max_columns;
@@ -40,4 +39,7 @@ private:
     int edge_left;
     int edge_right;
     int edge_bottom;
+
+    std::vector<std::unique_ptr<SpriteObject>> objects;
+    std::vector<Vector2> shooting_positions;
 };
