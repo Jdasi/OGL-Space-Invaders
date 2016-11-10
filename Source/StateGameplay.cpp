@@ -22,7 +22,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , alien_shoot_delay(0)
     , alien_shoot_timer(0)
     , alien_side_speed(5)
-    , alien_down_speed(20)
+    , alien_down_speed(10)
     , alien_projectile_speed(500)
     , aliens_direction(MoveDirection::RIGHT)
     , round_over(false)
@@ -44,8 +44,6 @@ void StateGameplay::onStateEnter()
     initPlayer();
     initHUD();
     initAliens();
-
-    generateAlienShootDelay();
 }
 
 
@@ -150,7 +148,9 @@ void StateGameplay::initHUD()
 
 void StateGameplay::initAliens()
 {
-    Vector2 alien_start{ 100, 100.0f + (current_round * 20) };
+    alien_projectiles.clear();
+
+    Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
     int max_rows = 5;
     int max_columns = 11;
     int padding_x = 10;
@@ -179,7 +179,7 @@ void StateGameplay::initAliens()
         }
     }
 
-    alien_projectiles.clear();
+    generateAlienShootDelay();
 }
 
 
@@ -319,8 +319,11 @@ void StateGameplay::moveAliens(float _dt)
 
 void StateGameplay::generateAlienShootDelay()
 {
-    alien_shoot_delay = 0.1f + static_cast<float>(rand()) /
-        static_cast<float>(RAND_MAX / 4);
+    float temp_delay = 0.25f / alien_move_delay;
+    float delay_modifier = temp_delay > 4.0f ? 4.0f : temp_delay;
+
+    alien_shoot_delay = (static_cast<float>(rand()) /
+        static_cast<float>(RAND_MAX / (5.0f - delay_modifier))) + 0.1f;
 }
 
 
@@ -393,14 +396,15 @@ void StateGameplay::resetRound()
         ++player_lives;
         ++current_round;
 
-        initAliens();
-        alien_move_delay += 0.35f;
+        alien_move_delay += 0.3f;
         aliens_direction = MoveDirection::RIGHT;
 
         Vector2 lives_pos{ WINDOW_WIDTH - 200, 5 };
         std::string player_img = "..\\..\\Resources\\Textures\\player.png";
         lives_block->addObject(std::move
             (getObjectFactory().createSprite(player_img, lives_pos)));
+
+        initAliens();
     }
     else
     {
