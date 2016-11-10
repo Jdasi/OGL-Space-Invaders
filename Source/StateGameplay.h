@@ -72,4 +72,5 @@ private:
 
     bool round_over;
     bool round_won;
+    int current_round;
 };

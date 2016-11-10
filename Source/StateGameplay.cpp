@@ -27,6 +27,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , aliens_direction(MoveDirection::RIGHT)
     , round_over(false)
     , round_won(false)
+    , current_round(0)
 {
 }
 
@@ -149,7 +150,7 @@ void StateGameplay::initHUD()
 
 void StateGameplay::initAliens()
 {
-    Vector2 alien_start{ 100, 100 };
+    Vector2 alien_start{ 100, 100.0f + (current_round * 20) };
     int max_rows = 5;
     int max_columns = 11;
     int padding_x = 10;
@@ -177,6 +178,8 @@ void StateGameplay::initAliens()
                 (std::move(getObjectFactory().createSprite(alien_img, alien_start)));
         }
     }
+
+    alien_projectiles.clear();
 }
 
 
@@ -185,7 +188,10 @@ void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
     {
-        player_projectile = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\projectile.png", { player->getPosition().x + (player->getSize().x / 2), player->getPosition().y - 5 });
+        player_projectile = getObjectFactory().createSprite
+            ("..\\..\\Resources\\Textures\\projectile.png", 
+            { player->getPosition().x + (player->getSize().x / 2), 
+            player->getPosition().y - 5 });
     }
 }
 
@@ -253,24 +259,25 @@ void StateGameplay::handleAlienMovement(float _dt)
     else
     {
         MoveDirection aliens_prev_direction = aliens_direction;
-
-        bool left_edge_hit = aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY;
-        bool right_edge_hit = aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY;
         
-        if (left_edge_hit || right_edge_hit)
+        if (aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY || 
+            aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY)
         {
             aliens_direction = MoveDirection::DOWN;
         }
 
+        bool right_edge_closer = aliens->getEdgeLeft() - WINDOW_LEFT_BOUNDARY > 
+            -(aliens->getEdgeRight() - WINDOW_RIGHT_BOUNDARY);
+
         if (aliens_prev_direction == MoveDirection::DOWN)
         {
-            if (left_edge_hit)
-            {
-                aliens_direction = MoveDirection::RIGHT;
-            }
-            else if (right_edge_hit)
+            if (right_edge_closer)
             {
                 aliens_direction = MoveDirection::LEFT;
+            }
+            else if (!right_edge_closer)
+            {
+                aliens_direction = MoveDirection::RIGHT;
             }
         }
 
@@ -333,7 +340,6 @@ void StateGameplay::handleAlienShot(float _dt)
             ("..\\..\\Resources\\Textures\\projectile.png", shoot_pos)));
         
         generateAlienShootDelay();
-
         alien_shoot_timer = 0;
     }
 }
@@ -384,6 +390,9 @@ void StateGameplay::resetRound()
 {
     if (round_won)
     {
+        ++player_lives;
+        ++current_round;
+
         initAliens();
         alien_move_delay += 0.35f;
         aliens_direction = MoveDirection::RIGHT;
@@ -392,7 +401,6 @@ void StateGameplay::resetRound()
         std::string player_img = "..\\..\\Resources\\Textures\\player.png";
         lives_block->addObject(std::move
             (getObjectFactory().createSprite(player_img, lives_pos)));
-        ++player_lives;
     }
     else
     {
@@ -400,7 +408,7 @@ void StateGameplay::resetRound()
         
         if (--player_lives <= 0)
         {
-            //getHandler()->triggerState(GameState::GAMEOVER);
+            // Switch to GameOver state.
         }
         else
         {
