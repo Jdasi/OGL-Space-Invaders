@@ -101,7 +101,7 @@ void ObjectBlock::moveBlock(const Vector2 _pos)
 {
     for (auto& obj : objects)
     {
-        obj->modifyPosition({ _pos.x, _pos.y });
+        obj->modifyPosition(_pos);
     }
 
     for (auto& position : shooting_positions)

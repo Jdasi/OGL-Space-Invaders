@@ -38,7 +38,6 @@ private:
 
     void handleAlienMovement(float _dt);
     void moveAliens(float _dt);
-
     void generateAlienShootDelay();
     void handleAlienShot(float _dt);
     void updateAlienProjectiles(float _dt);
@@ -54,8 +53,8 @@ private:
 
     std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
 
-    int player_speed;
-    int player_projectile_speed;
+    float player_speed;
+    float player_projectile_speed;
     bool player_shooting;
     MoveDirection player_direction;
 
@@ -63,9 +62,9 @@ private:
     float alien_move_timer;
     float alien_shoot_delay;
     float alien_shoot_timer;
-    int alien_side_speed;
-    int alien_down_speed;
-    int alien_projectile_speed;
+    float alien_side_speed;
+    float alien_down_speed;
+    float alien_projectile_speed;
     MoveDirection aliens_direction;
 
     bool round_over;
