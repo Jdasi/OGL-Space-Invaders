@@ -16,7 +16,6 @@ public:
     SpriteObject* getObject(unsigned int _id) const;
     Vector2 getRandomShootingPosition() const;
     void addObject(std::unique_ptr<SpriteObject> _object);
-    void updateLayout();
 
     bool collisionTest(const SpriteObject& _other);
     void moveBlock(const Vector2 _pos);
@@ -26,8 +25,10 @@ public:
     float getEdgeBottom() const;
 
     int remainingObjects() const;
+    void popBack();
 
 private:
+    void updateLayout();
     void updateEdges();
     void updateShootingPoints();
 

@@ -19,7 +19,7 @@ ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x,
         throw std::runtime_error("Error in ObjectBlock::ObjectBlock()");
     }
 
-    objects.reserve(_max_columns);
+    objects.reserve(_reserve_size);
     shooting_positions.reserve(_max_columns);
 }
 
@@ -47,6 +47,8 @@ Vector2 ObjectBlock::getRandomShootingPosition() const
 void ObjectBlock::addObject(std::unique_ptr<SpriteObject> _object)
 {
     objects.emplace_back(std::move(_object));
+
+    updateLayout();
 }
 
 
@@ -141,6 +143,13 @@ float ObjectBlock::getEdgeBottom() const
 int ObjectBlock::remainingObjects() const
 {
     return objects.size();
+}
+
+
+
+void ObjectBlock::popBack()
+{
+    objects.pop_back();
 }
 
 

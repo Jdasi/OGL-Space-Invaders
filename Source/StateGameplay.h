@@ -49,10 +49,13 @@ private:
     std::unique_ptr<SpriteObject> player_projectile;
 
     std::unique_ptr<TextObject> score_text;
-    std::unique_ptr<ObjectBlock> aliens;
+    std::unique_ptr<TextObject> lives_text;
+    std::unique_ptr<ObjectBlock> lives_block;
 
+    std::unique_ptr<ObjectBlock> aliens;
     std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
 
+    int player_lives;
     float player_speed;
     float player_projectile_speed;
     bool player_shooting;

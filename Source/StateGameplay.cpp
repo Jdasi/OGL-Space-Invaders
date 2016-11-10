@@ -12,6 +12,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , player_projectile(nullptr)
     , score_text(nullptr)
     , aliens(nullptr)
+    , player_lives(3)
     , player_speed(400)
     , player_projectile_speed(500)
     , player_shooting(false)
@@ -129,6 +130,19 @@ void StateGameplay::initHUD()
 {
     score_text = getObjectFactory().createText
         ("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+
+    lives_text = getObjectFactory().createText
+        ("Lives:", { 700, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+
+    Vector2 lives_pos{ WINDOW_WIDTH - 200, 5 };
+    lives_block = std::make_unique<ObjectBlock>(lives_pos, 4, 10, 20, 4 * 2);
+
+    std::string player_img = "..\\..\\Resources\\Textures\\player.png";
+    for (int i = 0; i < player_lives; ++i)
+    {
+        lives_block->addObject(std::move
+            (getObjectFactory().createSprite(player_img, lives_pos)));
+    }
 }
 
 
@@ -163,8 +177,6 @@ void StateGameplay::initAliens()
                 (std::move(getObjectFactory().createSprite(alien_img, alien_start)));
         }
     }
-
-    aliens->updateLayout();
 }
 
 
@@ -375,10 +387,25 @@ void StateGameplay::resetRound()
         initAliens();
         alien_move_delay += 0.35f;
         aliens_direction = MoveDirection::RIGHT;
+
+        Vector2 lives_pos{ WINDOW_WIDTH - 200, 5 };
+        std::string player_img = "..\\..\\Resources\\Textures\\player.png";
+        lives_block->addObject(std::move
+            (getObjectFactory().createSprite(player_img, lives_pos)));
+        ++player_lives;
     }
     else
     {
         initPlayer();
+        
+        if (--player_lives <= 0)
+        {
+            //getHandler()->triggerState(GameState::GAMEOVER);
+        }
+        else
+        {
+            lives_block->popBack();
+        }
     }
 
     round_over = false;
