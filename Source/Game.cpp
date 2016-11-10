@@ -34,8 +34,7 @@ InvadersGame::~InvadersGame()
     // The state handler must be cleaned up before object renderer, since it removes
     // objects from the object renderer while deleting sprites.
     state_handler = nullptr;
-    object_renderer = nullptr;;
-    
+    object_renderer = nullptr;
 }
 
 

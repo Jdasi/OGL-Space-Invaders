@@ -3,8 +3,7 @@
 TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
     std::function<void(Renderable*)> _delete_render_object, const std::string& _str,
     const Vector2 _pos, const float _scale, const float _colour[3])
-    : Renderable(_renderer, _delete_render_object)
-    , position(_pos)
+    : Renderable(_renderer, _delete_render_object, _pos)
     , str(_str)
     , scale(_scale)
     , rgb(_colour)
@@ -23,28 +22,6 @@ std::string TextObject::getString() const
 void TextObject::setString(const std::string& _str)
 {
     str = _str;
-}
-
-
-
-Vector2 TextObject::getPosition() const
-{
-    return position;
-}
-
-
-
-void TextObject::setPosition(const Vector2 _pos)
-{
-    position = _pos;
-}
-
-
-
-void TextObject::modifyPosition(int _x, int _y)
-{
-    position.x += _x;
-    position.y += _y;
 }
 
 
@@ -81,7 +58,10 @@ void TextObject::render()
 {
     if (visible)
     {
-        renderer->renderText(str.c_str(), position.x, position.y, scale, rgb);
+        int pos_x = static_cast<int>(position.x);
+        int pos_y = static_cast<int>(position.y);
+
+        renderer->renderText(str.c_str(), pos_x, pos_y, scale, rgb);
     }
 }
 

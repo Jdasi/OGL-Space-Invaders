@@ -8,7 +8,7 @@ public:
     {
     }
 
-    Vector2(unsigned int _x, unsigned int _y)
+    Vector2(float _x, float _y)
         : x(_x)
         , y(_y)
     {
@@ -24,6 +24,6 @@ public:
         return false;
     }
 
-    unsigned int x;
-    unsigned int y;
+    float x;
+    float y;
 };

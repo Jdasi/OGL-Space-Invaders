@@ -58,8 +58,8 @@ void ObjectBlock::updateLayout()
     for (auto& obj : objects)
     {
         obj->setPosition(start_pos);
-        obj->modifyPosition((column * obj->getSize().x) + (column * padding_x), 
-                            (row * obj->getSize().y) + (row * padding_y));
+        obj->modifyPosition({ (column * obj->getSize().x) + (column * padding_x), 
+                            (row * obj->getSize().y) + (row * padding_y) });
 
         if (column == max_columns)
         {
@@ -97,41 +97,41 @@ bool ObjectBlock::collisionTest(const SpriteObject& _other)
 
 
 
-void ObjectBlock::moveBlock(int _x, int _y)
+void ObjectBlock::moveBlock(const Vector2 _pos)
 {
     for (auto& obj : objects)
     {
-        obj->modifyPosition(_x, _y);
+        obj->modifyPosition({ _pos.x, _pos.y });
     }
 
     for (auto& position : shooting_positions)
     {
-        position.x += _x;
-        position.y += _y;
+        position.x += _pos.x;
+        position.y += _pos.y;
     }
 
-    edge_left += _x;
-    edge_right += _x;
-    edge_bottom += _y;
+    edge_left += _pos.x;
+    edge_right += _pos.x;
+    edge_bottom += _pos.y;
 }
 
 
 
-int ObjectBlock::getEdgeLeft() const
+float ObjectBlock::getEdgeLeft() const
 {
     return edge_left;
 }
 
 
 
-int ObjectBlock::getEdgeRight() const
+float ObjectBlock::getEdgeRight() const
 {
     return edge_right;
 }
 
 
 
-int ObjectBlock::getEdgeBottom() const
+float ObjectBlock::getEdgeBottom() const
 {
     return edge_bottom;
 }
@@ -153,19 +153,19 @@ void ObjectBlock::updateEdges()
 
     for (auto& obj : objects)
     {
-        int obj_pos_left = obj->getPosition().x;
+        float obj_pos_left = obj->getPosition().x;
         if (obj_pos_left < edge_left)
         {
             edge_left = obj_pos_left;
         }
 
-        int obj_pos_right = obj_pos_left + obj->getSize().x;
+        float obj_pos_right = obj_pos_left + obj->getSize().x;
         if (obj_pos_right > edge_right)
         {
             edge_right = obj_pos_right;
         }
 
-        int obj_pos_bottom = obj->getPosition().y + obj->getSize().y;
+        float obj_pos_bottom = obj->getPosition().y + obj->getSize().y;
         if (obj_pos_bottom > edge_bottom)
         {
             edge_bottom = obj_pos_bottom;

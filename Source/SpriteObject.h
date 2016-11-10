@@ -14,10 +14,6 @@ public:
         const std::string& _texture, const Vector2 _pos);
     virtual ~SpriteObject() = default;
 
-    Vector2 getPosition() const override;
-    void setPosition(const Vector2 _pos) override;
-    void modifyPosition(int _x, int _y) override;
-
     Vector2 getSize() const;
     void setSize(const Vector2 _size);
 

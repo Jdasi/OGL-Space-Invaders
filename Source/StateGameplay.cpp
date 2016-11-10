@@ -18,10 +18,10 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , player_direction(MoveDirection::NONE)
     , alien_move_delay(1)
     , alien_move_timer(0)
-    , alien_shoot_delay(5)
+    , alien_shoot_delay(0)
     , alien_shoot_timer(0)
-    , alien_side_speed(5)
-    , alien_down_speed(20)
+    , alien_side_speed(400)
+    , alien_down_speed(800)
     , alien_projectile_speed(500)
     , aliens_direction(MoveDirection::RIGHT)
     , round_over(false)
@@ -173,10 +173,7 @@ void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
     {
-        player_projectile = getObjectFactory().createSprite
-            ("..\\..\\Resources\\Textures\\projectile.png",
-            { player->getPosition().x + (player->getSize().x / 2),
-            player->getPosition().y - 5 });
+        player_projectile = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\projectile.png", { player->getPosition().x + (player->getSize().x / 2), player->getPosition().y - 5 });
     }
 }
 
@@ -186,7 +183,7 @@ void StateGameplay::updatePlayerProjectile(float _dt)
 {
     if (player_projectile)
     {
-        player_projectile->modifyPosition(0, -player_projectile_speed * _dt);
+        player_projectile->modifyPosition({ 0, -player_projectile_speed * _dt });
 
         // Destroy projectile if it collides with something.
         if (aliens->collisionTest(*player_projectile))
@@ -220,7 +217,7 @@ void StateGameplay::handlePlayerMovement(float _dt) const
     {
         if (player->getPosition().x > WINDOW_LEFT_BOUNDARY)
         {
-            player->modifyPosition(-player_speed * _dt, 0);
+            player->modifyPosition({ -player_speed * _dt, 0 });
         }
     }
 
@@ -228,7 +225,7 @@ void StateGameplay::handlePlayerMovement(float _dt) const
     {
         if (player->getPosition().x + player->getSize().x < WINDOW_RIGHT_BOUNDARY)
         {
-            player->modifyPosition(player_speed * _dt, 0);
+            player->modifyPosition({ player_speed * _dt, 0 });
         }
     }
 }
@@ -278,20 +275,20 @@ void StateGameplay::moveAliens(float _dt)
     {
         case MoveDirection::DOWN:
         {
-            aliens->moveBlock(0, alien_down_speed);
+            aliens->moveBlock({ 0, alien_down_speed * _dt });
             decreaseAlienTickDelay(_dt);
             break;
         }
 
         case MoveDirection::LEFT:
         {
-            aliens->moveBlock(-alien_side_speed, 0);
+            aliens->moveBlock({ -alien_side_speed * _dt, 0 });
             break;
         }
 
         case MoveDirection::RIGHT:
         {
-            aliens->moveBlock(alien_side_speed, 0);
+            aliens->moveBlock({ alien_side_speed * _dt, 0 });
             break;
         }
 
@@ -335,7 +332,7 @@ void StateGameplay::updateAlienProjectiles(float _dt)
 {
     for (auto& projectile : alien_projectiles)
     {
-        projectile->modifyPosition(0, alien_projectile_speed * _dt);
+        projectile->modifyPosition({ 0, alien_projectile_speed * _dt });
 
         if (projectile->collisionTest(*player))
         {

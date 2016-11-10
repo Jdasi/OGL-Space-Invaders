@@ -16,10 +16,6 @@ public:
     std::string getString() const;
     void setString(const std::string& _str);
 
-    Vector2 getPosition() const override;
-    void setPosition(const Vector2 _pos) override;
-    void modifyPosition(int _x, int _y) override;
-
     float getScale() const;
     void setScale(float _scale);
 
@@ -29,7 +25,6 @@ public:
 private:
     void render() override;
 
-    Vector2 position;
     std::string str;
     float scale;
     ASGE::Colour rgb;

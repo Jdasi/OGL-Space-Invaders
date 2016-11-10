@@ -19,11 +19,11 @@ public:
     void updateLayout();
 
     bool collisionTest(const SpriteObject& _other);
-    void moveBlock(int _x, int _y);
+    void moveBlock(const Vector2 _pos);
 
-    int getEdgeLeft() const;
-    int getEdgeRight() const;
-    int getEdgeBottom() const;
+    float getEdgeLeft() const;
+    float getEdgeRight() const;
+    float getEdgeBottom() const;
 
     int remainingObjects() const;
 
@@ -36,9 +36,9 @@ private:
     int padding_x;
     int padding_y;
 
-    int edge_left;
-    int edge_right;
-    int edge_bottom;
+    float edge_left;
+    float edge_right;
+    float edge_bottom;
 
     std::vector<std::unique_ptr<SpriteObject>> objects;
     std::vector<Vector2> shooting_positions;
