@@ -20,8 +20,8 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , alien_move_timer(0)
     , alien_shoot_delay(0)
     , alien_shoot_timer(0)
-    , alien_side_speed(5000)
-    , alien_down_speed(10000)
+    , alien_side_speed(5)
+    , alien_down_speed(20)
     , alien_projectile_speed(500)
     , aliens_direction(MoveDirection::RIGHT)
     , round_over(false)
@@ -275,20 +275,20 @@ void StateGameplay::moveAliens(float _dt)
     {
         case MoveDirection::DOWN:
         {
-            aliens->moveBlock({ 0, alien_down_speed * _dt });
+            aliens->moveBlock({ 0, alien_down_speed });
             decreaseAlienTickDelay(_dt);
             break;
         }
 
         case MoveDirection::LEFT:
         {
-            aliens->moveBlock({ -alien_side_speed * _dt, 0 });
+            aliens->moveBlock({ -alien_side_speed, 0 });
             break;
         }
 
         case MoveDirection::RIGHT:
         {
-            aliens->moveBlock({ alien_side_speed * _dt, 0 });
+            aliens->moveBlock({ alien_side_speed, 0 });
             break;
         }
 
