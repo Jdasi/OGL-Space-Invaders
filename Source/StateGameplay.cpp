@@ -252,11 +252,9 @@ void StateGameplay::handlePlayerMovement(float _dt) const
 
 void StateGameplay::handleAlienMovement(float _dt)
 {
-    if (alien_move_timer < alien_move_delay)
-    {
-        alien_move_timer += _dt;
-    }
-    else
+    alien_move_timer += _dt;
+
+    if (alien_move_timer >= alien_move_delay)
     {
         MoveDirection aliens_prev_direction = aliens_direction;
         
@@ -330,11 +328,9 @@ void StateGameplay::generateAlienShootDelay()
 
 void StateGameplay::handleAlienShot(float _dt)
 {
-    if (alien_shoot_timer < alien_shoot_delay)
-    {
-        alien_shoot_timer += _dt;
-    }
-    else
+    alien_shoot_timer += _dt;
+
+    if (alien_shoot_timer >= alien_shoot_delay)
     {
         // Find the position of an alien that can shoot.
         Vector2 shoot_pos = aliens->getRandomShootingPosition();
@@ -383,7 +379,7 @@ void StateGameplay::decreaseAlienTickDelay(float _dt)
 {
     if (alien_move_delay >= 0.1f)
     {
-        alien_move_delay -= _dt / 2;
+        alien_move_delay -= 0.007f;
     }
 }
 
