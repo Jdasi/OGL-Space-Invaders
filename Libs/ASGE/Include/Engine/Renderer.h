@@ -5,8 +5,11 @@
 #include "Engine/Texture.h"
 
 namespace ASGE {
-	class Sprite;
-	class Input;
+
+	class  Sprite;
+	class  Input;
+	struct Font;
+
 	class Renderer
 	{
 
@@ -34,13 +37,15 @@ namespace ASGE {
 		virtual void renderText(const char* str, int x, int y, float scale, const Colour&) = 0;
 		virtual void renderText(const char* str, int x, int y, const Colour&) = 0;
 		virtual void renderText(const char* str, int x, int y) = 0;
-		virtual void renderSprite(Texture&, unsigned int pos[2], unsigned int size[2], float rotation, float scale, const Colour&) const = 0;
+		virtual void renderSprite(Texture&, int pos[2], unsigned int size[2], float rotation, float scale, const Colour&) const = 0;
 		virtual void setDefaultTextColour(const Colour&) = 0;
 		virtual void setFont(int id) = 0;
 		virtual void setWindowTitle(const char* str) = 0;
 		virtual void swapBuffers() = 0;
+		virtual const Font& getActiveFont() const = 0;
 		virtual std::unique_ptr<Sprite> createSprite() = 0;
 		virtual std::shared_ptr<Input>  inputPtr() = 0;
+		
 
 	protected:
 		RenderLib lib = RenderLib::INVALID;

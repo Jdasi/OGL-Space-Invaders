@@ -6,8 +6,8 @@ SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer,
     : Renderable(_renderer, _delete_render_object, _pos)
 {
     sprite = renderer->createSprite();
-    sprite->position[0] = static_cast<unsigned int>(_pos.x);
-    sprite->position[1] = static_cast<unsigned int>(_pos.y);
+    sprite->position[0] = static_cast<int>(_pos.x);
+    sprite->position[1] = static_cast<int>(_pos.y);
 
     if (!sprite->loadTexture(_texture.c_str()))
     {
@@ -26,8 +26,8 @@ Vector2 SpriteObject::getSize() const
 
 void SpriteObject::setSize(const Vector2 _size)
 {
-    sprite->size[0] = static_cast<unsigned int>(_size.x);
-    sprite->size[1] = static_cast<unsigned int>(_size.y);
+    sprite->size[0] = static_cast<int>(_size.x);
+    sprite->size[1] = static_cast<int>(_size.y);
 }
 
 
@@ -65,8 +65,8 @@ void SpriteObject::render()
 {
     if (visible)
     {
-        sprite->position[0] = static_cast<unsigned int>(position.x);
-        sprite->position[1] = static_cast<unsigned int>(position.y);
+        sprite->position[0] = static_cast<int>(position.x);
+        sprite->position[1] = static_cast<int>(position.y);
 
         sprite->render(renderer);
     }
