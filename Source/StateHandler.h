@@ -1,6 +1,8 @@
 #pragma once
 #include <map>
 #include <memory>
+#include <queue>
+#include <mutex>
 
 #include "State.h"
 
@@ -22,27 +24,23 @@ public:
 
     virtual ~StateHandler() = default;
 
-    void triggerState(const GameState _state)
+    void pushState(const GameState _state)
     {
-        auto result = state_map.find(_state);
-
-        if (result == state_map.end())
-        {
-            throw std::runtime_error("Unknown state.");
-        }
-
-        if (current_state)
-        {
-            current_state->onStateLeave();
-        }
-
-        current_state = result->second.get();
-
-        current_state->onStateEnter();
+        std::lock_guard<std::mutex> guard(states_to_trigger_mutex);
+        states_to_trigger.push(_state);
     }
 
-    void tick(float _dt) const
+    void tick(float _dt)
     {
+        {
+            std::lock_guard<std::mutex> guard(states_to_trigger_mutex);
+            if (!states_to_trigger.empty())
+            {
+                triggerState(states_to_trigger.back());
+                states_to_trigger.pop();
+            }
+        }
+
         if (current_state)
         {
             current_state->tick(_dt);
@@ -63,7 +61,38 @@ public:
         state_map[_game_state] = std::move(_state);
     }
 
+    bool shouldExit() const
+    {
+        if (current_state)
+        {
+            return current_state->shouldExit();
+        }
+
+        return false;
+    }
+
 private:
+    void triggerState(const GameState _state)
+    {
+        auto result = state_map.find(_state);
+
+        if (result == state_map.end())
+        {
+            throw std::runtime_error("Unknown state.");
+        }
+
+        if (current_state)
+        {
+            current_state->onStateLeave();
+        }
+
+        current_state = result->second.get();
+
+        current_state->onStateEnter();
+    }
+
     std::map<GameState, std::unique_ptr<State>> state_map;
     State* current_state;
+    std::queue<GameState> states_to_trigger;
+    std::mutex states_to_trigger_mutex;
 };

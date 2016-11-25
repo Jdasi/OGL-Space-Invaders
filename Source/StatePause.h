@@ -1,5 +1,11 @@
 #pragma once
+#include <memory>
+
 #include "State.h"
+
+class SpriteObject;
+class TextObject;
+class ObjectBlock;
 
 class StatePause : public State
 {
@@ -13,5 +19,5 @@ public:
     void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
-
+    std::unique_ptr<TextObject> pause_title;
 };

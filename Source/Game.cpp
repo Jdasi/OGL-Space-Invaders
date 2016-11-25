@@ -4,7 +4,6 @@
 #include <Engine/Keys.h>
 
 #include "Game.h"
-#include "Constants.h"
 #include "GameFont.h"
 
 #include "StateStart.h"
@@ -17,7 +16,6 @@
 */
 InvadersGame::InvadersGame()
     : callback_id(-1)
-    , exit(false)
 {
 }
 
@@ -71,7 +69,7 @@ bool InvadersGame::init()
 		return false;
 	}
 
-    // Delay object_renderer creation until m_renderer is initialised.
+    // Delay object_renderer creation until renderer is initialised.
     object_renderer = std::make_unique<ObjectRenderer>(renderer);
     state_handler = std::make_unique<StateHandler>();
 
@@ -84,7 +82,7 @@ bool InvadersGame::init()
     state_handler->registerState
         (GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
 
-    state_handler->triggerState(GameState::GAMEPLAY);
+    state_handler->pushState(GameState::START);
 
 	return true;
 }
@@ -120,7 +118,7 @@ bool InvadersGame::run()
 */
 bool InvadersGame::shouldExit() const
 {
-	return (renderer->exit() || exit);
+	return (renderer->exit() || state_handler->shouldExit());
 }
 
 

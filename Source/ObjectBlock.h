@@ -3,6 +3,7 @@
 
 #include "Vector2.h"
 
+class AnimatedSprite;
 class SpriteObject;
 
 class ObjectBlock
@@ -13,9 +14,10 @@ public:
         int _reserve_size = 0);
     ~ObjectBlock() = default;
 
-    SpriteObject* getObject(unsigned int _id) const;
+    AnimatedSprite* getObject(unsigned int _id) const;
     Vector2 getRandomShootingPosition() const;
     void addObject(std::unique_ptr<SpriteObject> _object);
+    void addObject(std::unique_ptr<AnimatedSprite> _object);
 
     bool collisionTest(const SpriteObject& _other);
     void moveBlock(const Vector2 _pos);
@@ -26,6 +28,11 @@ public:
 
     int remainingObjects() const;
     void popBack();
+
+    void setVisible(bool b) const;
+    void clear();
+
+    void setNextAnimationFrame() const;
 
 private:
     void updateLayout();
@@ -41,6 +48,6 @@ private:
     float edge_right;
     float edge_bottom;
 
-    std::vector<std::unique_ptr<SpriteObject>> objects;
+    std::vector<std::unique_ptr<AnimatedSprite>> objects;
     std::vector<Vector2> shooting_positions;
 };

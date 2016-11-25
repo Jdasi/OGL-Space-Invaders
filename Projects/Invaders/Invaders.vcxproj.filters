@@ -34,6 +34,9 @@
     <ClCompile Include="..\..\Source\ObjectBlock.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\AnimatedSprite.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -108,6 +111,9 @@
       <Filter>Headers\Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\ObjectBlock.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\AnimatedSprite.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,8 +2,9 @@
 
 SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
     std::function<void(Renderable*)> _delete_render_object, const std::string& _texture,
-    const Vector2 _pos)
+    const Vector2 _pos, std::function<void()> _on_delete_event)
     : Renderable(_renderer, _delete_render_object, _pos)
+    , on_delete_event(_on_delete_event)
 {
     sprite = renderer->createSprite();
     sprite->position[0] = static_cast<int>(_pos.x);
@@ -13,6 +14,13 @@ SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer,
     {
         throw std::runtime_error("Error loading sprite texture.");
     }
+}
+
+
+
+SpriteObject::~SpriteObject()
+{
+    on_delete_event();
 }
 
 

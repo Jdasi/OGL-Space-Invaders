@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "ObjectBlock.h"
-#include "SpriteObject.h"
+#include "AnimatedSprite.h"
 #include "Constants.h"
 
 ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, 
@@ -25,7 +25,7 @@ ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x,
 
 
 
-SpriteObject* ObjectBlock::getObject(unsigned int _id) const
+AnimatedSprite* ObjectBlock::getObject(unsigned int _id) const
 {
     if (objects.empty() || _id > objects.size())
     {
@@ -46,36 +46,20 @@ Vector2 ObjectBlock::getRandomShootingPosition() const
 
 void ObjectBlock::addObject(std::unique_ptr<SpriteObject> _object)
 {
-    objects.emplace_back(std::move(_object));
+    std::vector<std::unique_ptr<SpriteObject>> animationSprites;
+    animationSprites.emplace_back(std::move(_object));
 
-    updateLayout();
+    auto animatedSprite = std::make_unique<AnimatedSprite>(std::move(animationSprites));
+    addObject(std::move(animatedSprite));
 }
 
 
 
-void ObjectBlock::updateLayout()
+void ObjectBlock::addObject(std::unique_ptr<AnimatedSprite> _object)
 {
-    int column = 0;
-    int row = 0;
-    for (auto& obj : objects)
-    {
-        obj->setPosition(start_pos);
-        obj->modifyPosition({ (column * obj->getSize().x) + (column * padding_x), 
-                            (row * obj->getSize().y) + (row * padding_y) });
+    objects.emplace_back(std::move(_object));
 
-        if (column == max_columns)
-        {
-            column = 0;
-            ++row;
-        }
-        else
-        {
-            ++column;
-        }
-    }
-
-    updateEdges();
-    updateShootingPoints();
+    updateLayout();
 }
 
 
@@ -84,7 +68,7 @@ bool ObjectBlock::collisionTest(const SpriteObject& _other)
 {
     for (auto iter = objects.begin(); iter != objects.end(); ++iter)
     {
-        if ((*iter)->collisionTest(_other))
+        if ((*iter)->getAnimationFrameSprite(0).collisionTest(_other))
         {
             objects.erase(iter);
             updateEdges();
@@ -150,6 +134,60 @@ int ObjectBlock::remainingObjects() const
 void ObjectBlock::popBack()
 {
     objects.pop_back();
+}
+
+
+
+void ObjectBlock::setVisible(bool b) const
+{
+    for (auto& obj : objects)
+    {
+        obj->setVisible(b);
+    }
+}
+
+
+
+void ObjectBlock::clear()
+{
+    objects.clear();
+}
+
+
+
+void ObjectBlock::setNextAnimationFrame() const
+{
+    for (auto& obj : objects)
+    {
+        obj->setNextAnimationFrame();
+    }
+}
+
+
+
+void ObjectBlock::updateLayout()
+{
+    int column = 0;
+    int row = 0;
+    for (auto& obj : objects)
+    {
+        obj->setPosition(start_pos);
+        obj->modifyPosition({ (column * obj->getSize().x) + (column * padding_x),
+            (row * obj->getSize().y) + (row * padding_y) });
+
+        if (column == max_columns)
+        {
+            column = 0;
+            ++row;
+        }
+        else
+        {
+            ++column;
+        }
+    }
+
+    updateEdges();
+    updateShootingPoints();
 }
 
 

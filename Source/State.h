@@ -12,6 +12,7 @@ public:
     explicit State(ObjectFactory& _factory)
         : factory(_factory)
         , handler(nullptr)
+        , exit(false)
     {
     }
 
@@ -36,6 +37,16 @@ protected:
         return factory;
     }
 
+    bool shouldExit() const
+    {
+        return exit;
+    };
+
+    void setExit(bool b)
+    {
+        exit = b;
+    }
+
 private:
     void setHandler(StateHandler* _handler)
     {
@@ -44,4 +55,5 @@ private:
 
     ObjectFactory& factory;
     StateHandler* handler;
+    bool exit;
 };

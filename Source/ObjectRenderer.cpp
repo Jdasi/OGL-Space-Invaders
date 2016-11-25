@@ -17,11 +17,12 @@ ObjectRenderer::~ObjectRenderer()
 
 
 std::unique_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _texture, 
-    const Vector2 _pos)
+    const Vector2 _pos, std::function<void()> _on_delete_event)
 {
     auto object = std::make_unique<SpriteObject>(renderer, 
         std::bind(&ObjectRenderer::deleteRenderObject, this, std::placeholders::_1),
-         _texture, _pos);
+         _texture, _pos, _on_delete_event);
+
     render_objects.push_back(object.get());
     return std::move(object);
 }
@@ -35,6 +36,7 @@ std::unique_ptr<TextObject> ObjectRenderer::createText(const std::string& _str,
         std::bind(&ObjectRenderer::deleteRenderObject, this, std::placeholders::_1), 
         _str, _pos, _size, _colour);
     render_objects.push_back(object.get());
+
     return std::move(object);
 }
 

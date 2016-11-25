@@ -1,6 +1,7 @@
 #pragma once
 #include <Engine/OGLGame.h>
 
+#include "Constants.h"
 #include "StateHandler.h"
 #include "ObjectRenderer.h"
 #include "Timer.h"
@@ -27,7 +28,6 @@ private:
 	void input(int _key, int _action) const;
 
 	int  callback_id;           /**< The callback ID assigned by the game engine. */
-	bool exit;                  /**< If true the game loop will exit. */
     std::unique_ptr<ObjectRenderer> object_renderer;
     std::unique_ptr<StateHandler> state_handler;
     Timer timer;
