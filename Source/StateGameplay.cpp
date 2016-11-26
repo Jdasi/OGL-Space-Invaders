@@ -14,7 +14,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , player_projectile_speed(500)
     , player_shooting(false)
     , player_direction(MoveDirection::NONE)
-    , alien_tick_delay(0.9f)
+    , alien_tick_delay(0)
     , alien_move_timer(0)
     , alien_shoot_delay(0)
     , alien_shoot_timer(0)
@@ -22,13 +22,10 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , alien_down_speed(20)
     , alien_projectile_speed(250)
     , aliens_direction(MoveDirection::RIGHT)
-    , round_over(false)
-    , round_won(false)
     , current_round(0)
     , reset_on_enter(true)
     , paused(false)
     , score(0)
-    , last_dt(0)
 {
 }
 
@@ -95,8 +92,6 @@ void StateGameplay::onStateLeave()
 
 void StateGameplay::tick(float _dt)
 {
-    last_dt = _dt;
-
     collision_manager->tick();
 
     handlePlayerMovement(_dt);
@@ -108,11 +103,6 @@ void StateGameplay::tick(float _dt)
     updateAlienProjectiles(_dt);
 
     updatePlayerScore();
-
-    if (round_over)
-    {
-        resetRound();
-    }
 }
 
 
@@ -145,7 +135,7 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
         }
     }
 
-    if (_command == Command::SHOOT)
+    if (_command == Command::SHOOT || _command == Command::MOVE_DOWN)
     {
         if (_command_state == CommandState::PRESSED || 
             _command_state == CommandState::REPEATING)
@@ -189,12 +179,11 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
 
         if (aliens->remainingObjects() == 0)
         {
-            round_over = true;
-            round_won = true;
+            nextWave();
         }
         else
         {
-            decreaseAlienTickDelay(last_dt);
+            decreaseAlienTickDelay();
         }
 
         return true;
@@ -205,8 +194,8 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
     {
         garbageCollectAlienProjectiles(_object);
 
-        round_over = true;
-        round_won = false;
+        removeLife();
+        initPlayer();
 
         return true;
     }
@@ -337,20 +326,20 @@ void StateGameplay::initAliens()
 
 void StateGameplay::initBarriers()
 {
-    std::string barrier_img = "..\\..\\Resources\\Textures\\bloc_blue.png";
+    std::string barrier_img = "..\\..\\Resources\\Textures\\bloc_green.png";
 
     int max_rows = 3;
     int max_columns = 12;
     int padding_x = 0;
     int padding_y = 0;
 
-    makeBarrier(barrier_one, barrier_img, { 65, WINDOW_HEIGHT - 200 }, max_rows, 
+    makeBarrier(barrier_one, barrier_img, { 65, WINDOW_HEIGHT - 150 }, max_rows, 
         max_columns, padding_x, padding_y);
 
-    makeBarrier(barrier_two, barrier_img, { 265, WINDOW_HEIGHT - 200 }, max_rows,
+    makeBarrier(barrier_two, barrier_img, { 265, WINDOW_HEIGHT - 150 }, max_rows,
         max_columns, padding_x, padding_y);
 
-    makeBarrier(barrier_three, barrier_img, { 465, WINDOW_HEIGHT - 200 }, max_rows,
+    makeBarrier(barrier_three, barrier_img, { 465, WINDOW_HEIGHT - 150 }, max_rows,
         max_columns, padding_x, padding_y);
 }
 
@@ -474,7 +463,7 @@ void StateGameplay::moveAliens(float _dt)
         case MoveDirection::DOWN:
         {
             aliens->moveBlock({ 0, alien_down_speed });
-            decreaseAlienTickDelay(_dt);
+            determineInvasion();
             break;
         }
 
@@ -562,30 +551,25 @@ void StateGameplay::garbageCollectAlienProjectiles(SpriteObject* _object)
 
 
 
-void StateGameplay::decreaseAlienTickDelay(float _dt)
+void StateGameplay::determineInvasion()
 {
-    if (alien_tick_delay >= 0.1f)
+    if (aliens->getEdgeBottom() >= player->getPosition().y)
     {
-        alien_tick_delay -= 0.007f;
+        getHandler()->pushState(GameState::GAMEOVER);
+    }
+    else
+    {
+        decreaseAlienTickDelay();
     }
 }
 
 
 
-void StateGameplay::resetRound()
+void StateGameplay::decreaseAlienTickDelay()
 {
-    round_over = false;
-
-    if (round_won)
+    if (alien_tick_delay >= 0.1f)
     {
-        round_won = false;
-
-        nextWave();
-    }
-    else
-    {
-        removeLife();
-        initPlayer();
+        alien_tick_delay -= 0.007f;
     }
 }
 

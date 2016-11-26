@@ -1,4 +1,5 @@
 #include "TextObject.h"
+#include "Constants.h"
 
 TextObject::TextObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
     std::function<void(Renderable*)> _delete_render_object, const std::string& _str,

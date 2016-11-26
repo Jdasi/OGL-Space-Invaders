@@ -21,4 +21,5 @@ public:
 
 private:
     std::unique_ptr<TextObject> gameover_title;
+    std::unique_ptr<TextObject> instruction_title;
 };

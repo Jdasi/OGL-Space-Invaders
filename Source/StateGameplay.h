@@ -55,8 +55,9 @@ private:
     void updateAlienProjectiles(float _dt);
     void garbageCollectAlienProjectiles(SpriteObject* _object);
 
-    void decreaseAlienTickDelay(float _dt);
-    void resetRound();
+    void determineInvasion();
+    void decreaseAlienTickDelay();
+
     void nextWave();
     void removeLife();
 
@@ -65,7 +66,6 @@ private:
     void deleteAllObjects();
     void hideObjectsForPause(bool value) const;
     void updatePlayerScore() const;
-
 
     std::unique_ptr<CollisionManager> collision_manager;
 
@@ -99,11 +99,8 @@ private:
     float alien_projectile_speed;
     MoveDirection aliens_direction;
 
-    bool round_over;
-    bool round_won;
     int current_round;
     bool reset_on_enter;
     std::atomic<bool> paused;
     int score;
-    float last_dt;
 };

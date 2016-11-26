@@ -1,5 +1,8 @@
 #pragma once
 #include <memory>
+#include <vector>
+#include <atomic>
+#include <functional>
 
 #include "State.h"
 
@@ -19,6 +22,17 @@ public:
     void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
+    void initMenuTitles();
+    void initMenuFunctions();
+    void updateMenuSelection() const;
+
+    void cycleIndexUp();
+    void cycleIndexDown();
+    void executeMenuFunction();
+
     std::unique_ptr<SpriteObject> logo;
-    std::unique_ptr<TextObject> text;
+
+    std::vector<std::unique_ptr<TextObject>> menu_titles;
+    std::vector<std::function<void()>> menu_functions;
+    std::atomic<int> menu_index;
 };
