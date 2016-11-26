@@ -5,7 +5,6 @@
 
 #include "Game.h"
 #include "GameFont.h"
-
 #include "StateStart.h"
 #include "StateGameplay.h"
 #include "StateGameOver.h"
@@ -46,43 +45,23 @@ InvadersGame::~InvadersGame()
 */
 bool InvadersGame::init()
 {
-	width = WINDOW_WIDTH;
-	height = WINDOW_HEIGHT;
-	if (!initAPI())
-	{
-		return false;
-	}
+    if (!initRenderer())
+    {
+        return false;
+    }
 
-	renderer->setWindowTitle("Invaders - Exercise 1");
-    renderer->setClearColour(ASGE::COLOURS::BLACK);
-
-	// Input callback function.
+    // Input callback function.
 	callback_id = inputs->addCallbackFnc(&InvadersGame::input, this);
 	
-	// Load fonts we need.
-	GameFont::fonts[0] = new GameFont
-        (renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), 42, "default");
-    renderer->setFont(GameFont::fonts[0]->id);
-    	
-	if (GameFont::fonts[0]->id == -1)
-	{
-		return false;
-	}
+    if (!initFonts())
+    {
+        return false;
+    }
 
     // Delay object_renderer creation until renderer is initialised.
     object_renderer = std::make_unique<ObjectRenderer>(renderer);
-    state_handler = std::make_unique<StateHandler>();
 
-    state_handler->registerState
-        (GameState::START, std::make_unique<StateStart>(*object_renderer));
-    state_handler->registerState
-        (GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
-    state_handler->registerState
-        (GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
-    state_handler->registerState
-        (GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
-
-    state_handler->pushState(GameState::START);
+    initStateHandler();
 
 	return true;
 }
@@ -152,6 +131,75 @@ void InvadersGame::drawFrame()
     {
         object_renderer->render();
     }
+}
+
+
+
+/**
+*   @brief   Initialises all the game renderer for drawing sprites and text.
+*   @return  True if there were no problems initialising the renderer.
+*/
+bool InvadersGame::initRenderer()
+{
+    width = WINDOW_WIDTH;
+    height = WINDOW_HEIGHT;
+
+    if (!initAPI())
+    {
+        return false;
+    }
+
+    renderer->setWindowTitle("Invaders - Exercise 1");
+    renderer->setClearColour(ASGE::COLOURS::BLACK);
+
+    return true;
+}
+
+
+
+/**
+*   @brief   Initialises all the fonts we need in the game.
+*   @details All the fonts needed in the game should be added here.
+*   @return  True if there were no problems initialising fonts.
+*/
+bool InvadersGame::initFonts()
+{
+    GameFont::fonts[0] = new GameFont
+    (renderer->loadFont("..\\..\\Resources\\Fonts\\Alien.ttf", 42), 42, "default");
+    renderer->setFont(GameFont::fonts[0]->id);
+
+    if (GameFont::fonts[0]->id == -1)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+
+/**
+*   @brief   Initialises the State Handler for Game.
+*   @details The game contains four states: Start, Gameplay, Gameover, Pause.
+             Once these states have been registered with the 
+             State Handler, the Start state is pushed to the state 
+             queue so the game begins at the main menu.
+*   @return  void
+*/
+void InvadersGame::initStateHandler()
+{
+    state_handler = std::make_unique<StateHandler>();
+
+    state_handler->registerState
+    (GameState::START, std::make_unique<StateStart>(*object_renderer));
+    state_handler->registerState
+    (GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
+    state_handler->registerState
+    (GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
+    state_handler->registerState
+    (GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
+
+    state_handler->pushState(GameState::START);
 }
 
 

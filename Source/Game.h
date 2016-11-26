@@ -15,7 +15,7 @@ public:
     InvadersGame();
 	virtual ~InvadersGame();
 
-	// Inherited via Game.
+    // Inherited via Game.
 	virtual bool run() override;
 	bool shouldExit() const;
 	void render();
@@ -25,7 +25,11 @@ public:
 	virtual void drawFrame() override;
 
 private:
-	void input(int _key, int _action) const;
+    bool initRenderer();
+    bool initFonts();
+    void initStateHandler();
+
+    void input(int _key, int _action) const;
 
 	int  callback_id;           /**< The callback ID assigned by the game engine. */
     std::unique_ptr<ObjectRenderer> object_renderer;

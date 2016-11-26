@@ -2,6 +2,8 @@
 #include <functional>
 
 #include "ObjectRenderer.h"
+#include "CollisionTypes.h"
+#include "CollisionManager.h"
 
 ObjectRenderer::ObjectRenderer(std::shared_ptr<ASGE::Renderer>& _renderer)
     : renderer(_renderer)
@@ -17,11 +19,19 @@ ObjectRenderer::~ObjectRenderer()
 
 
 std::unique_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _texture, 
-    const Vector2 _pos, std::function<void()> _on_delete_event)
+    const Vector2 _pos, const CollisionType _collision_type)
 {
     auto object = std::make_unique<SpriteObject>(renderer, 
         std::bind(&ObjectRenderer::deleteRenderObject, this, std::placeholders::_1),
-         _texture, _pos, _on_delete_event);
+         _texture, _pos, _collision_type);
+
+    if (collision_manager)
+    {
+        if (object->getCollisionType() != CollisionType::NONE)
+        {
+            collision_manager->addCollisionObject(object.get());
+        }
+    }
 
     render_objects.push_back(object.get());
     return std::move(object);

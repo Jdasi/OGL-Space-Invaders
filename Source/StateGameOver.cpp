@@ -17,7 +17,7 @@ StateGameOver::~StateGameOver()
 
 void StateGameOver::onStateEnter()
 {
-    gameover_title = getObjectFactory().createText("Game Over", { 100, 100 }, 1.0f, ASGE::COLOURS::ALICEBLUE);
+    gameover_title = getObjectFactory().createText("Game Over", { 550, 300 }, 1.0f, ASGE::COLOURS::ALICEBLUE);
 }
 
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <functional>
 
 #include "StateGameplay.h"
 #include "Game.h"
@@ -13,7 +14,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , player_projectile_speed(500)
     , player_shooting(false)
     , player_direction(MoveDirection::NONE)
-    , alien_move_delay(0.9f)
+    , alien_tick_delay(0.9f)
     , alien_move_timer(0)
     , alien_shoot_delay(0)
     , alien_shoot_timer(0)
@@ -27,6 +28,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , reset_on_enter(true)
     , paused(false)
     , score(0)
+    , last_dt(0)
 {
 }
 
@@ -34,8 +36,8 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
 
 StateGameplay::~StateGameplay()
 {
+    deleteAllObjects();
 }
-
 
 
 
@@ -58,14 +60,13 @@ void StateGameplay::onStateEnter()
 }
 
 
-void StateGameplay::resetState()
-{
-    player_lives = 3;
-    score = 0;
 
-    initPlayer();
-    initHUD();
-    initAliens();
+void StateGameplay::initCollisionManager()
+{
+    collision_manager = std::make_unique<CollisionManager>(std::bind(
+        &StateGameplay::onCollision, this, std::placeholders::_1, std::placeholders::_2));
+
+    getObjectFactory().linkCollisionManager(collision_manager.get());
 }
 
 
@@ -94,6 +95,10 @@ void StateGameplay::onStateLeave()
 
 void StateGameplay::tick(float _dt)
 {
+    last_dt = _dt;
+
+    collision_manager->tick();
+
     handlePlayerMovement(_dt);
     handlePlayerShot();
     updatePlayerProjectile(_dt);
@@ -173,11 +178,73 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 
 
 
+bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
+{
+    if (_object->getCollisionType() == CollisionType::PROJECTILE &&
+        _other->getCollisionType() == CollisionType::ALIEN)
+    {
+        player_projectile = nullptr;
+
+        aliens->removeObjectByPtr(_other);
+
+        if (aliens->remainingObjects() == 0)
+        {
+            round_over = true;
+            round_won = true;
+        }
+        else
+        {
+            decreaseAlienTickDelay(last_dt);
+        }
+
+        return true;
+    }
+
+    if (_object->getCollisionType() == CollisionType::ALIENPROJECTILE &&
+        _other->getCollisionType() == CollisionType::SHIP)
+    {
+        garbageCollectAlienProjectiles(_object);
+
+        round_over = true;
+        round_won = false;
+
+        return true;
+    }
+
+    if (_object->getCollisionType() == CollisionType::PROJECTILE &&
+        _other->getCollisionType() == CollisionType::BARRIER)
+    {
+        player_projectile = nullptr;
+
+        barrier_one->removeObjectByPtr(_other);
+        barrier_two->removeObjectByPtr(_other);
+        barrier_three->removeObjectByPtr(_other);
+
+        return true;
+    }
+
+    if (_object->getCollisionType() == CollisionType::ALIENPROJECTILE &&
+        _other->getCollisionType() == CollisionType::BARRIER)
+    {
+        garbageCollectAlienProjectiles(_object);
+
+        barrier_one->removeObjectByPtr(_other);
+        barrier_two->removeObjectByPtr(_other);
+        barrier_three->removeObjectByPtr(_other);
+
+        return true;
+    }
+
+    return false;
+}
+
+
+
 void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
     player = getObjectFactory().createSprite
-        ("..\\..\\Resources\\Textures\\player.png", player_start);
+        ("..\\..\\Resources\\Textures\\player.png", player_start, CollisionType::SHIP);
 }
 
 
@@ -195,7 +262,7 @@ void StateGameplay::initHUD()
         ("Lives:", { 750, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
 
     Vector2 lives_pos{ WINDOW_WIDTH - 180, 5 };
-    lives_block = std::make_unique<ObjectBlock>(lives_pos, 4, 10, 20, 4 * 2);
+    lives_block = std::make_unique<ObjectBlock>(lives_pos, 3, 4, 10, 20);
 
     std::string player_img = "..\\..\\Resources\\Textures\\player.png";
     for (int i = 0; i < player_lives; ++i)
@@ -215,8 +282,8 @@ void StateGameplay::initAliens()
     int padding_x = 10;
     int padding_y = 20;
 
-    aliens = std::make_unique<ObjectBlock>
-        (alien_start, max_columns, padding_x, padding_y, max_rows * max_columns);
+    aliens = std::make_unique<ObjectBlock>(alien_start, max_rows, max_columns, 
+        padding_x, padding_y);
 
     std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
     std::string alien_img2 = "..\\..\\Resources\\Textures\\top_alien_1.png";
@@ -243,12 +310,17 @@ void StateGameplay::initAliens()
         for (int col = 0; col < max_columns; ++col)
         {
             std::vector<std::unique_ptr<SpriteObject>> animationSprites;
-            animationSprites.emplace_back(
-                std::move(getObjectFactory().createSprite(alien_img, alien_start, 
-                [this, scorevalue](){ score += scorevalue; })));
 
-            animationSprites.emplace_back(
-                std::move(getObjectFactory().createSprite(alien_img2, alien_start)));
+            auto spr = getObjectFactory().createSprite(alien_img, alien_start, 
+                CollisionType::ALIEN);
+
+            auto spr2 = getObjectFactory().createSprite(alien_img2, alien_start, 
+                CollisionType::ALIEN);
+
+            spr->registerDeleteEvent([this, scorevalue]() { score += scorevalue; });
+
+            animationSprites.emplace_back(std::move(spr));
+            animationSprites.emplace_back(std::move(spr2));
 
             auto animatedSprite = std::make_unique<AnimatedSprite>(std::move
                 (animationSprites));
@@ -263,6 +335,45 @@ void StateGameplay::initAliens()
 
 
 
+void StateGameplay::initBarriers()
+{
+    std::string barrier_img = "..\\..\\Resources\\Textures\\bloc_blue.png";
+
+    int max_rows = 3;
+    int max_columns = 12;
+    int padding_x = 0;
+    int padding_y = 0;
+
+    makeBarrier(barrier_one, barrier_img, { 65, WINDOW_HEIGHT - 200 }, max_rows, 
+        max_columns, padding_x, padding_y);
+
+    makeBarrier(barrier_two, barrier_img, { 265, WINDOW_HEIGHT - 200 }, max_rows,
+        max_columns, padding_x, padding_y);
+
+    makeBarrier(barrier_three, barrier_img, { 465, WINDOW_HEIGHT - 200 }, max_rows,
+        max_columns, padding_x, padding_y);
+}
+
+
+
+void StateGameplay::makeBarrier(std::unique_ptr<ObjectBlock>& _block,
+    const std::string& _img, const Vector2 _pos, int _max_rows, int _max_columns,
+    int _padding_x, int _padding_y) const
+{
+    _block = std::make_unique<ObjectBlock>(_pos, _max_rows, _max_columns, 
+        _padding_x, _padding_y);
+
+    for (int i = 0; i < _max_rows * _max_columns; ++i)
+    {
+        auto spr = getObjectFactory().createSprite(_img, { 0, 0 },
+            CollisionType::BARRIER);
+
+        _block->addObject(std::move(spr));
+    }
+}
+
+
+
 void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
@@ -270,7 +381,7 @@ void StateGameplay::handlePlayerShot()
         player_projectile = getObjectFactory().createSprite
             ("..\\..\\Resources\\Textures\\projectile.png", 
             { player->getPosition().x + (player->getSize().x / 2), 
-            player->getPosition().y - 5 });
+            player->getPosition().y - 5 }, CollisionType::PROJECTILE);
     }
 }
 
@@ -282,34 +393,13 @@ void StateGameplay::updatePlayerProjectile(float _dt)
     {
         player_projectile->modifyPosition({ 0, -player_projectile_speed * _dt });
 
-        destroyProjectileOnCollision(_dt);
-        destroyProjectileAtScreenTop();
+        destroyPlayerProjectileAtScreenTop();
     }
 }
 
 
 
-void StateGameplay::destroyProjectileOnCollision(float _dt)
-{
-    if (aliens->collisionTest(*player_projectile))
-    {
-        player_projectile = nullptr;
-
-        if (aliens->remainingObjects() == 0)
-        {
-            round_over = true;
-            round_won = true;
-        }
-        else
-        {
-            decreaseAlienTickDelay(_dt);
-        }
-    }
-}
-
-
-
-void StateGameplay::destroyProjectileAtScreenTop()
+void StateGameplay::destroyPlayerProjectileAtScreenTop()
 {
     if (player_projectile && player_projectile->getPosition().y <= WINDOW_MARGIN)
     {
@@ -344,7 +434,7 @@ void StateGameplay::handleAlienMovement(float _dt)
 {
     alien_move_timer += _dt;
 
-    if (alien_move_timer >= alien_move_delay)
+    if (alien_move_timer >= alien_tick_delay)
     {
         MoveDirection aliens_prev_direction = aliens_direction;
         
@@ -415,7 +505,7 @@ void StateGameplay::animateAliens() const
 
 void StateGameplay::generateAlienShootDelay()
 {
-    float temp_delay = 0.25f / alien_move_delay;
+    float temp_delay = 0.25f / alien_tick_delay;
     float delay_modifier = temp_delay > 3.0f ? 3.0f : temp_delay;
 
     alien_shoot_delay = (static_cast<float>(rand()) /
@@ -433,7 +523,8 @@ void StateGameplay::handleAlienShot(float _dt)
         Vector2 shoot_pos = aliens->getRandomShootingPosition();
 
         alien_projectiles.push_back(std::move(getObjectFactory().createSprite
-            ("..\\..\\Resources\\Textures\\projectile.png", shoot_pos)));
+            ("..\\..\\Resources\\Textures\\projectile.png", shoot_pos, 
+            CollisionType::ALIENPROJECTILE)));
         
         generateAlienShootDelay();
         alien_shoot_timer = 0;
@@ -448,13 +539,6 @@ void StateGameplay::updateAlienProjectiles(float _dt)
     {
         projectile->modifyPosition({ 0, alien_projectile_speed * _dt });
 
-        if (projectile->collisionTest(*player))
-        {
-            projectile = nullptr;
-            round_over = true;
-            round_won = false;
-        }
-
         // Destroy projectile if it reaches the bottom of the screen.
         if (projectile && projectile->getPosition().y >= WINDOW_BOTTOM_BOUNDARY)
         {
@@ -462,11 +546,17 @@ void StateGameplay::updateAlienProjectiles(float _dt)
         }
     }
 
-    // Clean up any projectiles that don't point to data.
+    garbageCollectAlienProjectiles(nullptr);
+}
+
+
+
+void StateGameplay::garbageCollectAlienProjectiles(SpriteObject* _object)
+{
     alien_projectiles.erase(std::remove_if(
-        alien_projectiles.begin(), 
-        alien_projectiles.end(), 
-        [](std::unique_ptr<SpriteObject>& spr) { return spr == nullptr; } ), 
+        alien_projectiles.begin(),
+        alien_projectiles.end(),
+        [_object](std::unique_ptr<SpriteObject>& spr) { return spr.get() == _object; }),
         alien_projectiles.end());
 }
 
@@ -474,9 +564,9 @@ void StateGameplay::updateAlienProjectiles(float _dt)
 
 void StateGameplay::decreaseAlienTickDelay(float _dt)
 {
-    if (alien_move_delay >= 0.1f)
+    if (alien_tick_delay >= 0.1f)
     {
-        alien_move_delay -= 0.007f;
+        alien_tick_delay -= 0.007f;
     }
 }
 
@@ -506,7 +596,7 @@ void StateGameplay::nextWave()
     ++player_lives;
     ++current_round;
 
-    alien_move_delay += 0.3f;
+    alien_tick_delay += 0.3f;
     aliens_direction = MoveDirection::RIGHT;
 
     std::string player_img = "..\\..\\Resources\\Textures\\player.png";
@@ -536,6 +626,21 @@ void StateGameplay::removeLife()
 
 
 
+void StateGameplay::resetState()
+{
+    player_lives = 3;
+    score = 0;
+    alien_tick_delay = 0.9f;
+
+    initCollisionManager();
+    initPlayer();
+    initHUD();
+    initAliens();
+    initBarriers();
+}
+
+
+
 void StateGameplay::deleteAllObjects()
 {
     player = nullptr;
@@ -546,8 +651,18 @@ void StateGameplay::deleteAllObjects()
     lives_title = nullptr;
     lives_block = nullptr;
 
-    aliens->clear();
+    barrier_one = nullptr;
+    barrier_two = nullptr;
+    barrier_three = nullptr;
+
+    if (aliens)
+    {
+        aliens->clear();
+    }
+
     alien_projectiles.clear();
+
+    collision_manager = nullptr;
 }
 
 

@@ -54,7 +54,7 @@ void AnimatedSprite::setNextAnimationFrame()
 
 Vector2 AnimatedSprite::getSize() const
 {
-    return sprites.at(0)->getSize();
+    return sprites.at(animation_frame)->getSize();
 }
 
 
@@ -96,9 +96,24 @@ void AnimatedSprite::modifyPosition(const Vector2 _pos) const
 
 
 
-SpriteObject& AnimatedSprite::getAnimationFrameSprite(const int frame) const
+SpriteObject& AnimatedSprite::getAnimationFrameSprite(const int _frame) const
 {
-    return *sprites.at(frame);
+    return *sprites.at(_frame);
+}
+
+
+
+bool AnimatedSprite::containsSpriteObject(SpriteObject* _object) const
+{
+    for (auto& sprite : sprites)
+    {
+        if (sprite.get() == _object)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 

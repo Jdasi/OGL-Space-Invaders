@@ -4,6 +4,8 @@
 #include <atomic>
 
 #include "State.h"
+#include "CollisionManager.h"
+#include "Vector2.h"
 
 class SpriteObject;
 class TextObject;
@@ -22,21 +24,27 @@ class StateGameplay : public State
 public:
     explicit StateGameplay(ObjectFactory& _factory);
     virtual ~StateGameplay();
+
     void onStateEnter() override;
     void onStateLeave() override;
 
     void tick(float _dt) override;
     void onCommand(const Command _command, const CommandState _command_state) override;
+    bool onCollision(SpriteObject* _object, SpriteObject* _other);
 
 private:
+    void initCollisionManager();
     void initPlayer();
     void initHUD();
     void initAliens();
+    void initBarriers();
+    void makeBarrier(std::unique_ptr<ObjectBlock>& _block, const std::string& _img, 
+        const Vector2 _pos, int _max_rows, int _max_columns, int _padding_x, 
+        int _padding_y) const;
 
     void handlePlayerShot();
     void updatePlayerProjectile(float _dt);
-    void destroyProjectileOnCollision(float _dt);
-    void destroyProjectileAtScreenTop();
+    void destroyPlayerProjectileAtScreenTop();
     void handlePlayerMovement(float _dt) const;
 
     void handleAlienMovement(float _dt);
@@ -45,6 +53,7 @@ private:
     void generateAlienShootDelay();
     void handleAlienShot(float _dt);
     void updateAlienProjectiles(float _dt);
+    void garbageCollectAlienProjectiles(SpriteObject* _object);
 
     void decreaseAlienTickDelay(float _dt);
     void resetRound();
@@ -57,6 +66,9 @@ private:
     void hideObjectsForPause(bool value) const;
     void updatePlayerScore() const;
 
+
+    std::unique_ptr<CollisionManager> collision_manager;
+
     std::unique_ptr<SpriteObject> player;
     std::unique_ptr<SpriteObject> player_projectile;
 
@@ -64,6 +76,10 @@ private:
     std::unique_ptr<TextObject> score_text;
     std::unique_ptr<TextObject> lives_title;
     std::unique_ptr<ObjectBlock> lives_block;
+
+    std::unique_ptr<ObjectBlock> barrier_one;
+    std::unique_ptr<ObjectBlock> barrier_two;
+    std::unique_ptr<ObjectBlock> barrier_three;
 
     std::unique_ptr<ObjectBlock> aliens;
     std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
@@ -74,7 +90,7 @@ private:
     std::atomic<bool> player_shooting;
     std::atomic<MoveDirection> player_direction;
 
-    float alien_move_delay;
+    float alien_tick_delay;
     float alien_move_timer;
     float alien_shoot_delay;
     float alien_shoot_timer;
@@ -89,4 +105,5 @@ private:
     bool reset_on_enter;
     std::atomic<bool> paused;
     int score;
+    float last_dt;
 };

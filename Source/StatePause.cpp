@@ -3,6 +3,8 @@
 
 StatePause::StatePause(ObjectFactory& _factory)
     : State(_factory)
+    , blink_timer(0)
+    , blink_delay(0.1f)
 {
 }
 
@@ -16,7 +18,7 @@ StatePause::~StatePause()
 
 void StatePause::onStateEnter()
 {
-    pause_title = getObjectFactory().createText("PAUSED", { 100, 100 }, 1.0f, ASGE::COLOURS::ALICEBLUE);
+    pause_title = getObjectFactory().createText("PAUSED", { 550, 300 }, 1.0f, ASGE::COLOURS::ALICEBLUE);
 }
 
 
@@ -30,6 +32,14 @@ void StatePause::onStateLeave()
 
 void StatePause::tick(float _dt)
 {
+    blink_timer += _dt;
+
+    if (blink_timer >= blink_delay)
+    {
+        blink_timer = 0;
+
+        pause_title->setVisible(!pause_title->isVisible());
+    }
 }
 
 

@@ -4,10 +4,9 @@
 #include "AnimatedSprite.h"
 #include "Constants.h"
 
-ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, 
-    int _padding_y, int _reserve_size)
+ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_rows, int _max_columns, int _padding_x, int _padding_y)
     : start_pos(_start_pos)
-    , max_columns(_max_columns - 1)
+    , max_columns(_max_columns)
     , padding_x(_padding_x)
     , padding_y(_padding_y)
     , edge_left(0)
@@ -19,7 +18,7 @@ ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x,
         throw std::runtime_error("Error in ObjectBlock::ObjectBlock()");
     }
 
-    objects.reserve(_reserve_size);
+    objects.reserve(_max_columns * _max_rows);
     shooting_positions.reserve(_max_columns);
 }
 
@@ -60,25 +59,6 @@ void ObjectBlock::addObject(std::unique_ptr<AnimatedSprite> _object)
     objects.emplace_back(std::move(_object));
 
     updateLayout();
-}
-
-
-
-bool ObjectBlock::collisionTest(const SpriteObject& _other)
-{
-    for (auto iter = objects.begin(); iter != objects.end(); ++iter)
-    {
-        if ((*iter)->getAnimationFrameSprite(0).collisionTest(_other))
-        {
-            objects.erase(iter);
-            updateEdges();
-            updateShootingPoints();
-
-            return true;
-        }
-    }
-
-    return false;
 }
 
 
@@ -165,6 +145,20 @@ void ObjectBlock::setNextAnimationFrame() const
 
 
 
+void ObjectBlock::removeObjectByPtr(SpriteObject* object)
+{
+    objects.erase(std::remove_if(
+        objects.begin(),
+        objects.end(),
+        [object](const std::unique_ptr<AnimatedSprite>& anim_spr) { return anim_spr->containsSpriteObject(object); }),
+        objects.end());
+
+    updateEdges();
+    updateShootingPoints();
+}
+
+
+
 void ObjectBlock::updateLayout()
 {
     int column = 0;
@@ -175,14 +169,10 @@ void ObjectBlock::updateLayout()
         obj->modifyPosition({ (column * obj->getSize().x) + (column * padding_x),
             (row * obj->getSize().y) + (row * padding_y) });
 
-        if (column == max_columns)
+        if (++column >= max_columns)
         {
             column = 0;
             ++row;
-        }
-        else
-        {
-            ++column;
         }
     }
 

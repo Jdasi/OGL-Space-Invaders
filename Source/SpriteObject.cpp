@@ -1,10 +1,11 @@
 #include "SpriteObject.h"
+#include "CollisionTypes.h"
 
 SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
     std::function<void(Renderable*)> _delete_render_object, const std::string& _texture,
-    const Vector2 _pos, std::function<void()> _on_delete_event)
+    const Vector2 _pos, const CollisionType _collision_type)
     : Renderable(_renderer, _delete_render_object, _pos)
-    , on_delete_event(_on_delete_event)
+    , collision_type(_collision_type)
 {
     sprite = renderer->createSprite();
     sprite->position[0] = static_cast<int>(_pos.x);
@@ -20,7 +21,10 @@ SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer,
 
 SpriteObject::~SpriteObject()
 {
-    on_delete_event();
+    for (auto& event: on_delete_events)
+    {
+        event();
+    }
 }
 
 
@@ -54,17 +58,16 @@ void SpriteObject::setScale(float _scale)
 
 
 
-bool SpriteObject::collisionTest(const SpriteObject& _other) const
+CollisionType SpriteObject::getCollisionType() const
 {
-    if (position.x + sprite->size[0] >= _other.getPosition().x &&
-        position.x <= (_other.getPosition().x + _other.getSize().x) &&
-        position.y + sprite->size[1] >= _other.getPosition().y &&
-        position.y <= (_other.getPosition().y + _other.getSize().y))
-    {
-        return true;
-    }
+    return collision_type;
+}
 
-    return false;
+
+
+void SpriteObject::registerDeleteEvent(std::function<void()> _event)
+{
+    on_delete_events.push_back(_event);
 }
 
 

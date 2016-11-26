@@ -10,8 +10,7 @@ class ObjectBlock
 {
 public:
     ObjectBlock() = delete;
-    ObjectBlock(Vector2 _start_pos, int _max_columns, int _padding_x, int _padding_y,
-        int _reserve_size = 0);
+    ObjectBlock(Vector2 _start_pos, int _max_columns, int _max_rows, int _padding_x, int _padding_y);
     ~ObjectBlock() = default;
 
     AnimatedSprite* getObject(unsigned int _id) const;
@@ -19,7 +18,6 @@ public:
     void addObject(std::unique_ptr<SpriteObject> _object);
     void addObject(std::unique_ptr<AnimatedSprite> _object);
 
-    bool collisionTest(const SpriteObject& _other);
     void moveBlock(const Vector2 _pos);
 
     float getEdgeLeft() const;
@@ -33,6 +31,8 @@ public:
     void clear();
 
     void setNextAnimationFrame() const;
+
+    void removeObjectByPtr(SpriteObject* object);
 
 private:
     void updateLayout();
