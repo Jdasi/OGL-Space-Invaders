@@ -352,7 +352,7 @@ void StateGameplay::initAliens()
 
 void StateGameplay::initBarriers()
 {
-    std::string barrier_img = "..\\..\\Resources\\Textures\\bloc_green.png";
+    std::string barrier_img = "..\\..\\Resources\\Textures\\barrier.png";
 
     int max_rows = 3;
     int max_columns = 12;
@@ -396,9 +396,12 @@ void StateGameplay::handlePlayerShot()
         std::string projectile_img = "..\\..\\Resources\\Textures\\";
         projectile_img += mega_mode ? "projectile_mega.png" : "projectile.png";
 
+        float mega_offset = mega_mode ? 2 : 0;
+        Vector2 shoot_pos = { (player->getPosition().x + (player->getSize().x / 2)) 
+            - mega_offset, player->getPosition().y - 5 };
+
         player_projectile = getObjectFactory().createSprite
-            (projectile_img, { player->getPosition().x + (player->getSize().x / 2), 
-            player->getPosition().y - 5 }, CollisionType::PROJECTILE);
+            (projectile_img, shoot_pos, CollisionType::PROJECTILE);
     }
 }
 
@@ -792,7 +795,6 @@ void StateGameplay::updateMegaMode(float _dt)
         mega_mode_timer -= _dt;
 
         mega_mode_bar->setString("");
-        
         for (int i = 0; i < mega_mode_timer; ++i)
         {
             mega_mode_bar->appendString("|||||||||||||");
