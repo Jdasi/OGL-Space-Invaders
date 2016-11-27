@@ -21,6 +21,12 @@ class StateGameplay : public State
         NONE
     };
 
+    enum class Edge
+    {
+        LEFT,
+        RIGHT
+    };
+
 public:
     explicit StateGameplay(ObjectFactory& _factory);
     virtual ~StateGameplay();
@@ -114,6 +120,7 @@ private:
     float alien_down_speed;
     float alien_projectile_speed;
     MoveDirection aliens_direction;
+    Edge last_edge_hit;
 
     int current_round;
     bool reset_on_enter;

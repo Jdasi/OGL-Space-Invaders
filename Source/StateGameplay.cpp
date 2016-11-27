@@ -22,6 +22,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , alien_down_speed(20)
     , alien_projectile_speed(250)
     , aliens_direction(MoveDirection::RIGHT)
+    , last_edge_hit(Edge::LEFT)
     , current_round(0)
     , reset_on_enter(true)
     , paused(false)
@@ -357,6 +358,7 @@ void StateGameplay::initAliens()
     }
 
     aliens_direction = MoveDirection::RIGHT;
+    last_edge_hit = Edge::LEFT;
     generateAlienShootDelay();
 }
 
@@ -475,22 +477,24 @@ void StateGameplay::handleAlienMovement(float _dt)
     {
         MoveDirection last_direction = aliens_direction;
 
-        if (aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY ||
-            aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY)
+        if (aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY)
         {
             aliens_direction = MoveDirection::DOWN;
+            last_edge_hit = Edge::LEFT;
+        }
+        else if (aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY)
+        {
+            aliens_direction = MoveDirection::DOWN;
+            last_edge_hit = Edge::RIGHT;
         }
 
         if (last_direction == MoveDirection::DOWN)
         {
-            bool right_edge_closer = aliens->getEdgeLeft() - WINDOW_LEFT_BOUNDARY >
-                -(aliens->getEdgeRight() - WINDOW_RIGHT_BOUNDARY);
-
-            if (right_edge_closer)
+            if (last_edge_hit == Edge::RIGHT)
             {
                 aliens_direction = MoveDirection::LEFT;
             }
-            else if (!right_edge_closer)
+            else if (last_edge_hit == Edge::LEFT)
             {
                 aliens_direction = MoveDirection::RIGHT;
             }
