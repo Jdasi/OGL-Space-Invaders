@@ -65,7 +65,15 @@ private:
 
     void deleteAllObjects();
     void hideObjectsForPause(bool value) const;
-    void updatePlayerScore() const;
+
+    void updateScoreText() const;
+    void updateScoreMultText() const;
+
+    void increaseScoreMult();
+    void resetScoreMult();
+    void activateMegaMode();
+    void deactivateMegaMode();
+    void updateMegaMode(float _dt);
 
     std::unique_ptr<CollisionManager> collision_manager;
 
@@ -74,6 +82,11 @@ private:
 
     std::unique_ptr<TextObject> score_title;
     std::unique_ptr<TextObject> score_text;
+
+    std::unique_ptr<TextObject> score_mult_title;
+    std::unique_ptr<TextObject> score_mult_text;
+    std::unique_ptr<TextObject> mega_mode_bar;
+
     std::unique_ptr<TextObject> lives_title;
     std::unique_ptr<ObjectBlock> lives_block;
 
@@ -102,5 +115,10 @@ private:
     int current_round;
     bool reset_on_enter;
     std::atomic<bool> paused;
+
     int score;
+    int score_multiplier;
+    bool mega_mode;
+    float mega_mode_timer;
+    float mega_mode_duration;
 };

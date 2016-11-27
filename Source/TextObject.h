@@ -15,6 +15,7 @@ public:
 
     std::string getString() const;
     void setString(const std::string& _str);
+    void appendString(const std::string& _str);
 
     float getScale() const;
     void setScale(float _scale);

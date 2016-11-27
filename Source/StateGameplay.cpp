@@ -26,6 +26,10 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
     , reset_on_enter(true)
     , paused(false)
     , score(0)
+    , score_multiplier(1)
+    , mega_mode(false)
+    , mega_mode_timer(0)
+    , mega_mode_duration(3)
 {
 }
 
@@ -58,16 +62,6 @@ void StateGameplay::onStateEnter()
 
 
 
-void StateGameplay::initCollisionManager()
-{
-    collision_manager = std::make_unique<CollisionManager>(std::bind(
-        &StateGameplay::onCollision, this, std::placeholders::_1, std::placeholders::_2));
-
-    getObjectFactory().linkCollisionManager(collision_manager.get());
-}
-
-
-
 void StateGameplay::onStateLeave()
 {
     if (reset_on_enter)
@@ -94,6 +88,8 @@ void StateGameplay::tick(float _dt)
 {
     collision_manager->tick();
 
+    updateMegaMode(_dt);
+
     handlePlayerMovement(_dt);
     handlePlayerShot();
     updatePlayerProjectile(_dt);
@@ -102,7 +98,8 @@ void StateGameplay::tick(float _dt)
     handleAlienShot(_dt);
     updateAlienProjectiles(_dt);
 
-    updatePlayerScore();
+    updateScoreText();
+    updateScoreMultText();
 }
 
 
@@ -173,7 +170,10 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
     if (_object->getCollisionType() == CollisionType::PROJECTILE &&
         _other->getCollisionType() == CollisionType::ALIEN)
     {
-        player_projectile = nullptr;
+        if (!mega_mode)
+        {
+            player_projectile = nullptr;
+        }
 
         aliens->removeObjectByPtr(_other);
 
@@ -195,7 +195,6 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         garbageCollectAlienProjectiles(_object);
 
         removeLife();
-        initPlayer();
 
         return true;
     }
@@ -203,7 +202,11 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
     if (_object->getCollisionType() == CollisionType::PROJECTILE &&
         _other->getCollisionType() == CollisionType::BARRIER)
     {
-        player_projectile = nullptr;
+        if (!mega_mode)
+        {
+            player_projectile = nullptr;
+            resetScoreMult();
+        }
 
         barrier_one->removeObjectByPtr(_other);
         barrier_two->removeObjectByPtr(_other);
@@ -229,6 +232,16 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
 
 
 
+void StateGameplay::initCollisionManager()
+{
+    collision_manager = std::make_unique<CollisionManager>(std::bind(
+        &StateGameplay::onCollision, this, std::placeholders::_1, std::placeholders::_2));
+
+    getObjectFactory().linkCollisionManager(collision_manager.get());
+}
+
+
+
 void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
@@ -240,15 +253,25 @@ void StateGameplay::initPlayer()
 
 void StateGameplay::initHUD()
 {
-    score_title = getObjectFactory().createText
-        ("Score:", { 20, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+    score_title = getObjectFactory().createText("Score:", { 20, 30 }, 0.7f, 
+        ASGE::COLOURS::DARKORANGE);
 
-    score_text = getObjectFactory().createText
-        (std::to_string(score), score_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
+    score_text = getObjectFactory().createText(std::to_string(score), 
+        score_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
     score_text->modifyPosition({ 150, 0 });
 
-    lives_title = getObjectFactory().createText
-        ("Lives:", { 750, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+    score_mult_title = getObjectFactory().createText("Multiplier:", { 330, 30 }, 0.7f, 
+        ASGE::COLOURS::DARKORANGE);
+
+    score_mult_text = getObjectFactory().createText(std::to_string(score_multiplier), 
+        score_mult_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
+    score_mult_text->modifyPosition({ 260, 0 });
+
+    mega_mode_bar = getObjectFactory().createText("", { 35, 700 }, 1.2f, 
+        ASGE::COLOURS::WHITE);
+
+    lives_title = getObjectFactory().createText("Lives:", { 750, 30 }, 0.7f, 
+        ASGE::COLOURS::DARKORANGE);
 
     Vector2 lives_pos{ WINDOW_WIDTH - 180, 5 };
     lives_block = std::make_unique<ObjectBlock>(lives_pos, 3, 4, 10, 20);
@@ -277,12 +300,12 @@ void StateGameplay::initAliens()
     std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
     std::string alien_img2 = "..\\..\\Resources\\Textures\\top_alien_1.png";
 
-    int scorevalue = 40;
+    int score_value = 5;
     for (int row = 0; row < max_rows; ++row)
     {
         if (row == 1)
         {
-            scorevalue = 20;
+            score_value = 2;
 
             alien_img = "..\\..\\Resources\\Textures\\middle_alien_0.png";
             alien_img2 = "..\\..\\Resources\\Textures\\middle_alien_1.png";
@@ -290,7 +313,7 @@ void StateGameplay::initAliens()
 
         if (row == 3)
         {
-            scorevalue = 10;
+            score_value = 1;
 
             alien_img = "..\\..\\Resources\\Textures\\bottom_alien_0.png";
             alien_img2 = "..\\..\\Resources\\Textures\\bottom_alien_1.png";
@@ -306,7 +329,10 @@ void StateGameplay::initAliens()
             auto spr2 = getObjectFactory().createSprite(alien_img2, alien_start, 
                 CollisionType::ALIEN);
 
-            spr->registerDeleteEvent([this, scorevalue]() { score += scorevalue; });
+            spr->registerDeleteEvent([this, score_value]() 
+                { score += score_value * score_multiplier; });
+
+            spr->registerDeleteEvent([this]() { increaseScoreMult(); });
 
             animationSprites.emplace_back(std::move(spr));
             animationSprites.emplace_back(std::move(spr2));
@@ -367,9 +393,11 @@ void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
     {
+        std::string projectile_img = "..\\..\\Resources\\Textures\\";
+        projectile_img += mega_mode ? "projectile_mega.png" : "projectile.png";
+
         player_projectile = getObjectFactory().createSprite
-            ("..\\..\\Resources\\Textures\\projectile.png", 
-            { player->getPosition().x + (player->getSize().x / 2), 
+            (projectile_img, { player->getPosition().x + (player->getSize().x / 2), 
             player->getPosition().y - 5 }, CollisionType::PROJECTILE);
     }
 }
@@ -393,6 +421,11 @@ void StateGameplay::destroyPlayerProjectileAtScreenTop()
     if (player_projectile && player_projectile->getPosition().y <= WINDOW_MARGIN)
     {
         player_projectile = nullptr;
+
+        if (!mega_mode)
+        {
+            resetScoreMult();
+        }
     }
 }
 
@@ -587,6 +620,7 @@ void StateGameplay::nextWave()
     lives_block->addObject(std::move
         (getObjectFactory().createSprite(player_img, { 0, 0 })));
 
+    player_projectile = nullptr;
     alien_projectiles.clear();
 
     initAliens();
@@ -605,16 +639,24 @@ void StateGameplay::removeLife()
     else
     {
         lives_block->popBack();
+        player->setPosition({ 100, player->getPosition().y });
     }
+
+    resetScoreMult();
+    deactivateMegaMode();
 }
 
 
 
 void StateGameplay::resetState()
 {
+    current_round = 0;
     player_lives = 3;
     score = 0;
     alien_tick_delay = 0.9f;
+    
+    resetScoreMult();
+    deactivateMegaMode();
 
     initCollisionManager();
     initPlayer();
@@ -632,6 +674,11 @@ void StateGameplay::deleteAllObjects()
 
     score_title = nullptr;
     score_text = nullptr;
+
+    score_mult_title = nullptr;
+    score_mult_text = nullptr;
+    mega_mode_bar = nullptr;
+
     lives_title = nullptr;
     lives_block = nullptr;
 
@@ -646,6 +693,8 @@ void StateGameplay::deleteAllObjects()
 
     alien_projectiles.clear();
 
+    // Collision manager needs to be destroyed last as it may have references to some
+    // objects still active in the game.
     collision_manager = nullptr;
 }
 
@@ -669,9 +718,97 @@ void StateGameplay::hideObjectsForPause(bool value) const
 
 
 
-void StateGameplay::updatePlayerScore() const
+void StateGameplay::updateScoreText() const
 {
     score_text->setString(std::to_string(score));
+}
+
+
+
+void StateGameplay::updateScoreMultText() const
+{
+    score_mult_text->setString("x" + std::to_string(score_multiplier));
+}
+
+
+
+void StateGameplay::increaseScoreMult()
+{
+    if (++score_multiplier % 20 == 0)
+    {
+        activateMegaMode();
+    }
+}
+
+
+
+void StateGameplay::resetScoreMult()
+{
+    score_multiplier = 1;
+}
+
+
+
+void StateGameplay::activateMegaMode()
+{
+    mega_mode = true;
+    mega_mode_timer = mega_mode_duration;
+    
+    if (score_mult_text)
+    {
+        score_mult_text->setColour(ASGE::COLOURS::RED);
+    }
+
+    if (mega_mode_bar)
+    {
+        mega_mode_bar->setVisible(true);
+    }
+}
+
+
+
+void StateGameplay::deactivateMegaMode()
+{
+    mega_mode = false;
+    mega_mode_timer = 0;
+
+    if (score_mult_text)
+    {
+        score_mult_text->setColour(ASGE::COLOURS::WHITE);
+    }
+
+    if (mega_mode_bar)
+    {
+        mega_mode_bar->setVisible(false);
+    }
+}
+
+
+
+void StateGameplay::updateMegaMode(float _dt)
+{
+    if (mega_mode)
+    {
+        mega_mode_timer -= _dt;
+
+        mega_mode_bar->setString("");
+        
+        for (int i = 0; i < mega_mode_timer; ++i)
+        {
+            mega_mode_bar->appendString("|||||||||||||");
+        }
+
+        if (mega_mode_timer <= 0)
+        {
+            // Let the player's last mega mode projectile expire before deactivating
+            if (player_projectile)
+            {
+                return;
+            }
+
+            deactivateMegaMode();
+        }
+    }
 }
 
 

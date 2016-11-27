@@ -51,7 +51,7 @@ float SpriteObject::getScale() const
 
 
 
-void SpriteObject::setScale(float _scale)
+void SpriteObject::setScale(float _scale) const
 {
     sprite->scale = _scale;
 }

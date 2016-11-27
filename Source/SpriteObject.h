@@ -22,7 +22,7 @@ public:
     void setSize(const Vector2 _size);
 
     float getScale() const;
-    void setScale(float _scale);
+    void setScale(float _scale) const;
 
     CollisionType getCollisionType() const;
 

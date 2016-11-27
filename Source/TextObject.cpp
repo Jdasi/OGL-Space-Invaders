@@ -27,6 +27,13 @@ void TextObject::setString(const std::string& _str)
 
 
 
+void TextObject::appendString(const std::string& _str)
+{
+    str += _str;
+}
+
+
+
 float TextObject::getScale() const
 {
     return scale;
