@@ -5,8 +5,8 @@
 
 class CollisionManager;
 
-// Abstract class to allow for the creation of game sprites and text objects
-// and decouple Game from individual states.
+// Abstract class for ObjectRenderer to be passed around without exposing
+// render specific functionality.
 class ObjectFactory
 {
 public:

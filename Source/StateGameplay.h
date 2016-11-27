@@ -11,16 +11,16 @@ class SpriteObject;
 class TextObject;
 class ObjectBlock;
 
-enum class MoveDirection
-{
-    LEFT,
-    RIGHT,
-    DOWN,
-    NONE
-};
-
 class StateGameplay : public State
 {
+    enum class MoveDirection
+    {
+        LEFT,
+        RIGHT,
+        DOWN,
+        NONE
+    };
+
 public:
     explicit StateGameplay(ObjectFactory& _factory);
     virtual ~StateGameplay();
@@ -57,12 +57,11 @@ private:
 
     void determineInvasion();
     void decreaseAlienTickDelay();
-
     void nextWave();
+    void addLife();
     void removeLife();
 
     void resetState();
-
     void deleteAllObjects();
     void hideObjectsForPause(bool value) const;
 
@@ -71,9 +70,12 @@ private:
 
     void increaseScoreMult();
     void resetScoreMult();
+
     void activateMegaMode();
     void deactivateMegaMode();
     void updateMegaMode(float _dt);
+    void updateMegaModeBar() const;
+    void handleLifeBurn();
 
     std::unique_ptr<CollisionManager> collision_manager;
 
@@ -102,6 +104,7 @@ private:
     float player_projectile_speed;
     std::atomic<bool> player_shooting;
     std::atomic<MoveDirection> player_direction;
+    std::atomic<bool> life_burn;
 
     float alien_tick_delay;
     float alien_move_timer;

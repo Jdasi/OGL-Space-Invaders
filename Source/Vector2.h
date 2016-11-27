@@ -1,8 +1,7 @@
 #pragma once
 
-class Vector2
+struct Vector2
 {
-public:
     Vector2()
         : Vector2(0, 0)
     {

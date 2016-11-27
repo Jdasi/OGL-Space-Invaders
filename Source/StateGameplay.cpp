@@ -89,6 +89,7 @@ void StateGameplay::tick(float _dt)
     collision_manager->tick();
 
     updateMegaMode(_dt);
+    handleLifeBurn();
 
     handlePlayerMovement(_dt);
     handlePlayerShot();
@@ -145,6 +146,14 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
         }
     }
 
+    if (_command == Command::MOVE_UP)
+    {
+        if (_command_state == CommandState::PRESSED)
+        {
+            life_burn = true;
+        }
+    }
+
     if (_command == Command::QUIT)
     {
         if (_command_state == CommandState::PRESSED)
@@ -195,6 +204,9 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         garbageCollectAlienProjectiles(_object);
 
         removeLife();
+        resetScoreMult();
+        deactivateMegaMode();
+        player->setPosition({ 100, player->getPosition().y });
 
         return true;
     }
@@ -267,7 +279,7 @@ void StateGameplay::initHUD()
         score_mult_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
     score_mult_text->modifyPosition({ 260, 0 });
 
-    mega_mode_bar = getObjectFactory().createText("", { 35, 700 }, 1.2f, 
+    mega_mode_bar = getObjectFactory().createText("", { 35, 700 }, 1.2f,
         ASGE::COLOURS::WHITE);
 
     lives_title = getObjectFactory().createText("Lives:", { 750, 30 }, 0.7f, 
@@ -289,7 +301,7 @@ void StateGameplay::initHUD()
 void StateGameplay::initAliens()
 {
     Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
-    int max_rows = 5;
+    int max_rows = 1;
     int max_columns = 11;
     int padding_x = 10;
     int padding_y = 20;
@@ -396,7 +408,7 @@ void StateGameplay::handlePlayerShot()
         std::string projectile_img = "..\\..\\Resources\\Textures\\";
         projectile_img += mega_mode ? "projectile_mega.png" : "projectile.png";
 
-        float mega_offset = mega_mode ? 2 : 0;
+        int mega_offset = mega_mode ? 2 : 0;
         Vector2 shoot_pos = { (player->getPosition().x + (player->getSize().x / 2)) 
             - mega_offset, player->getPosition().y - 5 };
 
@@ -461,19 +473,19 @@ void StateGameplay::handleAlienMovement(float _dt)
 
     if (alien_move_timer >= alien_tick_delay)
     {
-        MoveDirection aliens_prev_direction = aliens_direction;
-        
-        if (aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY || 
+        MoveDirection last_direction = aliens_direction;
+
+        if (aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY ||
             aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY)
         {
             aliens_direction = MoveDirection::DOWN;
         }
 
-        bool right_edge_closer = aliens->getEdgeLeft() - WINDOW_LEFT_BOUNDARY > 
-            -(aliens->getEdgeRight() - WINDOW_RIGHT_BOUNDARY);
-
-        if (aliens_prev_direction == MoveDirection::DOWN)
+        if (last_direction == MoveDirection::DOWN)
         {
+            bool right_edge_closer = aliens->getEdgeLeft() - WINDOW_LEFT_BOUNDARY >
+                -(aliens->getEdgeRight() - WINDOW_RIGHT_BOUNDARY);
+
             if (right_edge_closer)
             {
                 aliens_direction = MoveDirection::LEFT;
@@ -486,6 +498,7 @@ void StateGameplay::handleAlienMovement(float _dt)
 
         moveAliens(_dt);
         animateAliens();
+
         alien_move_timer = 0;
     }
 }
@@ -613,20 +626,28 @@ void StateGameplay::decreaseAlienTickDelay()
 
 void StateGameplay::nextWave()
 {
-    ++player_lives;
     ++current_round;
 
     alien_tick_delay += 0.3f;
     aliens_direction = MoveDirection::RIGHT;
 
-    std::string player_img = "..\\..\\Resources\\Textures\\player.png";
-    lives_block->addObject(std::move
-        (getObjectFactory().createSprite(player_img, { 0, 0 })));
-
     player_projectile = nullptr;
     alien_projectiles.clear();
 
     initAliens();
+}
+
+
+
+void StateGameplay::addLife()
+{
+    ++player_lives;
+
+    if (lives_block)
+    {
+        lives_block->addObject(std::move(getObjectFactory().createSprite(
+            "..\\..\\Resources\\Textures\\player.png", { 0, 0 })));
+    }
 }
 
 
@@ -642,11 +663,9 @@ void StateGameplay::removeLife()
     else
     {
         lives_block->popBack();
-        player->setPosition({ 100, player->getPosition().y });
     }
 
-    resetScoreMult();
-    deactivateMegaMode();
+
 }
 
 
@@ -656,7 +675,7 @@ void StateGameplay::resetState()
     current_round = 0;
     player_lives = 3;
     score = 0;
-    alien_tick_delay = 0.9f;
+    alien_tick_delay = 0.5f;
     
     resetScoreMult();
     deactivateMegaMode();
@@ -741,6 +760,11 @@ void StateGameplay::increaseScoreMult()
     {
         activateMegaMode();
     }
+
+    if (score_multiplier % 50 == 0)
+    {
+        addLife();
+    }
 }
 
 
@@ -794,15 +818,11 @@ void StateGameplay::updateMegaMode(float _dt)
     {
         mega_mode_timer -= _dt;
 
-        mega_mode_bar->setString("");
-        for (int i = 0; i < mega_mode_timer; ++i)
-        {
-            mega_mode_bar->appendString("|||||||||||||");
-        }
+        updateMegaModeBar();
 
         if (mega_mode_timer <= 0)
         {
-            // Let the player's last mega mode projectile expire before deactivating
+            // Wait for the last mega mode projectile to expire
             if (player_projectile)
             {
                 return;
@@ -810,6 +830,41 @@ void StateGameplay::updateMegaMode(float _dt)
 
             deactivateMegaMode();
         }
+    }
+}
+
+
+
+void StateGameplay::updateMegaModeBar() const
+{
+    mega_mode_bar->setString("");
+
+    for (int i = 0; i < mega_mode_timer; ++i)
+    {
+        mega_mode_bar->appendString("|||||||||||||");
+    }
+}
+
+
+
+void StateGameplay::handleLifeBurn()
+{
+    if (!life_burn)
+    {
+        return;
+    }
+
+    life_burn = false;
+
+    if (player_projectile)
+    {
+        return;
+    }
+
+    if (player_lives > 1)
+    {
+        removeLife();
+        activateMegaMode();
     }
 }
 
