@@ -29,7 +29,7 @@ class StateGameplay : public State
     };
 
 public:
-    explicit StateGameplay(ObjectFactory& _factory);
+    explicit StateGameplay(GameData& _game_data);
     virtual ~StateGameplay();
 
     void onStateEnter() override;
@@ -42,8 +42,10 @@ public:
 private:
     void initCollisionManager();
     void initPlayer();
+    void initTitles();
     void initHUD();
     void initAliens();
+
     void initBarriers();
     void makeBarrier(std::unique_ptr<ObjectBlock>& _block, const std::string& _img, 
         const Vector2 _pos, int _max_rows, int _max_columns, int _padding_x, 
@@ -65,8 +67,10 @@ private:
     void determineInvasion();
     void decreaseAlienTickDelay(float _amount);
     void nextWave();
+
     void addLife();
     void removeLife();
+    void respawnPlayer();
 
     void resetState();
     void destroyAllObjects();
@@ -96,8 +100,8 @@ private:
     std::unique_ptr<TextObject> score_title;
     std::unique_ptr<TextObject> score_text;
 
-    std::unique_ptr<TextObject> score_mult_title;
-    std::unique_ptr<TextObject> score_mult_text;
+    std::unique_ptr<TextObject> score_multiplier_title;
+    std::unique_ptr<TextObject> score_multiplier_text;
     std::unique_ptr<TextObject> mega_mode_bar;
 
     std::unique_ptr<TextObject> lives_title;
@@ -109,7 +113,6 @@ private:
 
     std::unique_ptr<ObjectBlock> aliens;
     std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
-
     std::vector<std::unique_ptr<SpriteObject>> explosions;
 
     int player_lives;
@@ -132,8 +135,8 @@ private:
     int current_round;
     bool reset_on_enter;
     std::atomic<bool> paused;
+    bool running;
 
-    int score;
     int score_multiplier;
     bool mega_mode;
     float mega_mode_timer;

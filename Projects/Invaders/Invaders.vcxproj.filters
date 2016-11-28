@@ -131,5 +131,8 @@
     <ClInclude Include="..\..\Source\RandomEngine.h">
       <Filter>Headers\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\GameData.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 #include "StatePause.h"
 #include "Game.h"
 
-StatePause::StatePause(ObjectFactory& _factory)
-    : State(_factory)
+StatePause::StatePause(GameData& _game_data)
+    : State(_game_data)
     , blink_timer(0)
     , blink_delay(0.1f)
 {
@@ -18,7 +18,8 @@ StatePause::~StatePause()
 
 void StatePause::onStateEnter()
 {
-    pause_title = getObjectFactory().createText("PAUSED", { 550, 300 }, 1.0f, ASGE::COLOURS::ALICEBLUE);
+    pause_title = gameData().object_factory->createText("PAUSED", { 550, 300 }, 1.0f, 
+        ASGE::COLOURS::ALICEBLUE);
 }
 
 

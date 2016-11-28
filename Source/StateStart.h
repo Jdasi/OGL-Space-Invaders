@@ -8,11 +8,12 @@
 
 class SpriteObject;
 class TextObject;
+struct GameData;
 
 class StateStart : public State
 {
 public:
-    explicit StateStart(ObjectFactory& _factory);
+    explicit StateStart(GameData& _game_data);
     virtual ~StateStart();
 
     void onStateEnter() override;

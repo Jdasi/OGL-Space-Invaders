@@ -10,7 +10,7 @@ class ObjectBlock;
 class StatePause : public State
 {
 public:
-    explicit StatePause(ObjectFactory& _factory);
+    explicit StatePause(GameData& _game_data);
     virtual ~StatePause();
 
     void onStateEnter() override;

@@ -46,10 +46,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Files;$(ProjectDir)Files\Libs\Engine\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\include;$(ProjectDir)Files;$(ProjectDir)Files\Libs\Engine\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -63,7 +66,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine__Debug_$(PlatformTarget).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrKlang.lib;Engine__Debug_$(PlatformTarget).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent />
@@ -85,7 +88,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine__Release_$(PlatformTarget).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrKlang.lib;Engine__Release_$(PlatformTarget).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -109,6 +112,7 @@
     <ClInclude Include="..\..\Source\Commands.h" />
     <ClInclude Include="..\..\Source\Constants.h" />
     <ClInclude Include="..\..\Source\Game.h" />
+    <ClInclude Include="..\..\Source\GameData.h" />
     <ClInclude Include="..\..\Source\GameFont.h" />
     <ClInclude Include="..\..\Source\ObjectBlock.h" />
     <ClInclude Include="..\..\Source\ObjectFactory.h" />

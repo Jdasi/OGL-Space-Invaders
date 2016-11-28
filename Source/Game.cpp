@@ -2,6 +2,7 @@
 
 #include <Engine/Input.h>
 #include <Engine/Keys.h>
+#include <irrKlang.h>
 
 #include "Game.h"
 #include "GameFont.h"
@@ -32,6 +33,8 @@ InvadersGame::~InvadersGame()
     // objects from the object renderer while deleting sprites.
     state_handler = nullptr;
     object_renderer = nullptr;
+
+    audio_engine->stopAllSounds();
 }
 
 
@@ -62,6 +65,13 @@ bool InvadersGame::init()
     object_renderer = std::make_unique<ObjectRenderer>(renderer);
 
     initStateHandler();
+
+    if (!initAudio())
+    {
+        return false;
+    }
+
+    initGameData();
 
 	return true;
 }
@@ -178,6 +188,30 @@ bool InvadersGame::initFonts()
 
 
 
+void InvadersGame::initGameData()
+{
+    game_data.object_factory = object_renderer.get();
+    game_data.audio_engine = audio_engine.get();
+}
+
+
+
+bool InvadersGame::initAudio()
+{
+    audio_engine.reset(irrklang::createIrrKlangDevice());
+
+    if (!audio_engine)
+    {
+        return false;
+    }
+
+    audio_engine->setSoundVolume(0.5f);
+
+    return true;
+}
+
+
+
 /**
 *   @brief   Initialises the State Handler for Game.
 *   @details The game contains four states: Start, Gameplay, Gameover, Pause.
@@ -191,13 +225,13 @@ void InvadersGame::initStateHandler()
     state_handler = std::make_unique<StateHandler>();
 
     state_handler->registerState
-    (GameState::START, std::make_unique<StateStart>(*object_renderer));
+        (GameState::START, std::make_unique<StateStart>(game_data));
     state_handler->registerState
-    (GameState::GAMEPLAY, std::make_unique<StateGameplay>(*object_renderer));
+        (GameState::GAMEPLAY, std::make_unique<StateGameplay>(game_data));
     state_handler->registerState
-    (GameState::GAMEOVER, std::make_unique<StateGameOver>(*object_renderer));
+        (GameState::GAMEOVER, std::make_unique<StateGameOver>(game_data));
     state_handler->registerState
-    (GameState::PAUSE, std::make_unique<StatePause>(*object_renderer));
+        (GameState::PAUSE, std::make_unique<StatePause>(game_data));
 
     state_handler->pushState(GameState::START);
 }

@@ -5,6 +5,12 @@
 #include "StateHandler.h"
 #include "ObjectRenderer.h"
 #include "Timer.h"
+#include "GameData.h"
+
+namespace irrklang
+{
+    class ISoundEngine;
+}
 
 /**
 *  An OpenGL Game based on ASGE.
@@ -27,12 +33,16 @@ public:
 private:
     bool initRenderer();
     bool initFonts();
+    void initGameData();
+    bool initAudio();
     void initStateHandler();
 
     void input(int _key, int _action) const;
 
 	int  callback_id;           /**< The callback ID assigned by the game engine. */
     std::unique_ptr<ObjectRenderer> object_renderer;
+    std::unique_ptr<irrklang::ISoundEngine> audio_engine;
     std::unique_ptr<StateHandler> state_handler;
     Timer timer;
+    GameData game_data;    
 };

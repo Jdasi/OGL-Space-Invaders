@@ -2,8 +2,8 @@
 #include "Game.h"
 
 
-StateStart::StateStart(ObjectFactory& _factory)
-    : State(_factory)
+StateStart::StateStart(GameData& _game_data)
+    : State(_game_data)
     , menu_index(0)
 {
 }
@@ -21,7 +21,8 @@ void StateStart::onStateEnter()
 {
     menu_index = 0;
 
-    logo = getObjectFactory().createSprite("..\\..\\Resources\\Textures\\logo.png", { 150, 100 });
+    logo = gameData().object_factory->createSprite(
+        "..\\..\\Resources\\Textures\\logo.png", { 150, 100 });
 
     initMenuTitles();
     initMenuFunctions();
@@ -84,11 +85,11 @@ void StateStart::onCommand(const Command _command, const CommandState _command_s
 
 void StateStart::initMenuTitles()
 {
-    menu_titles.push_back(getObjectFactory().createText("Play Game", { 500, 400 }, 1.0f,
-        ASGE::COLOURS::WHITE));
+    menu_titles.push_back(gameData().object_factory->createText("Play Game", { 500, 400 }, 
+        1.0f, ASGE::COLOURS::WHITE));
 
-    menu_titles.push_back(getObjectFactory().createText("Quit Game", { 500, 450 }, 1.0f,
-        ASGE::COLOURS::WHITE));
+    menu_titles.push_back(gameData().object_factory->createText("Quit Game", { 500, 450 }, 
+        1.0f, ASGE::COLOURS::WHITE));
 }
 
 

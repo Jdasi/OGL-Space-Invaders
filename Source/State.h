@@ -2,16 +2,16 @@
 #include "Commands.h"
 
 class StateHandler;
-class ObjectFactory;
 class SpriteObject;
+struct GameData;
 
 class State
 {
 friend class StateHandler;
 
 public:
-    explicit State(ObjectFactory& _factory)
-        : factory(_factory)
+    explicit State(GameData& _game_data)
+        : game_data(_game_data)
         , handler(nullptr)
         , exit(false)
     {
@@ -33,9 +33,9 @@ protected:
         return handler;
     }
 
-    ObjectFactory& getObjectFactory() const
+    GameData& gameData() const
     {
-        return factory;
+        return game_data;
     }
 
     bool shouldExit() const
@@ -54,7 +54,7 @@ private:
         handler = _handler;
     }
 
-    ObjectFactory& factory;
+    GameData& game_data;
     StateHandler* handler;
     bool exit;
 };

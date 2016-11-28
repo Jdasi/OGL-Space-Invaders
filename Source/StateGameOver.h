@@ -10,9 +10,8 @@ class ObjectBlock;
 class StateGameOver : public State
 {
 public:
-    explicit StateGameOver(ObjectFactory& _factory);
+    explicit StateGameOver(GameData& _game_data);
     virtual ~StateGameOver();
-
     void onStateEnter() override;
     void onStateLeave() override;
 
@@ -20,6 +19,17 @@ public:
     void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
+    void initTitles();
+
     std::unique_ptr<TextObject> gameover_title;
     std::unique_ptr<TextObject> instruction_title;
+
+    std::unique_ptr<TextObject> score_title;
+    std::unique_ptr<TextObject> score_multiplier_title;
+
+    std::unique_ptr<TextObject> score_text;
+    std::unique_ptr<TextObject> score_multiplier_text;
+
+    float blink_timer;
+    float blink_delay;
 };
