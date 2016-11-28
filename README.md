@@ -20,6 +20,7 @@
 **D**: 		Move Right  
 **Space**:	Shoot / Menu Accept  
 **Enter**:	Shoot / Menu Accept  
+**Escape**:	Return to Main Menu / Quit   
 
 ## 2. GAMEPLAY FEATURES
 ### 2.1. Alien Score Values
