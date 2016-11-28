@@ -96,6 +96,7 @@
     <ClCompile Include="..\..\Source\main.cpp" />
     <ClCompile Include="..\..\Source\ObjectBlock.cpp" />
     <ClCompile Include="..\..\Source\ObjectRenderer.cpp" />
+    <ClCompile Include="..\..\Source\RandomEngine.cpp" />
     <ClCompile Include="..\..\Source\SpriteObject.cpp" />
     <ClCompile Include="..\..\Source\StateGameOver.cpp" />
     <ClCompile Include="..\..\Source\StateGameplay.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="..\..\Source\ObjectBlock.h" />
     <ClInclude Include="..\..\Source\ObjectFactory.h" />
     <ClInclude Include="..\..\Source\ObjectRenderer.h" />
+    <ClInclude Include="..\..\Source\RandomEngine.h" />
     <ClInclude Include="..\..\Source\Timer.h" />
     <ClInclude Include="..\..\Source\Vector2.h" />
     <ClInclude Include="..\..\Source\Renderable.h" />

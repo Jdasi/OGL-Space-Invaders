@@ -193,7 +193,7 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         }
         else
         {
-            decreaseAlienTickDelay();
+            decreaseAlienTickDelay(0.007f);
         }
 
         return true;
@@ -280,7 +280,7 @@ void StateGameplay::initHUD()
         score_mult_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
     score_mult_text->modifyPosition({ 260, 0 });
 
-    mega_mode_bar = getObjectFactory().createText("", { 35, 700 }, 1.2f,
+    mega_mode_bar = getObjectFactory().createText("", { 35, 700 }, 1.15f,
         ASGE::COLOURS::WHITE);
 
     lives_title = getObjectFactory().createText("Lives:", { 750, 30 }, 0.7f, 
@@ -302,7 +302,7 @@ void StateGameplay::initHUD()
 void StateGameplay::initAliens()
 {
     Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
-    int max_rows = 1;
+    int max_rows = 5;
     int max_columns = 11;
     int padding_x = 10;
     int padding_y = 20;
@@ -547,11 +547,8 @@ void StateGameplay::animateAliens() const
 
 void StateGameplay::generateAlienShootDelay()
 {
-    float temp_delay = 0.25f / alien_tick_delay;
-    float delay_modifier = temp_delay > 3.0f ? 3.0f : temp_delay;
-
-    alien_shoot_delay = (static_cast<float>(rand()) /
-        static_cast<float>(RAND_MAX / (4.0f - delay_modifier))) + 0.1f;
+    float delay_modifier = 0.2f / alien_tick_delay;
+    alien_shoot_delay = random_engine.randomFloat(0.2f, 3.0f - delay_modifier);
 }
 
 
@@ -612,18 +609,16 @@ void StateGameplay::determineInvasion()
     }
     else
     {
-        decreaseAlienTickDelay();
+        decreaseAlienTickDelay(0.014f);
     }
 }
 
 
 
-void StateGameplay::decreaseAlienTickDelay()
+void StateGameplay::decreaseAlienTickDelay(float _amount)
 {
-    if (alien_tick_delay >= 0.1f)
-    {
-        alien_tick_delay -= 0.007f;
-    }
+    float new_delay = alien_tick_delay - _amount;
+    alien_tick_delay = new_delay > 0.1f ? new_delay : 0.1f;
 }
 
 
@@ -679,7 +674,7 @@ void StateGameplay::resetState()
     current_round = 0;
     player_lives = 3;
     score = 0;
-    alien_tick_delay = 0.5f;
+    alien_tick_delay = 0.1f;
     
     resetScoreMult();
     deactivateMegaMode();
@@ -843,9 +838,9 @@ void StateGameplay::updateMegaModeBar() const
 {
     mega_mode_bar->setString("");
 
-    for (int i = 0; i < mega_mode_timer; ++i)
+    for (float i = 0; i < mega_mode_timer; i += 0.15f)
     {
-        mega_mode_bar->appendString("|||||||||||||");
+        mega_mode_bar->appendString("||");
     }
 }
 

@@ -6,6 +6,7 @@
 #include "State.h"
 #include "CollisionManager.h"
 #include "Vector2.h"
+#include "RandomEngine.h"
 
 class SpriteObject;
 class TextObject;
@@ -62,7 +63,7 @@ private:
     void garbageCollectAlienProjectiles(SpriteObject* _object);
 
     void determineInvasion();
-    void decreaseAlienTickDelay();
+    void decreaseAlienTickDelay(float _amount);
     void nextWave();
     void addLife();
     void removeLife();
@@ -131,4 +132,6 @@ private:
     bool mega_mode;
     float mega_mode_timer;
     float mega_mode_duration;
+
+    RandomEngine random_engine;
 };
