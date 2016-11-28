@@ -16,13 +16,12 @@ StateStart::~StateStart()
 
 
 
-
 void StateStart::onStateEnter()
 {
     menu_index = 0;
 
     logo = gameData().object_factory->createSprite(
-        "..\\..\\Resources\\Textures\\logo.png", { 150, 100 });
+        TEXTURE_PATH + LOGO_IMG, { 150, 100 });
 
     initMenuTitles();
     initMenuFunctions();

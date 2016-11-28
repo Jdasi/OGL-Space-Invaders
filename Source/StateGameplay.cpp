@@ -9,18 +9,18 @@
 
 StateGameplay::StateGameplay(GameData& _game_data)
     : State(_game_data)
-    , player_lives(3)
-    , player_speed(200)
-    , player_projectile_speed(500)
+    , player_lives(PLAYER_START_LIVES)
+    , player_speed(PLAYER_SPEED)
+    , player_projectile_speed(PLAYER_PROJECTILE_SPEED)
     , player_shooting(false)
     , player_direction(MoveDirection::NONE)
     , alien_tick_delay(0)
     , alien_move_timer(0)
     , alien_shoot_delay(0)
     , alien_shoot_timer(0)
-    , alien_side_speed(5)
-    , alien_down_speed(20)
-    , alien_projectile_speed(250)
+    , alien_side_speed(ALIEN_SIDE_SPEED)
+    , alien_down_speed(ALIEN_DOWN_SPEED)
+    , alien_projectile_speed(ALIEN_PROJECTILE_SPEED)
     , aliens_direction(MoveDirection::RIGHT)
     , last_edge_hit(Edge::LEFT)
     , current_round(0)
@@ -30,7 +30,7 @@ StateGameplay::StateGameplay(GameData& _game_data)
     , score_multiplier(0)
     , mega_mode(false)
     , mega_mode_timer(0)
-    , mega_mode_duration(3)
+    , mega_mode_duration(MEGA_MODE_DURATION)
 {
 }
 
@@ -195,7 +195,7 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         }
         else
         {
-            decreaseAlienTickDelay(0.007f);
+            decreaseAlienTickDelay(TICK_REDUCTION_DEATH);
         }
 
         return true;
@@ -258,13 +258,14 @@ void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
     player = gameData().object_factory->createSprite
-        ("..\\..\\Resources\\Textures\\player.png", player_start, CollisionType::SHIP);
+        (TEXTURE_PATH + PLAYER_IMG, player_start, CollisionType::SHIP);
 }
 
 
 
 void StateGameplay::initTitles()
 {
+    // Score TextObjects.
     score_title = gameData().object_factory->createText("Score:", { 20, 30 }, 0.7f,
         ASGE::COLOURS::DARKORANGE);
 
@@ -272,34 +273,40 @@ void StateGameplay::initTitles()
         score_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
     score_text->modifyPosition({ 150, 0 });
 
-    score_multiplier_title = gameData().object_factory->createText("Multiplier:", { 330, 30 }, 
-        0.7f, ASGE::COLOURS::DARKORANGE);
+    // Score Multiplier TextObjects.
+    score_multiplier_title = gameData().object_factory->createText("Multiplier:", 
+        { 330, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
 
     score_multiplier_text = gameData().object_factory->createText(
         std::to_string(score_multiplier), score_multiplier_title->getPosition(), 
         0.7f, ASGE::COLOURS::WHITE);
     score_multiplier_text->modifyPosition({ 260, 0 });
 
-    mega_mode_bar = gameData().object_factory->createText("", { 35, 700 }, 1.15f,
-        ASGE::COLOURS::WHITE);
-
+    // Other TextObjects.
     lives_title = gameData().object_factory->createText("Lives:", { 750, 30 }, 0.7f,
         ASGE::COLOURS::DARKORANGE);
+
+    mega_mode_bar = gameData().object_factory->createText("", { 35, 700 }, 1.15f,
+        ASGE::COLOURS::WHITE);
 }
 
 
 
 void StateGameplay::initHUD()
 {
-
     Vector2 lives_pos{ WINDOW_WIDTH - 180, 5 };
-    lives_block = std::make_unique<ObjectBlock>(lives_pos, 3, 4, 10, 20);
+    int max_rows = 4;
+    int max_columns = 3;
+    int padding_x = 10;
+    int padding_y = 20;
 
-    std::string player_img = "..\\..\\Resources\\Textures\\player.png";
+    lives_block = std::make_unique<ObjectBlock>(lives_pos, max_rows, max_columns, 
+        padding_x, padding_y);
+
     for (int i = 0; i < player_lives; ++i)
     {
-        lives_block->addObject(std::move(
-            gameData().object_factory->createSprite(player_img, { 0, 0 })));
+        lives_block->addObject(std::move(gameData().object_factory->createSprite(
+            TEXTURE_PATH + PLAYER_IMG, { 0, 0 })));
     }
 }
 
@@ -316,49 +323,53 @@ void StateGameplay::initAliens()
     aliens = std::make_unique<ObjectBlock>(alien_start, max_rows, max_columns, 
         padding_x, padding_y);
 
-    std::string alien_img = "..\\..\\Resources\\Textures\\top_alien_0.png";
-    std::string alien_img2 = "..\\..\\Resources\\Textures\\top_alien_1.png";
+    std::string alien_frame_0 = TEXTURE_PATH + TOP_ALIEN_IMG_0;
+    std::string alien_frame_1 = TEXTURE_PATH + TOP_ALIEN_IMG_1;
 
-    int score_value = 5;
+    int score_value = TOP_ALIEN_VALUE;
     for (int row = 0; row < max_rows; ++row)
     {
         if (row == 1)
         {
-            score_value = 2;
+            score_value = MIDDLE_ALIEN_VALUE;
 
-            alien_img = "..\\..\\Resources\\Textures\\middle_alien_0.png";
-            alien_img2 = "..\\..\\Resources\\Textures\\middle_alien_1.png";
+            alien_frame_0 = TEXTURE_PATH + MIDDLE_ALIEN_IMG_0;
+            alien_frame_1 = TEXTURE_PATH + MIDDLE_ALIEN_IMG_1;
         }
 
         if (row == 3)
         {
-            score_value = 1;
+            score_value = BOTTOM_ALIEN_VALUE;
 
-            alien_img = "..\\..\\Resources\\Textures\\bottom_alien_0.png";
-            alien_img2 = "..\\..\\Resources\\Textures\\bottom_alien_1.png";
+            alien_frame_0 = TEXTURE_PATH + BOTTOM_ALIEN_IMG_0;
+            alien_frame_1 = TEXTURE_PATH + BOTTOM_ALIEN_IMG_1;
         }
 
         for (int col = 0; col < max_columns; ++col)
         {
-            std::vector<std::unique_ptr<SpriteObject>> animationSprites;
+            // Setup sprites.
+            auto spr_0 = gameData().object_factory->createSprite(alien_frame_0, 
+                alien_start, CollisionType::ALIEN);
 
-            auto spr = gameData().object_factory->createSprite(alien_img, alien_start,
-                CollisionType::ALIEN);
+            auto spr_1 = gameData().object_factory->createSprite(alien_frame_1, 
+                alien_start, CollisionType::ALIEN);
 
-            auto spr2 = gameData().object_factory->createSprite(alien_img2, alien_start,
-                CollisionType::ALIEN);
-
-            spr->registerDeleteEvent([this, score_value]() 
+            // Setup delete events.
+            spr_0->registerDeleteEvent([this, score_value]()
                 { if (running) gameData().score += score_value * score_multiplier; });
 
-            spr->registerDeleteEvent([this]() { if (running) increaseScoreMult(); });
+            spr_0->registerDeleteEvent([this]() { if (running) increaseScoreMult(); });
 
-            animationSprites.emplace_back(std::move(spr));
-            animationSprites.emplace_back(std::move(spr2));
+            // Setup vector.
+            std::vector<std::unique_ptr<SpriteObject>> animationSprites;
+
+            animationSprites.emplace_back(std::move(spr_0));
+            animationSprites.emplace_back(std::move(spr_1));
 
             auto animatedSprite = std::make_unique<AnimatedSprite>(std::move
                 (animationSprites));
 
+            // Add to ObjectBlock.
             aliens->addObject(std::move(animatedSprite));
         }
     }
@@ -372,7 +383,7 @@ void StateGameplay::initAliens()
 
 void StateGameplay::initBarriers()
 {
-    std::string barrier_img = "..\\..\\Resources\\Textures\\barrier.png";
+    std::string barrier_img = TEXTURE_PATH + BARRIER_IMG;
 
     int max_rows = 3;
     int max_columns = 12;
@@ -413,11 +424,11 @@ void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
     {
-        std::string projectile_img = "..\\..\\Resources\\Textures\\";
-        projectile_img += mega_mode ? "projectile_mega.png" : "projectile.png";
+        std::string projectile_img = TEXTURE_PATH;
+        projectile_img += mega_mode ? PROJECTILE_MEGA_IMG : PROJECTILE_IMG;
 
-        std::string projectile_sound = "..\\..\\Resources\\Audio\\";
-        projectile_sound += mega_mode ? "player_shot_mega.wav" : "player_shot.wav";
+        std::string projectile_sound = AUDIO_PATH;
+        projectile_sound += mega_mode ? PLAYER_SHOT_MEGA_CUE : PLAYER_SHOT_CUE;
         gameData().audio_engine->play2D(projectile_sound.c_str(), false);
 
         int mega_offset = mega_mode ? 2 : 0;
@@ -557,8 +568,9 @@ void StateGameplay::animateAliens() const
 
 void StateGameplay::generateAlienShootDelay()
 {
-    float delay_modifier = 0.2f / alien_tick_delay;
-    alien_shoot_delay = random_engine.randomFloat(0.2f, 3.0f - delay_modifier);
+    float delay_modifier = ALIEN_SHOOT_DELAY_GROWTH / alien_tick_delay;
+    alien_shoot_delay = random_engine.randomFloat(ALIEN_SHOOT_DELAY_MIN, 
+        ALIEN_SHOOT_DELAY_MAX - delay_modifier);
 }
 
 
@@ -569,12 +581,12 @@ void StateGameplay::handleAlienShot(float _dt)
 
     if (alien_shoot_timer >= alien_shoot_delay)
     {
-        gameData().audio_engine->play2D("..\\..\\Resources\\Audio\\alien_shot.wav", false);
+        gameData().audio_engine->play2D((AUDIO_PATH + ALIEN_SHOT_CUE).c_str(), false);
 
         Vector2 shoot_pos = aliens->getRandomShootingPosition();
 
         alien_projectiles.push_back(std::move(gameData().object_factory->createSprite
-            ("..\\..\\Resources\\Textures\\projectile.png", shoot_pos, 
+            (TEXTURE_PATH + PROJECTILE_IMG, shoot_pos, 
             CollisionType::ALIENPROJECTILE)));
         
         generateAlienShootDelay();
@@ -630,7 +642,7 @@ void StateGameplay::determineInvasion()
 void StateGameplay::decreaseAlienTickDelay(float _amount)
 {
     float new_delay = alien_tick_delay - _amount;
-    alien_tick_delay = new_delay > 0.1f ? new_delay : 0.1f;
+    alien_tick_delay = new_delay > ALIEN_TICK_DELAY_MIN ? new_delay : ALIEN_TICK_DELAY_MIN;
 }
 
 
@@ -654,10 +666,12 @@ void StateGameplay::addLife()
 {
     ++player_lives;
 
+    gameData().audio_engine->play2D((AUDIO_PATH + EXTRA_LIFE_CUE).c_str(), false);
+
     if (lives_block)
     {
         lives_block->addObject(std::move(gameData().object_factory->createSprite(
-            "..\\..\\Resources\\Textures\\player.png", { 0, 0 })));
+            TEXTURE_PATH + PLAYER_IMG, { 0, 0 })));
     }
 }
 
@@ -665,7 +679,7 @@ void StateGameplay::addLife()
 
 void StateGameplay::removeLife()
 {
-    gameData().audio_engine->play2D("..\\..\\Resources\\Audio\\player_death.wav", false);
+    gameData().audio_engine->play2D((AUDIO_PATH + PLAYER_DEATH_CUE).c_str(), false);
 
     if (--player_lives <= 0)
     {
@@ -696,9 +710,9 @@ void StateGameplay::respawnPlayer()
 void StateGameplay::resetState()
 {
     current_round = 0;
-    player_lives = 3;
+    player_lives = PLAYER_START_LIVES;
     gameData().score = 0;
-    alien_tick_delay = 0.9f;
+    alien_tick_delay = ALIEN_TICK_DELAY_START;
     
     resetScoreMult();
     deactivateMegaMode();
@@ -786,12 +800,12 @@ void StateGameplay::updateScoreMultText() const
 
 void StateGameplay::increaseScoreMult()
 {
-    if (++score_multiplier % 20 == 0)
+    if (++score_multiplier % MEGA_MODE_THRESHOLD == 0)
     {
         activateMegaMode();
     }
 
-    if (score_multiplier % 50 == 0)
+    if (score_multiplier % EXTRA_LIFE_THRESHOLD == 0)
     {
         addLife();
     }
@@ -816,7 +830,7 @@ void StateGameplay::activateMegaMode()
     mega_mode = true;
     mega_mode_timer = mega_mode_duration;
 
-    gameData().audio_engine->play2D("..\\..\\Resources\\Audio\\power_up.wav", false);
+    gameData().audio_engine->play2D((AUDIO_PATH + POWER_UP_CUE).c_str(), false);
     
     if (score_multiplier_text)
     {
@@ -836,7 +850,7 @@ void StateGameplay::deactivateMegaMode()
     mega_mode = false;
     mega_mode_timer = 0;
 
-    gameData().audio_engine->play2D("..\\..\\Resources\\Audio\\power_down.wav", false);
+    gameData().audio_engine->play2D((AUDIO_PATH + POWER_DOWN_CUE).c_str(), false);
 
     if (score_multiplier_text)
     {
@@ -876,12 +890,16 @@ void StateGameplay::updateMegaMode(float _dt)
 
 void StateGameplay::updateMegaModeBar() const
 {
+    std::string temp_str;
     mega_mode_bar->setString("");
 
+    // 0.15f gives a smooth enough transition.
     for (float i = 0; i < mega_mode_timer; i += 0.15f)
     {
-        mega_mode_bar->appendString("||");
+        temp_str.append("||");
     }
+
+    mega_mode_bar->setString(temp_str);
 }
 
 
@@ -934,10 +952,10 @@ void StateGameplay::garbageCollectExplosions()
 
 void StateGameplay::createExplosion(Vector2 _pos)
 {
-    gameData().audio_engine->play2D("..\\..\\Resources\\Audio\\alien_death.wav", false);
+    gameData().audio_engine->play2D((AUDIO_PATH + ALIEN_DEATH_CUE).c_str(), false);
 
     auto spr = gameData().object_factory->createSprite(
-        "..\\..\\Resources\\Textures\\explosion.png", _pos, CollisionType::NONE, 0.25f);
+        TEXTURE_PATH + EXPLOSION_IMG, _pos, CollisionType::NONE, 0.25f);
     spr->setScale(1.1f);
 
     explosions.push_back(std::move(spr));
