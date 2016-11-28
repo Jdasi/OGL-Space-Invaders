@@ -38,7 +38,7 @@ StateGameplay::StateGameplay(ObjectFactory& _factory)
 
 StateGameplay::~StateGameplay()
 {
-    deleteAllObjects();
+    destroyAllObjects();
 }
 
 
@@ -57,7 +57,7 @@ void StateGameplay::onStateEnter()
     }
     else
     {
-        deleteAllObjects();
+        destroyAllObjects();
     }
 }
 
@@ -67,7 +67,7 @@ void StateGameplay::onStateLeave()
 {
     if (reset_on_enter)
     {
-        deleteAllObjects();
+        destroyAllObjects();
     }
     else if (paused)
     {
@@ -77,7 +77,7 @@ void StateGameplay::onStateLeave()
     {
         reset_on_enter = true;
 
-        deleteAllObjects();
+        destroyAllObjects();
     }
 
     player_direction = MoveDirection::NONE;
@@ -88,6 +88,8 @@ void StateGameplay::onStateLeave()
 void StateGameplay::tick(float _dt)
 {
     collision_manager->tick();
+
+    updateExplosions(_dt);
 
     updateMegaMode(_dt);
     handleLifeBurn();
@@ -185,6 +187,7 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
             player_projectile = nullptr;
         }
 
+        createExplosion(_other->getPosition());
         aliens->removeObjectByPtr(_other);
 
         if (aliens->remainingObjects() == 0)
@@ -674,7 +677,7 @@ void StateGameplay::resetState()
     current_round = 0;
     player_lives = 3;
     score = 0;
-    alien_tick_delay = 0.1f;
+    alien_tick_delay = 0.9f;
     
     resetScoreMult();
     deactivateMegaMode();
@@ -688,7 +691,7 @@ void StateGameplay::resetState()
 
 
 
-void StateGameplay::deleteAllObjects()
+void StateGameplay::destroyAllObjects()
 {
     player = nullptr;
     player_projectile = nullptr;
@@ -713,6 +716,7 @@ void StateGameplay::deleteAllObjects()
     }
 
     alien_projectiles.clear();
+    explosions.clear();
 
     // Collision manager needs to be destroyed last as it may have references to some
     // objects still active in the game.
@@ -865,6 +869,40 @@ void StateGameplay::handleLifeBurn()
         removeLife();
         activateMegaMode();
     }
+}
+
+
+
+void StateGameplay::updateExplosions(float _dt)
+{
+    for (auto& explosion : explosions)
+    {
+        explosion->tick(_dt);
+    }
+
+    garbageCollectExplosions();
+}
+
+
+
+void StateGameplay::garbageCollectExplosions()
+{
+    explosions.erase(std::remove_if(
+        explosions.begin(),
+        explosions.end(),
+        [](std::unique_ptr<SpriteObject>& spr) { return spr->expired(); }),
+        explosions.end());
+}
+
+
+
+void StateGameplay::createExplosion(Vector2 _pos)
+{
+    auto spr = getObjectFactory().createSprite(
+        "..\\..\\Resources\\Textures\\explosion.png", _pos, CollisionType::NONE, 0.25f);
+    spr->setScale(1.1f);
+
+    explosions.push_back(std::move(spr));
 }
 
 

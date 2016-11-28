@@ -13,7 +13,7 @@ public:
 
     std::unique_ptr<SpriteObject> createSprite
         (const std::string& _texture, const Vector2 _pos, 
-        const CollisionType _collision_type) override;
+        const CollisionType _collision_type, float _lifetime) override;
 
     std::unique_ptr<TextObject> createText
         (const std::string& _str, const Vector2 _pos, const float _size, 

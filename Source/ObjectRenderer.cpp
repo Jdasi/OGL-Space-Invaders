@@ -19,11 +19,11 @@ ObjectRenderer::~ObjectRenderer()
 
 
 std::unique_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _texture, 
-    const Vector2 _pos, const CollisionType _collision_type)
+    const Vector2 _pos, const CollisionType _collision_type, float _lifetime)
 {
     auto object = std::make_unique<SpriteObject>(renderer, 
         std::bind(&ObjectRenderer::deleteRenderObject, this, std::placeholders::_1),
-         _texture, _pos, _collision_type);
+         _texture, _pos, _collision_type, _lifetime);
 
     if (collision_manager)
     {

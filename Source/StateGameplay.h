@@ -69,7 +69,7 @@ private:
     void removeLife();
 
     void resetState();
-    void deleteAllObjects();
+    void destroyAllObjects();
     void hideObjectsForPause(bool value) const;
 
     void updateScoreText() const;
@@ -83,6 +83,10 @@ private:
     void updateMegaMode(float _dt);
     void updateMegaModeBar() const;
     void handleLifeBurn();
+
+    void updateExplosions(float _dt);
+    void garbageCollectExplosions();
+    void createExplosion(Vector2 _pos);
 
     std::unique_ptr<CollisionManager> collision_manager;
 
@@ -105,6 +109,8 @@ private:
 
     std::unique_ptr<ObjectBlock> aliens;
     std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
+
+    std::vector<std::unique_ptr<SpriteObject>> explosions;
 
     int player_lives;
     float player_speed;

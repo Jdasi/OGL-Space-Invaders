@@ -3,9 +3,10 @@
 
 SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer, 
     std::function<void(Renderable*)> _delete_render_object, const std::string& _texture,
-    const Vector2 _pos, const CollisionType _collision_type)
+    const Vector2 _pos, const CollisionType _collision_type, float _lifetime)
     : Renderable(_renderer, _delete_render_object, _pos)
     , collision_type(_collision_type)
+    , lifetime(_lifetime)
 {
     sprite = renderer->createSprite();
     sprite->position[0] = static_cast<int>(_pos.x);
@@ -68,6 +69,20 @@ CollisionType SpriteObject::getCollisionType() const
 void SpriteObject::registerDeleteEvent(std::function<void()> _event)
 {
     on_delete_events.push_back(_event);
+}
+
+
+
+void SpriteObject::tick(float _dt)
+{
+    lifetime -= _dt;
+}
+
+
+
+bool SpriteObject::expired() const
+{
+    return lifetime < 0;
 }
 
 
