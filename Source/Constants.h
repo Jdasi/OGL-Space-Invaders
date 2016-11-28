@@ -38,6 +38,8 @@ static constexpr float ALIEN_TICK_DELAY_START   = 0.9f;
 static constexpr float ALIEN_TICK_DELAY_MIN     = 0.1f;
 static constexpr float TICK_REDUCTION_DEATH     = 0.007f;
 static constexpr float TICK_REDUCTION_INVADE    = 0.014f;
+static constexpr float NEXT_WAVE_TICK_INCREASE  = 0.3f;
+
 
 static constexpr int TOP_ALIEN_VALUE            = 5;
 static constexpr int MIDDLE_ALIEN_VALUE         = 2;

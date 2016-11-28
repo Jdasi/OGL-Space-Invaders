@@ -295,8 +295,8 @@ void StateGameplay::initTitles()
 void StateGameplay::initHUD()
 {
     Vector2 lives_pos{ WINDOW_WIDTH - 180, 5 };
-    int max_rows = 4;
-    int max_columns = 3;
+    int max_rows = 3;
+    int max_columns = 4;
     int padding_x = 10;
     int padding_y = 20;
 
@@ -651,7 +651,7 @@ void StateGameplay::nextWave()
 {
     ++current_round;
 
-    alien_tick_delay += 0.3f;
+    alien_tick_delay += NEXT_WAVE_TICK_INCREASE;
     aliens_direction = MoveDirection::RIGHT;
 
     player_projectile = nullptr;
