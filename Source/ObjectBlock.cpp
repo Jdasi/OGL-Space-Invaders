@@ -4,7 +4,8 @@
 #include "AnimatedSprite.h"
 #include "Constants.h"
 
-ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_rows, int _max_columns, int _padding_x, int _padding_y)
+ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_rows, int _max_columns, 
+    int _padding_x, int _padding_y)
     : start_pos(_start_pos)
     , max_columns(_max_columns)
     , padding_x(_padding_x)
