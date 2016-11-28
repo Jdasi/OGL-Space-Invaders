@@ -711,8 +711,10 @@ void StateGameplay::resetState()
 {
     current_round = 0;
     player_lives = PLAYER_START_LIVES;
-    gameData().score = 0;
     alien_tick_delay = ALIEN_TICK_DELAY_START;
+
+    gameData().score = 0;
+    gameData().highest_score_multiplier = 0;
     
     resetScoreMult();
     deactivateMegaMode();

@@ -33,14 +33,7 @@ void StatePause::onStateLeave()
 
 void StatePause::tick(float _dt)
 {
-    blink_timer += _dt;
-
-    if (blink_timer >= blink_delay)
-    {
-        blink_timer = 0;
-
-        pause_title->setVisible(!pause_title->isVisible());
-    }
+    blinkPauseTitle(_dt);
 }
 
 
@@ -53,6 +46,20 @@ void StatePause::onCommand(const Command _command, const CommandState _command_s
         {
             getHandler()->pushState(GameState::GAMEPLAY);
         }
+    }
+}
+
+
+
+void StatePause::blinkPauseTitle(float _dt)
+{
+    blink_timer += _dt;
+
+    if (blink_timer >= blink_delay)
+    {
+        blink_timer = 0;
+
+        pause_title->setVisible(!pause_title->isVisible());
     }
 }
 

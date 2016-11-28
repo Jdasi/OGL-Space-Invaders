@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <atomic>
 
 #include "State.h"
 
@@ -14,12 +15,13 @@ public:
     virtual ~StateGameOver();
     void onStateEnter() override;
     void onStateLeave() override;
-
     void tick(float _dt) override;
     void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
     void initTitles();
+    void blinkInstructionTitle(float _dt);
+    void handleReturnCommand();
 
     std::unique_ptr<TextObject> gameover_title;
     std::unique_ptr<TextObject> instruction_title;
@@ -32,4 +34,6 @@ private:
 
     float blink_timer;
     float blink_delay;
+
+    std::atomic<bool> returning;
 };

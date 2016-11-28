@@ -76,3 +76,5 @@ static const std::string PLAYER_DEATH_CUE       { "player_death.wav" };
 static const std::string ALIEN_DEATH_CUE        { "alien_death.wav" };
 static const std::string POWER_UP_CUE           { "power_up.wav" };
 static const std::string POWER_DOWN_CUE         { "power_down.wav" };
+static const std::string MENU_CLICK_CUE         { "menu_click.wav" };
+static const std::string MENU_ACCEPT_CUE        { "menu_accept.wav" };

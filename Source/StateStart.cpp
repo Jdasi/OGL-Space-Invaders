@@ -103,6 +103,8 @@ void StateStart::initMenuFunctions()
 
 void StateStart::updateMenuSelection() const
 {
+    gameData().audio_engine->play2D((AUDIO_PATH + MENU_CLICK_CUE).c_str(), false);
+
     for (auto& title : menu_titles)
     {
         title->setColour(ASGE::COLOURS::WHITE);
@@ -139,6 +141,8 @@ void StateStart::cycleIndexDown()
 
 void StateStart::executeMenuFunction()
 {
+    gameData().audio_engine->play2D((AUDIO_PATH + MENU_ACCEPT_CUE).c_str(), false);
+
     menu_functions.at(menu_index)();
 }
 
