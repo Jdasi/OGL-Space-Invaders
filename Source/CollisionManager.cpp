@@ -1,4 +1,5 @@
 #include "CollisionManager.h"
+#include "CollisionTypes.h"
 #include "SpriteObject.h"
 #include "StateHandler.h"
 
@@ -45,6 +46,15 @@ void CollisionManager::testForCollisions() const
 {
     for (auto& object : collision_objects)
     {
+        // Prune out objects that are never going to collide with each other.
+        CollisionType object_collision_type = object->getCollisionType();
+        if (object_collision_type == CollisionType::BARRIER ||
+            object_collision_type == CollisionType::SHIP ||
+            object_collision_type == CollisionType::ALIEN)
+        {
+            continue;
+        }
+
         if (!object->isVisible())
         {
             continue;
@@ -71,6 +81,7 @@ void CollisionManager::testForCollisions() const
             {
                 if (on_collision_event(object, other))
                 {
+                    // Something was deleted, stop iterating.
                     return;
                 }
             }
