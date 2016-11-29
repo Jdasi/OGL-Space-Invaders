@@ -34,10 +34,8 @@ static const float ALIEN_SIDE_SPEED             = 5.0f;
 static const float ALIEN_DOWN_SPEED             = 20.0f;
 static const float ALIEN_PROJECTILE_SPEED       = 250.0f;
 static const float ALIEN_SHOOT_DELAY_MIN        = 0.05f;
-static const float ALIEN_SHOOT_DELAY_MAX        = 1.0f;
-static const float ALIEN_SHOOT_DELAY_GROWTH     = 0.035f;
-static const float ALIEN_TICK_DELAY_MIN         = 0.1f;
-static const float ALIEN_TICK_BLOCK_FACTOR      = 0.15f;
+static const float ALIEN_SHOOT_DELAY_SOFT_MAX   = 1.0f;
+static const float ALIEN_TICK_DELAY_MIN         = 0.02f;
 
 static const int TOP_ALIEN_VALUE                = 5;
 static const int MIDDLE_ALIEN_VALUE             = 2;

@@ -195,7 +195,7 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         }
         else
         {
-            setAlienTickDelay(aliens->remainingObjects() * ALIEN_TICK_BLOCK_FACTOR);
+            updateAlienTickDelay();
         }
 
         return true;
@@ -319,7 +319,7 @@ void StateGameplay::initAliens()
     aliens_last_edge_hit = Edge::LEFT;
 
     makeAlienBlock();
-    setAlienTickDelay(aliens->remainingObjects() * ALIEN_TICK_BLOCK_FACTOR);
+    updateAlienTickDelay();
     generateAlienShootDelay();
 }
 
@@ -576,9 +576,10 @@ void StateGameplay::animateAliens() const
 
 void StateGameplay::generateAlienShootDelay()
 {
-    float delay_modifier = ALIEN_SHOOT_DELAY_GROWTH * aliens->remainingObjects();
+    float delay_modifier = (aliens->remainingObjects() - 1) * ALIEN_SHOOT_DELAY_MIN;
+
     alien_shoot_delay = random_engine.randomFloat(ALIEN_SHOOT_DELAY_MIN, 
-        ALIEN_SHOOT_DELAY_MAX + delay_modifier);
+        ALIEN_SHOOT_DELAY_SOFT_MAX + delay_modifier);
 }
 
 
@@ -643,9 +644,9 @@ void StateGameplay::determineInvasion() const
 
 
 
-void StateGameplay::setAlienTickDelay(float _modifier)
+void StateGameplay::updateAlienTickDelay()
 {
-    alien_tick_delay = ALIEN_TICK_DELAY_MIN * _modifier;
+    alien_tick_delay = aliens->remainingObjects() * ALIEN_TICK_DELAY_MIN;
 }
 
 

@@ -43,7 +43,7 @@ Your Score Multiplier is reset to 1 if:
 Whenever you achieve a Score Multiplier that is a multiple of 20, Mega Mode is activated for 3 seconds.
 While Mega Mode is active, you receive the following benefits:  
   
-	- Enemies are worth twice their normal value 
+	- Enemies are worth twice their normal score value 
 	- Your projectile is not destroyed when it hits an alien or a barrier  
 	- Your Score Multiplier is not reset if your projectile hits the top of the screen.  
 

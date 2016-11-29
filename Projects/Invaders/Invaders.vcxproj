@@ -124,6 +124,7 @@
     <ClInclude Include="..\..\Source\Game.h" />
     <ClInclude Include="..\..\Source\GameData.h" />
     <ClInclude Include="..\..\Source\GameFont.h" />
+    <ClInclude Include="..\..\Source\JMath.h" />
     <ClInclude Include="..\..\Source\MenuItem.h" />
     <ClInclude Include="..\..\Source\ObjectBlock.h" />
     <ClInclude Include="..\..\Source\ObjectFactory.h" />

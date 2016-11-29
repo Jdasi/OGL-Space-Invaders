@@ -167,5 +167,8 @@
     <ClInclude Include="..\..\Source\MenuItem.h">
       <Filter>Headers\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\JMath.h">
+      <Filter>Headers\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

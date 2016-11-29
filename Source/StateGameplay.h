@@ -73,7 +73,7 @@ private:
     void garbageCollectAlienProjectiles(SpriteObject* _object);
 
     void determineInvasion() const;
-    void setAlienTickDelay(float _modifier);
+    void updateAlienTickDelay();
     void nextWave();
 
     void addLife(const SoundEnabled _setting = SoundEnabled::TRUE);
