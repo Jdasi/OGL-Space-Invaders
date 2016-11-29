@@ -22,7 +22,7 @@ StateGameplay::StateGameplay(GameData& _game_data)
     , alien_down_speed(ALIEN_DOWN_SPEED)
     , alien_projectile_speed(ALIEN_PROJECTILE_SPEED)
     , aliens_direction(MoveDirection::RIGHT)
-    , last_edge_hit(Edge::LEFT)
+    , aliens_last_edge_hit(Edge::LEFT)
     , current_round(0)
     , reset_on_enter(true)
     , paused(false)
@@ -195,7 +195,7 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         }
         else
         {
-            setAlienTickDelay(aliens->remainingObjects() * 0.33f);
+            setAlienTickDelay(aliens->remainingObjects() * ALIEN_TICK_BLOCK_FACTOR);
         }
 
         return true;
@@ -316,29 +316,35 @@ void StateGameplay::initTitles()
 void StateGameplay::initAliens()
 {
     aliens_direction = MoveDirection::RIGHT;
-    last_edge_hit = Edge::LEFT;
+    aliens_last_edge_hit = Edge::LEFT;
 
-    setAlienTickDelay((ALIEN_ROWS_MAX * ALIEN_COLUMNS_MAX) * 0.33f);
+    makeAlienBlock();
+    setAlienTickDelay(aliens->remainingObjects() * ALIEN_TICK_BLOCK_FACTOR);
     generateAlienShootDelay();
+}
 
+
+
+void StateGameplay::makeAlienBlock()
+{
     Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
     int max_rows = ALIEN_ROWS_MAX;
     int max_columns = ALIEN_COLUMNS_MAX;
     int padding_x = 10;
     int padding_y = 20;
 
-    aliens = std::make_unique<ObjectBlock>(alien_start, max_rows, max_columns, 
+    aliens = std::make_unique<ObjectBlock>(alien_start, max_rows, max_columns,
         padding_x, padding_y);
 
     std::string alien_frame_0 = TEXTURE_PATH + TOP_ALIEN_IMG_0;
     std::string alien_frame_1 = TEXTURE_PATH + TOP_ALIEN_IMG_1;
 
-    int score_value = TOP_ALIEN_VALUE;
+    int value = TOP_ALIEN_VALUE;
     for (int row = 0; row < max_rows; ++row)
     {
         if (row == 1)
         {
-            score_value = MIDDLE_ALIEN_VALUE;
+            value = MIDDLE_ALIEN_VALUE;
 
             alien_frame_0 = TEXTURE_PATH + MIDDLE_ALIEN_IMG_0;
             alien_frame_1 = TEXTURE_PATH + MIDDLE_ALIEN_IMG_1;
@@ -346,7 +352,7 @@ void StateGameplay::initAliens()
 
         if (row == 3)
         {
-            score_value = BOTTOM_ALIEN_VALUE;
+            value = BOTTOM_ALIEN_VALUE;
 
             alien_frame_0 = TEXTURE_PATH + BOTTOM_ALIEN_IMG_0;
             alien_frame_1 = TEXTURE_PATH + BOTTOM_ALIEN_IMG_1;
@@ -355,17 +361,16 @@ void StateGameplay::initAliens()
         for (int col = 0; col < max_columns; ++col)
         {
             // Setup sprites.
-            auto spr_0 = gameData().object_factory->createSprite(alien_frame_0, 
+            auto spr_0 = gameData().object_factory->createSprite(alien_frame_0,
                 alien_start, CollisionType::ALIEN);
 
-            auto spr_1 = gameData().object_factory->createSprite(alien_frame_1, 
+            auto spr_1 = gameData().object_factory->createSprite(alien_frame_1,
                 alien_start, CollisionType::ALIEN);
 
             // Setup delete events.
-            spr_0->registerDeleteEvent([this, score_value]()
-                { if (apply_score) gameData().score += score_value * score_multiplier; });
+            spr_0->registerDeleteEvent([this, value]() { increaseScore(value); });
 
-            spr_0->registerDeleteEvent([this]() { if (apply_score) increaseScoreMult(); });
+            spr_0->registerDeleteEvent([this]() { increaseScoreMult(); });
 
             // Setup vector.
             std::vector<std::unique_ptr<SpriteObject>> animationSprites;
@@ -373,8 +378,8 @@ void StateGameplay::initAliens()
             animationSprites.emplace_back(std::move(spr_0));
             animationSprites.emplace_back(std::move(spr_1));
 
-            auto animatedSprite = std::make_unique<AnimatedSprite>(std::move
-                (animationSprites));
+            auto animatedSprite = std::make_unique<AnimatedSprite>(std::move(
+                animationSprites));
 
             // Add to ObjectBlock.
             aliens->addObject(std::move(animatedSprite));
@@ -504,21 +509,21 @@ void StateGameplay::handleAlienMovement(float _dt)
         if (aliens->getEdgeLeft() <= WINDOW_LEFT_BOUNDARY)
         {
             aliens_direction = MoveDirection::DOWN;
-            last_edge_hit = Edge::LEFT;
+            aliens_last_edge_hit = Edge::LEFT;
         }
         else if (aliens->getEdgeRight() >= WINDOW_RIGHT_BOUNDARY)
         {
             aliens_direction = MoveDirection::DOWN;
-            last_edge_hit = Edge::RIGHT;
+            aliens_last_edge_hit = Edge::RIGHT;
         }
 
         if (last_direction == MoveDirection::DOWN)
         {
-            if (last_edge_hit == Edge::RIGHT)
+            if (aliens_last_edge_hit == Edge::RIGHT)
             {
                 aliens_direction = MoveDirection::LEFT;
             }
-            else if (last_edge_hit == Edge::LEFT)
+            else if (aliens_last_edge_hit == Edge::LEFT)
             {
                 aliens_direction = MoveDirection::RIGHT;
             }
@@ -533,7 +538,7 @@ void StateGameplay::handleAlienMovement(float _dt)
 
 
 
-void StateGameplay::moveAliens(float _dt)
+void StateGameplay::moveAliens(float _dt) const
 {
     switch (aliens_direction)
     {
@@ -571,9 +576,9 @@ void StateGameplay::animateAliens() const
 
 void StateGameplay::generateAlienShootDelay()
 {
-    float delay_modifier = ALIEN_SHOOT_DELAY_MIN + (ALIEN_SHOOT_DELAY_MAX / aliens->remainingObjects());
+    float delay_modifier = ALIEN_SHOOT_DELAY_GROWTH * aliens->remainingObjects();
     alien_shoot_delay = random_engine.randomFloat(ALIEN_SHOOT_DELAY_MIN, 
-        delay_modifier);
+        ALIEN_SHOOT_DELAY_MAX + delay_modifier);
 }
 
 
@@ -804,8 +809,30 @@ void StateGameplay::updateScoreMultText() const
 
 
 
+void StateGameplay::increaseScore(int _amount)
+{
+    if (!apply_score)
+    {
+        return;
+    }
+
+    if (mega_mode)
+    {
+        _amount *= 2;
+    }
+
+    gameData().score += _amount * score_multiplier;
+}
+
+
+
 void StateGameplay::increaseScoreMult()
 {
+    if (!apply_score)
+    {
+        return;
+    }
+
     if (++score_multiplier % MEGA_MODE_THRESHOLD == 0)
     {
         activateMegaMode();

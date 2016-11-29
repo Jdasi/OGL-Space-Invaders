@@ -94,10 +94,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\AnimatedSprite.cpp" />
+    <ClCompile Include="..\..\Source\BoundingBox.cpp" />
     <ClCompile Include="..\..\Source\CollisionManager.cpp" />
     <ClCompile Include="..\..\Source\GameData.cpp" />
     <ClCompile Include="..\..\Source\GameFont.cpp" />
     <ClCompile Include="..\..\Source\main.cpp" />
+    <ClCompile Include="..\..\Source\MenuItem.cpp" />
     <ClCompile Include="..\..\Source\ObjectBlock.cpp" />
     <ClCompile Include="..\..\Source\ObjectFactory.cpp" />
     <ClCompile Include="..\..\Source\ObjectRenderer.cpp" />
@@ -114,6 +116,7 @@
     <ClCompile Include="..\..\Source\Timer.cpp" />
     <ClCompile Include="..\..\Source\Vector2.cpp" />
     <ClInclude Include="..\..\Source\AnimatedSprite.h" />
+    <ClInclude Include="..\..\Source\BoundingBox.h" />
     <ClInclude Include="..\..\Source\CollisionManager.h" />
     <ClInclude Include="..\..\Source\CollisionTypes.h" />
     <ClInclude Include="..\..\Source\Commands.h" />
@@ -121,6 +124,7 @@
     <ClInclude Include="..\..\Source\Game.h" />
     <ClInclude Include="..\..\Source\GameData.h" />
     <ClInclude Include="..\..\Source\GameFont.h" />
+    <ClInclude Include="..\..\Source\MenuItem.h" />
     <ClInclude Include="..\..\Source\ObjectBlock.h" />
     <ClInclude Include="..\..\Source\ObjectFactory.h" />
     <ClInclude Include="..\..\Source\ObjectRenderer.h" />

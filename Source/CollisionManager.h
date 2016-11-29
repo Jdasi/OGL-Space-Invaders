@@ -17,7 +17,6 @@ public:
 
 private:
     void testForCollisions() const;
-    bool collisionTest(SpriteObject* _object, SpriteObject* _other) const;
 
     std::function<bool(SpriteObject*, SpriteObject*)> on_collision_event;
     std::vector<SpriteObject*> collision_objects;

@@ -9,8 +9,6 @@ SpriteObject::SpriteObject(const std::shared_ptr<ASGE::Renderer>& _renderer,
     , lifetime(_lifetime)
 {
     sprite = renderer->createSprite();
-    sprite->position[0] = static_cast<int>(_pos.x);
-    sprite->position[1] = static_cast<int>(_pos.y);
 
     if (!sprite->loadTexture(_texture.c_str()))
     {
@@ -66,6 +64,13 @@ CollisionType SpriteObject::getCollisionType() const
 
 
 
+BoundingBox SpriteObject::getBoundingBox() const
+{
+    return bounding_box;
+}
+
+
+
 void SpriteObject::registerDeleteEvent(std::function<void()> _event)
 {
     on_delete_events.push_back(_event);
@@ -93,6 +98,10 @@ void SpriteObject::render()
     {
         sprite->position[0] = static_cast<int>(position.x);
         sprite->position[1] = static_cast<int>(position.y);
+
+        bounding_box.setPosition(position);
+        bounding_box.setSize({ static_cast<float>(sprite->size[0]), 
+            static_cast<float>(sprite->size[1]) });
 
         sprite->render(renderer);
     }

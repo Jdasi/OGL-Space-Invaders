@@ -50,7 +50,9 @@ private:
     void initPlayer();
     void initLives();
     void initTitles();
+
     void initAliens();
+    void makeAlienBlock();
 
     void initBarriers();
     void makeBarrier(std::unique_ptr<ObjectBlock>& _block, const std::string& _img, 
@@ -63,7 +65,7 @@ private:
     void handlePlayerMovement(float _dt) const;
 
     void handleAlienMovement(float _dt);
-    void moveAliens(float _dt);
+    void moveAliens(float _dt) const;
     void animateAliens() const;
     void generateAlienShootDelay();
     void handleAlienShot(float _dt);
@@ -85,6 +87,7 @@ private:
     void updateScoreText() const;
     void updateScoreMultText() const;
 
+    void increaseScore(int amount);
     void increaseScoreMult();
     void resetScoreMult();
 
@@ -136,7 +139,7 @@ private:
     float alien_down_speed;
     float alien_projectile_speed;
     MoveDirection aliens_direction;
-    Edge last_edge_hit;
+    Edge aliens_last_edge_hit;
 
     int current_round;
     bool reset_on_enter;

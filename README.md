@@ -32,7 +32,7 @@
 
 ### 2.2. Score Multiplier
 The score you get from aliens is based on your current Score Multiplier.
-Your Score Multiplier starts at 1. Killing aliens increases your Score Multiplier.
+Your Score Multiplier starts at 1. Destroying an alien increases your Score Multiplier by 1.
 Your Score Multiplier is reset to 1 if:  
   
     - You are hit by an enemy projectile  
@@ -43,7 +43,7 @@ Your Score Multiplier is reset to 1 if:
 Whenever you achieve a Score Multiplier that is a multiple of 20, Mega Mode is activated for 3 seconds.
 While Mega Mode is active, you receive the following benefits:  
   
-	- Your projectile turns red and is larger  
+	- Enemies are worth twice their normal value 
 	- Your projectile is not destroyed when it hits an alien or a barrier  
 	- Your Score Multiplier is not reset if your projectile hits the top of the screen.  
 
@@ -53,7 +53,11 @@ Mega Mode deactivates immediately if you are killed while it is active.
 If you have two or more lives, you can press 'W' to expend a life to immediately activate Mega Mode for 3 seconds.
 
 ### 2.5. Extra Lives
-When you achieve a Score Multiplier that is a multiple of 50, you are rewarded an extra life.  
+You are rewarded an extra life when you:  
+  
+	- Achieve a Score Multiplier that is a multiple of 100
+	- Defeat a wave of aliens
+  
 A maximum of 8 lives will be displayed at a time, although you can still accumulate more.
 
 ## 3. IRRKLANG SOUND ENGINE

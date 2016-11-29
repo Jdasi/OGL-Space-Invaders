@@ -6,6 +6,7 @@
 #include <Engine/Sprite.h>
 
 #include "Renderable.h"
+#include "BoundingBox.h"
 
 enum class CollisionType;
 
@@ -25,6 +26,7 @@ public:
     void setScale(float _scale) const;
 
     CollisionType getCollisionType() const;
+    BoundingBox getBoundingBox() const;
 
     void registerDeleteEvent(std::function<void()> _event);
 
@@ -37,5 +39,6 @@ private:
     std::unique_ptr<ASGE::Sprite> sprite;
     std::vector<std::function<void()>> on_delete_events;
     CollisionType collision_type;
+    BoundingBox bounding_box;
     float lifetime;
 };

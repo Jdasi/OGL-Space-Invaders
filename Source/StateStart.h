@@ -9,6 +9,7 @@
 class SpriteObject;
 class TextObject;
 struct GameData;
+struct MenuItem;
 
 class StateStart : public State
 {
@@ -23,8 +24,7 @@ public:
     void onCommand(const Command _command, const CommandState _command_state) override;
 
 private:
-    void initMenuTitles();
-    void initMenuFunctions();
+    void initMenuItems();
     void updateMenuSelection() const;
 
     void cycleIndexUp();
@@ -32,8 +32,6 @@ private:
     void executeMenuFunction();
 
     std::unique_ptr<SpriteObject> logo;
-
-    std::vector<std::unique_ptr<TextObject>> menu_titles;
-    std::vector<std::function<void()>> menu_functions;
+    std::vector<MenuItem> menu_items;
     std::atomic<int> menu_index;
 };

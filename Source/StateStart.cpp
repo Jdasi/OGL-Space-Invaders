@@ -1,6 +1,6 @@
 #include "StateStart.h"
 #include "Game.h"
-
+#include "MenuItem.h"
 
 StateStart::StateStart(GameData& _game_data)
     : State(_game_data)
@@ -21,8 +21,7 @@ void StateStart::onStateEnter()
     logo = gameData().object_factory->createSprite(
         TEXTURE_PATH + LOGO_IMG, { 150, 100 });
 
-    initMenuTitles();
-    initMenuFunctions();
+    initMenuItems();
 
     updateMenuSelection();
 }
@@ -32,7 +31,7 @@ void StateStart::onStateEnter()
 void StateStart::onStateLeave()
 {
     logo = nullptr;
-    menu_titles.clear();
+    menu_items.clear();
 }
 
 
@@ -80,21 +79,15 @@ void StateStart::onCommand(const Command _command, const CommandState _command_s
 
 
 
-void StateStart::initMenuTitles()
+void StateStart::initMenuItems()
 {
-    menu_titles.push_back(gameData().object_factory->createText("Play Game", { 500, 400 }, 
-        1.0f, ASGE::COLOURS::WHITE));
+    menu_items.push_back(MenuItem(gameData().object_factory->createText(
+        "Play Game", { 500, 400 }, 1.0f, ASGE::COLOURS::WHITE),
+        [this]() { getHandler()->pushState(GameState::GAMEPLAY); }));
 
-    menu_titles.push_back(gameData().object_factory->createText("Quit Game", { 500, 450 }, 
-        1.0f, ASGE::COLOURS::WHITE));
-}
-
-
-
-void StateStart::initMenuFunctions()
-{
-    menu_functions.push_back([this]() { getHandler()->pushState(GameState::GAMEPLAY); });
-    menu_functions.push_back([this]() { setExit(true); });
+    menu_items.push_back(MenuItem(gameData().object_factory->createText(
+        "Quit Game", { 500, 450 }, 1.0f, ASGE::COLOURS::WHITE),
+        [this]() { setExit(true); }));
 }
 
 
@@ -103,22 +96,19 @@ void StateStart::updateMenuSelection() const
 {
     gameData().audio_engine->play2D((AUDIO_PATH + MENU_CLICK_CUE).c_str(), false);
 
-    for (auto& title : menu_titles)
+    for (auto& item : menu_items)
     {
-        title->setColour(ASGE::COLOURS::WHITE);
+        item.title->setColour(ASGE::COLOURS::WHITE);
     }
 
-    menu_titles.at(menu_index)->setColour(ASGE::COLOURS::GREENYELLOW);
+    menu_items.at(menu_index).title->setColour(ASGE::COLOURS::GREENYELLOW);
 }
 
 
 
 void StateStart::cycleIndexUp()
 {
-    if (--menu_index < 0)
-    {
-        menu_index = menu_titles.size() - 1;
-    }
+    menu_index = ++menu_index % menu_items.size();
 
     updateMenuSelection();
 }
@@ -127,10 +117,7 @@ void StateStart::cycleIndexUp()
 
 void StateStart::cycleIndexDown()
 {
-    if (++menu_index >= menu_titles.size())
-    {
-        menu_index = 0;
-    }
+    menu_index = --menu_index % menu_items.size();
 
     updateMenuSelection();
 }
@@ -141,7 +128,7 @@ void StateStart::executeMenuFunction()
 {
     gameData().audio_engine->play2D((AUDIO_PATH + MENU_ACCEPT_CUE).c_str(), false);
 
-    menu_functions.at(menu_index)();
+    menu_items.at(menu_index).function();
 }
 
 
