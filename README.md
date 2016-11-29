@@ -53,7 +53,8 @@ Mega Mode deactivates immediately if you are killed while it is active.
 If you have two or more lives, you can press 'W' to expend a life to immediately activate Mega Mode for 3 seconds.
 
 ### 2.5. Extra Lives
-When you achieve a Score Multiplier that is a multiple of 50, you are rewarded an extra life.
+When you achieve a Score Multiplier that is a multiple of 50, you are rewarded an extra life.  
+A maximum of 8 lives will be displayed at a time, although you can still accumulate more.
 
 ## 3. IRRKLANG SOUND ENGINE
 This game uses the irrKlang sound engine.  
