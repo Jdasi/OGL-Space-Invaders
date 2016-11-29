@@ -21,6 +21,7 @@ static constexpr int WINDOW_BOTTOM_BOUNDARY     = WINDOW_HEIGHT - WINDOW_MARGIN;
 // STATE GAMEPLAY SETTINGS
 // ======================================================================================
 static constexpr int PLAYER_START_LIVES         = 3;
+static constexpr int MAX_DISPLAYED_LIVES        = 8;
 static constexpr float PLAYER_SPEED             = 200.0f;
 static constexpr float PLAYER_PROJECTILE_SPEED  = 500.0f;
 static constexpr float MEGA_MODE_DURATION       = 3.0f;

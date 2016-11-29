@@ -28,6 +28,12 @@ class StateGameplay : public State
         RIGHT
     };
 
+    enum class SoundEnabled
+    {
+        TRUE,
+        FALSE
+    };
+
 public:
     explicit StateGameplay(GameData& _game_data);
     virtual ~StateGameplay();
@@ -42,8 +48,8 @@ public:
 private:
     void initCollisionManager();
     void initPlayer();
+    void initLives();
     void initTitles();
-    void initHUD();
     void initAliens();
 
     void initBarriers();
@@ -68,8 +74,8 @@ private:
     void decreaseAlienTickDelay(float _amount);
     void nextWave();
 
-    void addLife();
-    void removeLife();
+    void addLife(const SoundEnabled _setting = SoundEnabled::TRUE);
+    void removeLife(const SoundEnabled _setting = SoundEnabled::TRUE);
     void respawnPlayer();
 
     void resetState();

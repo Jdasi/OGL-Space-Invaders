@@ -9,7 +9,7 @@
 
 StateGameplay::StateGameplay(GameData& _game_data)
     : State(_game_data)
-    , player_lives(PLAYER_START_LIVES)
+    , player_lives(0)
     , player_speed(PLAYER_SPEED)
     , player_projectile_speed(PLAYER_PROJECTILE_SPEED)
     , player_shooting(false)
@@ -263,6 +263,27 @@ void StateGameplay::initPlayer()
 
 
 
+void StateGameplay::initLives()
+{
+    player_lives = 0;
+
+    Vector2 lives_pos{ WINDOW_WIDTH - 180, 5 };
+    int max_rows = 3;
+    int max_columns = 4;
+    int padding_x = 10;
+    int padding_y = 10;
+
+    lives_block = std::make_unique<ObjectBlock>(lives_pos, max_rows, max_columns,
+        padding_x, padding_y);
+
+    for (int i = 0; i < PLAYER_START_LIVES; ++i)
+    {
+        addLife(SoundEnabled::FALSE);
+    }
+}
+
+
+
 void StateGameplay::initTitles()
 {
     // Score TextObjects.
@@ -292,28 +313,13 @@ void StateGameplay::initTitles()
 
 
 
-void StateGameplay::initHUD()
-{
-    Vector2 lives_pos{ WINDOW_WIDTH - 180, 5 };
-    int max_rows = 3;
-    int max_columns = 4;
-    int padding_x = 10;
-    int padding_y = 20;
-
-    lives_block = std::make_unique<ObjectBlock>(lives_pos, max_rows, max_columns, 
-        padding_x, padding_y);
-
-    for (int i = 0; i < player_lives; ++i)
-    {
-        lives_block->addObject(std::move(gameData().object_factory->createSprite(
-            TEXTURE_PATH + PLAYER_IMG, { 0, 0 })));
-    }
-}
-
-
-
 void StateGameplay::initAliens()
 {
+    alien_tick_delay = ALIEN_TICK_DELAY_START;
+    aliens_direction = MoveDirection::RIGHT;
+    last_edge_hit = Edge::LEFT;
+    generateAlienShootDelay();
+
     Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
     int max_rows = 5;
     int max_columns = 11;
@@ -373,10 +379,6 @@ void StateGameplay::initAliens()
             aliens->addObject(std::move(animatedSprite));
         }
     }
-
-    aliens_direction = MoveDirection::RIGHT;
-    last_edge_hit = Edge::LEFT;
-    generateAlienShootDelay();
 }
 
 
@@ -662,13 +664,16 @@ void StateGameplay::nextWave()
 
 
 
-void StateGameplay::addLife()
+void StateGameplay::addLife(const SoundEnabled _setting)
 {
     ++player_lives;
 
-    gameData().audio_engine->play2D((AUDIO_PATH + EXTRA_LIFE_CUE).c_str(), false);
+    if (_setting == SoundEnabled::TRUE)
+    {
+        gameData().audio_engine->play2D((AUDIO_PATH + EXTRA_LIFE_CUE).c_str(), false);
+    }
 
-    if (lives_block)
+    if (lives_block && lives_block->remainingObjects() < MAX_DISPLAYED_LIVES)
     {
         lives_block->addObject(std::move(gameData().object_factory->createSprite(
             TEXTURE_PATH + PLAYER_IMG, { 0, 0 })));
@@ -677,17 +682,22 @@ void StateGameplay::addLife()
 
 
 
-void StateGameplay::removeLife()
+void StateGameplay::removeLife(const SoundEnabled _setting)
 {
-    gameData().audio_engine->play2D((AUDIO_PATH + PLAYER_DEATH_CUE).c_str(), false);
+    --player_lives;
 
-    if (--player_lives <= 0)
+    if (_setting == SoundEnabled::TRUE)
+    {
+        gameData().audio_engine->play2D((AUDIO_PATH + PLAYER_DEATH_CUE).c_str(), false);
+    }
+
+    if (player_lives <= 0)
     {
         reset_on_enter = true;
 
         getHandler()->pushState(GameState::GAMEOVER);
     }
-    else
+    else if (player_lives < MAX_DISPLAYED_LIVES)
     {
         lives_block->popBack();
     }
@@ -710,8 +720,6 @@ void StateGameplay::respawnPlayer()
 void StateGameplay::resetState()
 {
     current_round = 0;
-    player_lives = PLAYER_START_LIVES;
-    alien_tick_delay = ALIEN_TICK_DELAY_START;
 
     gameData().score = 0;
     gameData().highest_score_multiplier = 0;
@@ -722,7 +730,7 @@ void StateGameplay::resetState()
     initCollisionManager();
     initPlayer();
     initTitles();
-    initHUD();
+    initLives();
     initAliens();
     initBarriers();
 }
