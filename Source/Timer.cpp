@@ -14,7 +14,7 @@ void Timer::reset()
 
 
 
-float Timer::get_time_difference() const
+float Timer::getTimeDifference() const
 {
     auto now = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsed_seconds = now - start;

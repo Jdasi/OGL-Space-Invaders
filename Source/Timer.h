@@ -8,7 +8,7 @@ public:
     ~Timer() = default;
 
     void reset();
-    float get_time_difference() const;
+    float getTimeDifference() const;
 
 private:
     std::chrono::time_point<std::chrono::system_clock> start;

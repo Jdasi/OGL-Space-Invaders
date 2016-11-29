@@ -10,9 +10,7 @@ StatePause::StatePause(GameData& _game_data)
 
 
 
-StatePause::~StatePause()
-{
-}
+StatePause::~StatePause() = default;
 
 
 

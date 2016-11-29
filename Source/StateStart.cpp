@@ -10,9 +10,7 @@ StateStart::StateStart(GameData& _game_data)
 
 
 
-StateStart::~StateStart()
-{
-}
+StateStart::~StateStart() = default;
 
 
 

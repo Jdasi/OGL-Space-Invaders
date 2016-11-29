@@ -13,9 +13,7 @@ StateGameOver::StateGameOver(GameData& _game_data)
 
 
 
-StateGameOver::~StateGameOver()
-{
-}
+StateGameOver::~StateGameOver() = default;
 
 
 

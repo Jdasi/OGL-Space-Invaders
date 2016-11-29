@@ -9,9 +9,9 @@
 // ======================================================================================
 // WINDOW SETTINGS
 // ======================================================================================
-static constexpr int WINDOW_WIDTH               = 620;
-static constexpr int WINDOW_HEIGHT              = 600;
-static constexpr int WINDOW_MARGIN              = 20;
+static const int WINDOW_WIDTH                   = 620;
+static const int WINDOW_HEIGHT                  = 600;
+static const int WINDOW_MARGIN                  = 20;
 
 static constexpr int WINDOW_LEFT_BOUNDARY       = WINDOW_MARGIN;
 static constexpr int WINDOW_RIGHT_BOUNDARY      = WINDOW_WIDTH - WINDOW_LEFT_BOUNDARY;
@@ -20,33 +20,26 @@ static constexpr int WINDOW_BOTTOM_BOUNDARY     = WINDOW_HEIGHT - WINDOW_MARGIN;
 // ======================================================================================
 // STATE GAMEPLAY SETTINGS
 // ======================================================================================
-static constexpr int PLAYER_START_LIVES         = 3;
-static constexpr int MAX_DISPLAYED_LIVES        = 8;
-static constexpr float PLAYER_SPEED             = 200.0f;
-static constexpr float PLAYER_PROJECTILE_SPEED  = 500.0f;
-static constexpr float MEGA_MODE_DURATION       = 3.0f;
-static constexpr int MEGA_MODE_THRESHOLD        = 20;
-static constexpr int EXTRA_LIFE_THRESHOLD       = 50;
+static const int PLAYER_START_LIVES             = 3;
+static const int MAX_DISPLAYED_LIVES            = 8;
+static const float PLAYER_SPEED                 = 200.0f;
+static const float PLAYER_PROJECTILE_SPEED      = 500.0f;
+static const float MEGA_MODE_DURATION           = 3.0f;
+static const int MEGA_MODE_THRESHOLD            = 20;
+static const int EXTRA_LIFE_THRESHOLD           = 50;
 
-static constexpr int ALIEN_ROWS_MAX             = 5;
-static constexpr int ALIEN_COLUMNS_MAX          = 11;
-static constexpr float ALIEN_SIDE_SPEED         = 5.0f;
-static constexpr float ALIEN_DOWN_SPEED         = 20.0f;
-static constexpr float ALIEN_PROJECTILE_SPEED   = 250.0f;
-static constexpr float ALIEN_SHOOT_DELAY_MIN    = 0.2f;
-static constexpr float ALIEN_SHOOT_DELAY_MAX    = 3.0f;
-static constexpr float ALIEN_SHOOT_DELAY_GROWTH = 0.2f;
+static const int ALIEN_ROWS_MAX                 = 5;
+static const int ALIEN_COLUMNS_MAX              = 11;
+static const float ALIEN_SIDE_SPEED             = 5.0f;
+static const float ALIEN_DOWN_SPEED             = 20.0f;
+static const float ALIEN_PROJECTILE_SPEED       = 250.0f;
+static const float ALIEN_SHOOT_DELAY_MIN        = 0.1f;
+static const float ALIEN_SHOOT_DELAY_MAX        = 3.0f;
+static const float ALIEN_TICK_DELAY_MIN         = 0.1f;
 
-static constexpr float ALIEN_TICK_DELAY_START   = 0.9f;
-static constexpr float ALIEN_TICK_DELAY_MIN     = 0.1f;
-static constexpr float TICK_REDUCTION_DEATH     = 0.007f;
-static constexpr float TICK_REDUCTION_INVADE    = 0.014f;
-static constexpr float NEXT_WAVE_TICK_INCREASE  = 0.005f;
-
-
-static constexpr int TOP_ALIEN_VALUE            = 5;
-static constexpr int MIDDLE_ALIEN_VALUE         = 2;
-static constexpr int BOTTOM_ALIEN_VALUE         = 1;
+static const int TOP_ALIEN_VALUE                = 5;
+static const int MIDDLE_ALIEN_VALUE             = 2;
+static const int BOTTOM_ALIEN_VALUE             = 1;
 
 // ======================================================================================
 // COMMON PATH STRINGS

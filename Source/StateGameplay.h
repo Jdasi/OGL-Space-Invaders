@@ -70,8 +70,8 @@ private:
     void updateAlienProjectiles(float _dt);
     void garbageCollectAlienProjectiles(SpriteObject* _object);
 
-    void determineInvasion();
-    void decreaseAlienTickDelay(float _amount);
+    void determineInvasion() const;
+    void setAlienTickDelay(float _modifier);
     void nextWave();
 
     void addLife(const SoundEnabled _setting = SoundEnabled::TRUE);
@@ -141,7 +141,7 @@ private:
     int current_round;
     bool reset_on_enter;
     std::atomic<bool> paused;
-    bool running;
+    bool apply_score;
 
     int score_multiplier;
     bool mega_mode;

@@ -26,7 +26,7 @@ StateGameplay::StateGameplay(GameData& _game_data)
     , current_round(0)
     , reset_on_enter(true)
     , paused(false)
-    , running(true)
+    , apply_score(true)
     , score_multiplier(0)
     , mega_mode(false)
     , mega_mode_timer(0)
@@ -45,7 +45,7 @@ StateGameplay::~StateGameplay()
 
 void StateGameplay::onStateEnter()
 {
-    running = true;
+    apply_score = true;
 
     if (reset_on_enter)
     {
@@ -67,7 +67,7 @@ void StateGameplay::onStateEnter()
 
 void StateGameplay::onStateLeave()
 {
-    running = false;
+    apply_score = false;
 
     if (paused)
     {
@@ -195,7 +195,7 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
         }
         else
         {
-            decreaseAlienTickDelay(TICK_REDUCTION_DEATH);
+            setAlienTickDelay(aliens->remainingObjects() * 0.33f);
         }
 
         return true;
@@ -315,9 +315,10 @@ void StateGameplay::initTitles()
 
 void StateGameplay::initAliens()
 {
-    alien_tick_delay = ALIEN_TICK_DELAY_START;
     aliens_direction = MoveDirection::RIGHT;
     last_edge_hit = Edge::LEFT;
+
+    setAlienTickDelay((ALIEN_ROWS_MAX * ALIEN_COLUMNS_MAX) * 0.33f);
     generateAlienShootDelay();
 
     Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
@@ -362,9 +363,9 @@ void StateGameplay::initAliens()
 
             // Setup delete events.
             spr_0->registerDeleteEvent([this, score_value]()
-                { if (running) gameData().score += score_value * score_multiplier; });
+                { if (apply_score) gameData().score += score_value * score_multiplier; });
 
-            spr_0->registerDeleteEvent([this]() { if (running) increaseScoreMult(); });
+            spr_0->registerDeleteEvent([this]() { if (apply_score) increaseScoreMult(); });
 
             // Setup vector.
             std::vector<std::unique_ptr<SpriteObject>> animationSprites;
@@ -570,9 +571,9 @@ void StateGameplay::animateAliens() const
 
 void StateGameplay::generateAlienShootDelay()
 {
-    float delay_modifier = ALIEN_SHOOT_DELAY_GROWTH / alien_tick_delay;
+    float delay_modifier = ALIEN_SHOOT_DELAY_MIN + (ALIEN_SHOOT_DELAY_MAX / aliens->remainingObjects());
     alien_shoot_delay = random_engine.randomFloat(ALIEN_SHOOT_DELAY_MIN, 
-        ALIEN_SHOOT_DELAY_MAX - delay_modifier);
+        delay_modifier);
 }
 
 
@@ -627,24 +628,19 @@ void StateGameplay::garbageCollectAlienProjectiles(SpriteObject* _object)
 
 
 
-void StateGameplay::determineInvasion()
+void StateGameplay::determineInvasion() const
 {
     if (aliens->getEdgeBottom() >= player->getPosition().y)
     {
         getHandler()->pushState(GameState::GAMEOVER);
     }
-    else
-    {
-        decreaseAlienTickDelay(0.014f);
-    }
 }
 
 
 
-void StateGameplay::decreaseAlienTickDelay(float _amount)
+void StateGameplay::setAlienTickDelay(float _modifier)
 {
-    float new_delay = alien_tick_delay - _amount;
-    alien_tick_delay = new_delay > ALIEN_TICK_DELAY_MIN ? new_delay : ALIEN_TICK_DELAY_MIN;
+    alien_tick_delay = ALIEN_TICK_DELAY_MIN * _modifier;
 }
 
 
@@ -653,12 +649,12 @@ void StateGameplay::nextWave()
 {
     ++current_round;
 
-    alien_tick_delay += NEXT_WAVE_TICK_INCREASE * (ALIEN_ROWS_MAX * ALIEN_COLUMNS_MAX);
     aliens_direction = MoveDirection::RIGHT;
 
     player_projectile = nullptr;
     alien_projectiles.clear();
-
+    
+    addLife();
     initAliens();
 }
 
