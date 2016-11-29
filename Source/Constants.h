@@ -28,6 +28,8 @@ static constexpr float MEGA_MODE_DURATION       = 3.0f;
 static constexpr int MEGA_MODE_THRESHOLD        = 20;
 static constexpr int EXTRA_LIFE_THRESHOLD       = 50;
 
+static constexpr int ALIEN_ROWS_MAX             = 5;
+static constexpr int ALIEN_COLUMNS_MAX          = 11;
 static constexpr float ALIEN_SIDE_SPEED         = 5.0f;
 static constexpr float ALIEN_DOWN_SPEED         = 20.0f;
 static constexpr float ALIEN_PROJECTILE_SPEED   = 250.0f;
@@ -39,7 +41,7 @@ static constexpr float ALIEN_TICK_DELAY_START   = 0.9f;
 static constexpr float ALIEN_TICK_DELAY_MIN     = 0.1f;
 static constexpr float TICK_REDUCTION_DEATH     = 0.007f;
 static constexpr float TICK_REDUCTION_INVADE    = 0.014f;
-static constexpr float NEXT_WAVE_TICK_INCREASE  = 0.3f;
+static constexpr float NEXT_WAVE_TICK_INCREASE  = 0.005f;
 
 
 static constexpr int TOP_ALIEN_VALUE            = 5;

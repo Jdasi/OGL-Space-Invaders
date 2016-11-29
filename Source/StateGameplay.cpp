@@ -321,8 +321,8 @@ void StateGameplay::initAliens()
     generateAlienShootDelay();
 
     Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
-    int max_rows = 5;
-    int max_columns = 11;
+    int max_rows = ALIEN_ROWS_MAX;
+    int max_columns = ALIEN_COLUMNS_MAX;
     int padding_x = 10;
     int padding_y = 20;
 
@@ -653,7 +653,7 @@ void StateGameplay::nextWave()
 {
     ++current_round;
 
-    alien_tick_delay += NEXT_WAVE_TICK_INCREASE;
+    alien_tick_delay += NEXT_WAVE_TICK_INCREASE * (ALIEN_ROWS_MAX * ALIEN_COLUMNS_MAX);
     aliens_direction = MoveDirection::RIGHT;
 
     player_projectile = nullptr;
