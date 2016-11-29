@@ -146,6 +146,7 @@ private:
     std::atomic<bool> paused;
     bool apply_score;
 
+    int score_since_last_life;
     int score_multiplier;
     bool mega_mode;
     float mega_mode_timer;

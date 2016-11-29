@@ -27,6 +27,7 @@ StateGameplay::StateGameplay(GameData& _game_data)
     , reset_on_enter(true)
     , paused(false)
     , apply_score(true)
+    , score_since_last_life(0)
     , score_multiplier(0)
     , mega_mode(false)
     , mega_mode_timer(0)
@@ -660,7 +661,6 @@ void StateGameplay::nextWave()
     player_projectile = nullptr;
     alien_projectiles.clear();
     
-    addLife();
     initAliens();
 }
 
@@ -723,6 +723,7 @@ void StateGameplay::resetState()
 {
     current_round = 0;
 
+    score_since_last_life = 0;
     gameData().score = 0;
     gameData().highest_score_multiplier = 0;
     
@@ -817,12 +818,16 @@ void StateGameplay::increaseScore(int _amount)
         return;
     }
 
-    if (mega_mode)
-    {
-        _amount *= 2;
-    }
+    int multiplied_score = _amount * score_multiplier;
 
-    gameData().score += _amount * score_multiplier;
+    score_since_last_life += multiplied_score;
+    gameData().score += multiplied_score;
+
+    if (score_since_last_life >= EXTRA_LIFE_THRESHOLD)
+    {
+        addLife();
+        score_since_last_life -= EXTRA_LIFE_THRESHOLD;
+    }
 }
 
 
@@ -834,14 +839,11 @@ void StateGameplay::increaseScoreMult()
         return;
     }
 
-    if (++score_multiplier % MEGA_MODE_THRESHOLD == 0)
+    ++score_multiplier;
+
+    if (score_multiplier % MEGA_MODE_THRESHOLD == 0)
     {
         activateMegaMode();
-    }
-
-    if (score_multiplier % EXTRA_LIFE_THRESHOLD == 0)
-    {
-        addLife();
     }
 
     if (score_multiplier > gameData().highest_score_multiplier)
@@ -947,7 +949,8 @@ void StateGameplay::handleLifeBurn()
 
     life_burn = false;
 
-    if (player_projectile)
+    // Stop mega projectiles behaviour conflicting with normal projectiles.
+    if (player_projectile && !mega_mode)
     {
         return;
     }
@@ -955,7 +958,11 @@ void StateGameplay::handleLifeBurn()
     if (player_lives > 1)
     {
         removeLife();
-        activateMegaMode();
+        
+        for (int i = 0; i < LIFE_BURN_MULTIPLIER_INCREASE; ++i)
+        {
+            increaseScoreMult();
+        }
     }
 }
 

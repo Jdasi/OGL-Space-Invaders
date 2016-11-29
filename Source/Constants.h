@@ -22,11 +22,14 @@ static constexpr int WINDOW_BOTTOM_BOUNDARY     = WINDOW_HEIGHT - WINDOW_MARGIN;
 // ======================================================================================
 static const int PLAYER_START_LIVES             = 3;
 static const int MAX_DISPLAYED_LIVES            = 8;
+
 static const float PLAYER_SPEED                 = 200.0f;
 static const float PLAYER_PROJECTILE_SPEED      = 500.0f;
+
 static const float MEGA_MODE_DURATION           = 3.0f;
 static const int MEGA_MODE_THRESHOLD            = 20;
-static const int EXTRA_LIFE_THRESHOLD           = 100;
+static const int EXTRA_LIFE_THRESHOLD           = 5000;
+static const int LIFE_BURN_MULTIPLIER_INCREASE  = 20;
 
 static const int ALIEN_ROWS_MAX                 = 5;
 static const int ALIEN_COLUMNS_MAX              = 11;
