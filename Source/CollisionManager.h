@@ -10,7 +10,7 @@ class CollisionManager
 public:
     explicit CollisionManager(
         std::function<bool(SpriteObject*, SpriteObject*)> _on_collision_event);
-    ~CollisionManager();
+    ~CollisionManager() = default;
 
     void tick() const;
     void addCollisionObject(SpriteObject* _object);

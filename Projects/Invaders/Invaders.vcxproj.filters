@@ -43,6 +43,27 @@
     <ClCompile Include="..\..\Source\RandomEngine.cpp">
       <Filter>Source\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\ObjectFactory.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Renderable.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\State.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StateHandler.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Timer.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Vector2.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GameData.cpp">
+      <Filter>Source\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

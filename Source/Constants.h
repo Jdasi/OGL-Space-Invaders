@@ -51,8 +51,8 @@ static constexpr int BOTTOM_ALIEN_VALUE         = 1;
 // ======================================================================================
 // COMMON PATH STRINGS
 // ======================================================================================
-static const std::string TEXTURE_PATH           {"..\\..\\Resources\\Textures\\"};
-static const std::string AUDIO_PATH             {"..\\..\\Resources\\Audio\\"};
+static const std::string TEXTURE_PATH           { "..\\..\\Resources\\Textures\\" };
+static const std::string AUDIO_PATH             { "..\\..\\Resources\\Audio\\" };
 
 // ======================================================================================
 // TEXTURE STRINGS

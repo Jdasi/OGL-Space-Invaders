@@ -95,17 +95,24 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\AnimatedSprite.cpp" />
     <ClCompile Include="..\..\Source\CollisionManager.cpp" />
+    <ClCompile Include="..\..\Source\GameData.cpp" />
     <ClCompile Include="..\..\Source\GameFont.cpp" />
     <ClCompile Include="..\..\Source\main.cpp" />
     <ClCompile Include="..\..\Source\ObjectBlock.cpp" />
+    <ClCompile Include="..\..\Source\ObjectFactory.cpp" />
     <ClCompile Include="..\..\Source\ObjectRenderer.cpp" />
     <ClCompile Include="..\..\Source\RandomEngine.cpp" />
+    <ClCompile Include="..\..\Source\Renderable.cpp" />
     <ClCompile Include="..\..\Source\SpriteObject.cpp" />
+    <ClCompile Include="..\..\Source\State.cpp" />
     <ClCompile Include="..\..\Source\StateGameOver.cpp" />
     <ClCompile Include="..\..\Source\StateGameplay.cpp" />
+    <ClCompile Include="..\..\Source\StateHandler.cpp" />
     <ClCompile Include="..\..\Source\StatePause.cpp" />
     <ClCompile Include="..\..\Source\StateStart.cpp" />
     <ClCompile Include="..\..\Source\TextObject.cpp" />
+    <ClCompile Include="..\..\Source\Timer.cpp" />
+    <ClCompile Include="..\..\Source\Vector2.cpp" />
     <ClInclude Include="..\..\Source\AnimatedSprite.h" />
     <ClInclude Include="..\..\Source\CollisionManager.h" />
     <ClInclude Include="..\..\Source\CollisionTypes.h" />

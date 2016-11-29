@@ -10,11 +10,7 @@ class CollisionManager;
 class ObjectFactory
 {
 public:
-    ObjectFactory()
-        : collision_manager(nullptr)
-    {
-    }
-
+    ObjectFactory();
     virtual ~ObjectFactory() = default;
 
     virtual std::unique_ptr<SpriteObject> createSprite(const std::string& _texture, 
@@ -24,10 +20,7 @@ public:
     virtual std::unique_ptr<TextObject> createText(const std::string& _str, 
         const Vector2 _pos, const float _size, const float _colour[3]) = 0;
 
-    void linkCollisionManager(CollisionManager* _collision_manager)
-    {
-        collision_manager = _collision_manager;
-    }
+    void linkCollisionManager(CollisionManager* _collision_manager);
 
 protected:
     CollisionManager* collision_manager;

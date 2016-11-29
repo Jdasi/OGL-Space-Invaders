@@ -10,7 +10,8 @@ class ObjectBlock
 {
 public:
     ObjectBlock() = delete;
-    ObjectBlock(Vector2 _start_pos, int _max_columns, int _max_rows, int _padding_x, int _padding_y);
+    ObjectBlock(Vector2 _start_pos, int _max_columns, int _max_rows, int _padding_x, 
+        int _padding_y);
     ~ObjectBlock() = default;
 
     AnimatedSprite* getObject(unsigned int _id) const;

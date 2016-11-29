@@ -5,8 +5,10 @@
 
 struct GameData
 {
-    irrklang::ISoundEngine* audio_engine = nullptr;
-    ObjectFactory* object_factory = nullptr;
-    int score = 0;
-    int highest_score_multiplier = 0;
+    GameData();
+
+    irrklang::ISoundEngine* audio_engine;
+    ObjectFactory* object_factory;
+    int score;
+    int highest_score_multiplier;
 };

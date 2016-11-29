@@ -12,12 +12,6 @@ CollisionManager::CollisionManager(
 
 
 
-CollisionManager::~CollisionManager()
-{
-}
-
-
-
 void CollisionManager::tick() const
 {
     testForCollisions();

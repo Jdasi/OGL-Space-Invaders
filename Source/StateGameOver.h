@@ -13,8 +13,10 @@ class StateGameOver : public State
 public:
     explicit StateGameOver(GameData& _game_data);
     virtual ~StateGameOver();
+
     void onStateEnter() override;
     void onStateLeave() override;
+
     void tick(float _dt) override;
     void onCommand(const Command _command, const CommandState _command_state) override;
 
