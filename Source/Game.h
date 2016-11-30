@@ -39,10 +39,10 @@ private:
 
     void input(int _key, int _action) const;
 
-	int  callback_id;           /**< The callback ID assigned by the game engine. */
-    std::unique_ptr<ObjectRenderer> object_renderer;
-    std::unique_ptr<irrklang::ISoundEngine> audio_engine;
-    std::unique_ptr<StateHandler> state_handler;
-    Timer timer;
-    GameData game_data;    
+	int  callback_id;                     // The callback ID assigned by the game engine.
+    std::unique_ptr<ObjectRenderer> object_renderer;   // Used to render all Renderables.
+    std::unique_ptr<irrklang::ISoundEngine> audio_engine;              // For game audio.
+    std::unique_ptr<StateHandler> state_handler;                // For State transitions.
+    Timer timer;    // Used to determine time difference in seconds since the last frame.
+    GameData game_data;  // Contains game important information that all States may need.
 };

@@ -8,6 +8,10 @@ class SpriteObject;
 class TextObject;
 class ObjectBlock;
 
+/* Game Over State triggers after the Gameplay State concludes.
+ * The player's final score and highest score multiplier is displayed here.
+ * A blinking TextObject is used to instruct the player on how to proceed.
+ */
 class StateGameOver : public State
 {
 public:

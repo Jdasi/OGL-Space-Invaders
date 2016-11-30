@@ -14,11 +14,6 @@ ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_rows, int _max_columns,
     , edge_right(0)
     , edge_bottom(0)
 {
-    if (max_columns < 0)
-    {
-        throw std::runtime_error("Error in ObjectBlock::ObjectBlock()");
-    }
-
     objects.reserve(_max_columns * _max_rows);
     shooting_positions.reserve(_max_columns);
 }
@@ -29,7 +24,7 @@ AnimatedSprite* ObjectBlock::getObject(unsigned int _id) const
 {
     if (objects.empty() || _id > objects.size())
     {
-        throw std::runtime_error("Error in ObjectBlock::getObject()");
+        return nullptr;
     }
 
     return objects[_id].get();
@@ -112,26 +107,12 @@ int ObjectBlock::remainingObjects() const
 
 
 
-void ObjectBlock::popBack()
-{
-    objects.pop_back();
-}
-
-
-
 void ObjectBlock::setVisible(bool b) const
 {
     for (auto& obj : objects)
     {
         obj->setVisible(b);
     }
-}
-
-
-
-void ObjectBlock::clear()
-{
-    objects.clear();
 }
 
 
@@ -156,6 +137,20 @@ void ObjectBlock::removeObjectByPtr(SpriteObject* object)
 
     updateEdges();
     updateShootingPoints();
+}
+
+
+
+void ObjectBlock::popBack()
+{
+    objects.pop_back();
+}
+
+
+
+void ObjectBlock::clear()
+{
+    objects.clear();
 }
 
 

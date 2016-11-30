@@ -6,6 +6,14 @@
 class AnimatedSprite;
 class SpriteObject;
 
+/* A container for a group of AnimatedSprites.
+ * For convenience, SpriteObjects are converted to AnimatedSprites before being added. 
+ * Though this is not ideal. Time constraints, man.
+ * 
+ * This allows for a whole "block" of sprites to be handled as one.
+ * Additional information is kept to identify the block's most important edges,
+ * as well as firing positions if the block is able to shoot.
+ */
 class ObjectBlock
 {
 public:
@@ -26,14 +34,13 @@ public:
     float getEdgeBottom() const;
 
     int remainingObjects() const;
-    void popBack();
 
     void setVisible(bool b) const;
-    void clear();
-
     void setNextAnimationFrame() const;
 
     void removeObjectByPtr(SpriteObject* object);
+    void popBack();
+    void clear();
 
 private:
     void updateLayout();

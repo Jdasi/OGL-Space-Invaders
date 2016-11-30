@@ -5,6 +5,7 @@
 
 #include "Renderable.h"
 
+// Derived from Renderable. Convenience class to treat rendered text like an asset.
 class TextObject : public Renderable
 {
 public:

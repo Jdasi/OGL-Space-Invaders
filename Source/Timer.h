@@ -1,6 +1,9 @@
 #pragma once
 #include <chrono>
 
+/* Basic "stopwatch" class to compare the time difference in seconds between when
+ * the Timer was reset and when getTimeDifference was called.
+ */
 class Timer
 {
 public:

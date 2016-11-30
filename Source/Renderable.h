@@ -5,6 +5,17 @@
 
 #include "Vector2.h"
 
+/* Base class for all SpriteObjects and TextObjects.
+ * This is a convenience class to allow all sprites and text to be treated equally.
+ * 
+ * Only an ObjectFactory can create a Renderable.
+ *
+ * Each Renderable is responsible for rendering itself, hence the reference to the
+ * game's renderer.
+ *
+ * Each Renderable is also responsible for deleting itself from the ObjectRenderer
+ * once it falls out of scope, so it has a function pointer in order to do so.
+ */
 class Renderable
 {
 public:

@@ -5,6 +5,13 @@
 
 #include "ObjectFactory.h"
 
+/* Maintains a list of all active Renderables.
+ * InvadersGame calls ObjectRenderers render functio each cycle, which then calls render 
+ * on every Renderable in the list so that they're actually drawn to the screen.
+ *
+ * Each Renderable is responsible for deleting itself from the list of render objects
+ * once it falls out of scope.
+ */
 class ObjectRenderer : public ObjectFactory
 {
 public:

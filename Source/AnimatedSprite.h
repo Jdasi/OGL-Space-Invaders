@@ -1,8 +1,15 @@
 #pragma once
 #include <vector>
 #include <memory>
+
 #include "SpriteObject.h"
 
+/* A special class that contains a vector of SpriteObjects for the purposes of 
+ * creating basic sprite animation.
+ * 
+ * This is done by tracking the current animation frame and showing only that one
+ * while hiding the rest.
+ */
 class AnimatedSprite
 {
 public:
@@ -22,8 +29,6 @@ public:
     void setPosition(const Vector2 _pos) const;
     void modifyPosition(const Vector2 _pos) const;
     
-    SpriteObject& getAnimationFrameSprite(const int _frame) const;
-
     bool containsSpriteObject(SpriteObject* _object) const;
 
 private:

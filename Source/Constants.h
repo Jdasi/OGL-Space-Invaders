@@ -9,9 +9,9 @@
 // ======================================================================================
 // WINDOW SETTINGS
 // ======================================================================================
-static const int WINDOW_WIDTH                   = 620;
-static const int WINDOW_HEIGHT                  = 600;
-static const int WINDOW_MARGIN                  = 20;
+static const int WINDOW_WIDTH                   = 620; // Width of the screen.
+static const int WINDOW_HEIGHT                  = 600; // Height of the screen.
+static const int WINDOW_MARGIN                  = 20;  // For determining playable area.
 
 static constexpr int WINDOW_LEFT_BOUNDARY       = WINDOW_MARGIN;
 static constexpr int WINDOW_RIGHT_BOUNDARY      = WINDOW_WIDTH - WINDOW_LEFT_BOUNDARY;
@@ -27,24 +27,24 @@ static const float PLAYER_SPEED                 = 200.0f;
 static const float PLAYER_PROJECTILE_SPEED      = 500.0f;
 
 static const float MEGA_MODE_DURATION           = 3.0f;
-static const int MEGA_MODE_THRESHOLD            = 20;
-static const int EXTRA_LIFE_THRESHOLD           = 5000;
+static const int MEGA_MODE_THRESHOLD            = 20;   // Score Multiplier to activate.
+static const int EXTRA_LIFE_THRESHOLD           = 5000; // Score to achieve.
 static const int LIFE_BURN_MULTIPLIER_INCREASE  = 20;
 
 static const int ALIEN_ROWS_MAX                 = 5;
 static const int ALIEN_COLUMNS_MAX              = 11;
-static const float ALIEN_SIDE_SPEED             = 5.0f;
-static const float ALIEN_DOWN_SPEED             = 20.0f;
+static const float ALIEN_SIDE_SPEED             = 5.0f; // Alien X movement per tick.
+static const float ALIEN_DOWN_SPEED             = 20.0f; // Alien Y movement per tick.
 static const float ALIEN_PROJECTILE_SPEED       = 250.0f;
 static const float ALIEN_SHOOT_DELAY_MIN        = 0.05f;
-static const float ALIEN_SHOOT_DELAY_SOFT_MAX   = 1.0f;
-static const float ALIEN_TICK_DELAY_MIN         = 0.02f;
+static const float ALIEN_SHOOT_DELAY_SOFT_MAX   = 1.0f; // Before addition of modifier.
+static const float ALIEN_TICK_DELAY_MIN         = 0.02f; // Minimum frequency of movement.
 
 static const int TOP_ALIEN_VALUE                = 5;
 static const int MIDDLE_ALIEN_VALUE             = 2;
 static const int BOTTOM_ALIEN_VALUE             = 1;
 
-static const int COLLISION_MANAGER_RESERVE      = 100;
+static const int COLLISION_MANAGER_RESERVE      = 100; // For collision object list.
 
 // ======================================================================================
 // COMMON PATH STRINGS

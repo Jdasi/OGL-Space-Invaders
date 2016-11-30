@@ -3,7 +3,6 @@
 /**
 **   A font that's loaded in the game engine.
 */
-
 struct GameFont
 {
 	GameFont(int _id, int _size, char* _name);

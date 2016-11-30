@@ -12,6 +12,16 @@ class SpriteObject;
 class TextObject;
 class ObjectBlock;
 
+/* Gameplay State where all of the game logic takes place. This is the bulk of the game.
+ * This State owns the majority of SpriteObjects and TextObjects, which are created
+ * through the use of the game's ObjectFactory.
+ *
+ * Only references to these objects are passed to the CollisionManager and ObjectFactory 
+ * for the purposes of maintaining a list of collision objects and render objects.
+ *
+ * The Gameplay State is the only State that can be paused, so we handle that special
+ * functionality in this State's onStateEnter and onStateLeave events.
+ */
 class StateGameplay : public State
 {
     enum class MoveDirection

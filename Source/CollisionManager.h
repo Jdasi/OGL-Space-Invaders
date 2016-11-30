@@ -5,6 +5,14 @@
 class StateHandler;
 class SpriteObject;
 
+/* A special manager owned by the Gameplay State who's sole purpose is to keep a vector
+ * of all active collision objects, and inform the Gameplay State when a collision
+ * has occurred.
+ *
+ * The CollisionManager uses a SpriteObject's BoundingBox to identify collisions.
+ * Due to the game's simplicity, only the most mobile of collision objects are compared
+ * against other collision objects in the game. This is a basic attempt at optimisation.
+ */
 class CollisionManager
 {
 public:

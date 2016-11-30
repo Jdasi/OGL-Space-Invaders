@@ -14,6 +14,14 @@ enum class GameState
     PAUSE
 };
 
+/* Handles all of the State transitions in the game.
+ * InvadersGame registers the States it is going to use with the StateHandler, and then
+ * triggers the initial State, choosing from those it registered.
+ *
+ * Tick and onCommand calls from InvadersGame are then passed through the StateHandler
+ * to the current state. This ensures only the current state's behaviour occurs,
+ * while the rest are "frozen".
+ */
 class StateHandler
 {
 public:

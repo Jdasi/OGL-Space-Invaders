@@ -7,6 +7,10 @@ class SpriteObject;
 class TextObject;
 class ObjectBlock;
 
+/* Pause State is triggered when the player pauses the game while in State Gameplay.
+ * A blinking TextObject is used to notify the player that the game is paused.
+ * The player can return to the triggering Gameplay state by issuing the Pause command.
+ */
 class StatePause : public State
 {
 public:

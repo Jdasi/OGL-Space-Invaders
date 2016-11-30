@@ -5,6 +5,15 @@ class StateHandler;
 class SpriteObject;
 struct GameData;
 
+/* Abstract base class for all States used in the game.
+ * The StateHandler communicates with all registered objects that derive from this class.
+ * 
+ * State has a reference to the GameData package so important game information can be
+ * updated and passed between states with ease.
+ *
+ * State also has a reference to its StateHandler to allow for State transitions from
+ * within States.
+ */
 class State
 {
 friend class StateHandler;

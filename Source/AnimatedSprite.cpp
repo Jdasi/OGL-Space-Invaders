@@ -96,13 +96,6 @@ void AnimatedSprite::modifyPosition(const Vector2 _pos) const
 
 
 
-SpriteObject& AnimatedSprite::getAnimationFrameSprite(const int _frame) const
-{
-    return *sprites.at(_frame);
-}
-
-
-
 bool AnimatedSprite::containsSpriteObject(SpriteObject* _object) const
 {
     for (auto& sprite : sprites)

@@ -5,8 +5,12 @@
 
 class CollisionManager;
 
-// Abstract class for ObjectRenderer to be passed around without exposing
-// render specific functionality.
+/* An abstract class for ObjectRenderer to inherit from so that it can be passed around
+ * without exposing render specific functionality.
+ *
+ * ObjectFactory contains a reference to the CollisionManager so that it can pass on
+ * information about SpriteObjects that have important CollisionTypes.
+ */
 class ObjectFactory
 {
 public:

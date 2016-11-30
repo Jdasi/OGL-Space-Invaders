@@ -10,6 +10,13 @@
 
 enum class CollisionType;
 
+/* Derived from Renderable. Has ownership of an ASGE::Sprite.
+ * SpriteObjects are naturally game-oriented, so they maintain a list of on-delete-events
+ * that will be called when the SpriteObject is destroyed.
+ * 
+ * SpriteObjects can also have a lifetime so long as something is there to pick up when
+ * the SpriteObject has expired.
+ */
 class SpriteObject : public Renderable
 {
 public:

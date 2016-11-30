@@ -11,6 +11,13 @@ class TextObject;
 struct GameData;
 struct MenuItem;
 
+/* Start State is initial State of the game, and contains the Main Menu.
+ * This State uses a vector of MenuItems to provide options to the player.
+ *
+ * In this version of the game, only the "Play Game" and "Quit Options" are available.
+ *
+ * The player returns to this State after proceeding from the Game Over State.
+ */
 class StateStart : public State
 {
 public:

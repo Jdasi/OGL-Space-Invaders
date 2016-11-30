@@ -1,6 +1,9 @@
 #pragma once
 #include "Vector2.h"
 
+/* A "Rectangle" that SpriteObjects use to determine their collision area.
+ * The CollisionManager uses the BoundingBox to detect collisions in the Gameplay State.
+ */
 class BoundingBox
 {
 public:
