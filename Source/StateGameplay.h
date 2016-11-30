@@ -57,9 +57,9 @@ public:
 
 private:
     void initCollisionManager();
+    void initTitles();
     void initPlayer();
     void initLives();
-    void initTitles();
 
     void initAliens();
     void makeAlienBlock();
@@ -125,6 +125,7 @@ private:
 
     std::unique_ptr<TextObject> lives_title;
     std::unique_ptr<ObjectBlock> lives_block;
+    std::unique_ptr<TextObject> lives_text;
 
     std::unique_ptr<ObjectBlock> barrier_one;
     std::unique_ptr<ObjectBlock> barrier_two;
@@ -134,7 +135,7 @@ private:
     std::vector<std::unique_ptr<SpriteObject>> alien_projectiles;
     std::vector<std::unique_ptr<SpriteObject>> explosions;
 
-    int player_lives;
+    unsigned int player_lives;
     float player_speed;
     float player_projectile_speed;
     std::atomic<bool> player_shooting;
@@ -151,13 +152,13 @@ private:
     MoveDirection aliens_direction;
     Edge aliens_last_edge_hit;
 
-    int current_round;
+    unsigned int current_wave;
     bool reset_on_enter;
     std::atomic<bool> paused;
     bool apply_score;
 
-    int score_since_last_life;
-    int score_multiplier;
+    unsigned int score_since_last_life;
+    unsigned int score_multiplier;
     bool mega_mode;
     float mega_mode_timer;
     float mega_mode_duration;

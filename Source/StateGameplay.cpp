@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "ObjectBlock.h"
 #include "AnimatedSprite.h"
+#include "JMath.h"
 
 StateGameplay::StateGameplay(GameData& _game_data)
     : State(_game_data)
@@ -23,7 +24,7 @@ StateGameplay::StateGameplay(GameData& _game_data)
     , alien_projectile_speed(ALIEN_PROJECTILE_SPEED)
     , aliens_direction(MoveDirection::RIGHT)
     , aliens_last_edge_hit(Edge::LEFT)
-    , current_round(0)
+    , current_wave(0)
     , reset_on_enter(true)
     , paused(false)
     , apply_score(true)
@@ -255,6 +256,39 @@ void StateGameplay::initCollisionManager()
 
 
 
+void StateGameplay::initTitles()
+{
+    // Score TextObjects.
+    score_title = gameData().object_factory->createText("Score:", { 20, 30 }, 0.7f,
+        ASGE::COLOURS::DARKORANGE);
+
+    score_text = gameData().object_factory->createText(std::to_string(gameData().score),
+        score_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
+    score_text->modifyPosition({ 150, 0 });
+
+    // Score Multiplier TextObjects.
+    score_multiplier_title = gameData().object_factory->createText("Multiplier:", 
+        { 330, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
+
+    score_multiplier_text = gameData().object_factory->createText(
+        std::to_string(score_multiplier), score_multiplier_title->getPosition(), 
+        0.7f, ASGE::COLOURS::WHITE);
+    score_multiplier_text->modifyPosition({ 260, 0 });
+
+    // Other TextObjects.
+    lives_title = gameData().object_factory->createText("Lives:", { 750, 30 }, 0.7f,
+        ASGE::COLOURS::DARKORANGE);
+
+    lives_text = gameData().object_factory->createText("0", lives_title->getPosition(), 
+        1.5f, ASGE::COLOURS::WHITE);
+    lives_text->modifyPosition({ 175, 20 });
+
+    mega_mode_bar = gameData().object_factory->createText("", { 35, 700 }, 1.15f,
+        ASGE::COLOURS::WHITE);
+}
+
+
+
 void StateGameplay::initPlayer()
 {
     Vector2 player_start{ WINDOW_WIDTH / 2, WINDOW_HEIGHT - 100 };
@@ -285,35 +319,6 @@ void StateGameplay::initLives()
 
 
 
-void StateGameplay::initTitles()
-{
-    // Score TextObjects.
-    score_title = gameData().object_factory->createText("Score:", { 20, 30 }, 0.7f,
-        ASGE::COLOURS::DARKORANGE);
-
-    score_text = gameData().object_factory->createText(std::to_string(gameData().score),
-        score_title->getPosition(), 0.7f, ASGE::COLOURS::WHITE);
-    score_text->modifyPosition({ 150, 0 });
-
-    // Score Multiplier TextObjects.
-    score_multiplier_title = gameData().object_factory->createText("Multiplier:", 
-        { 330, 30 }, 0.7f, ASGE::COLOURS::DARKORANGE);
-
-    score_multiplier_text = gameData().object_factory->createText(
-        std::to_string(score_multiplier), score_multiplier_title->getPosition(), 
-        0.7f, ASGE::COLOURS::WHITE);
-    score_multiplier_text->modifyPosition({ 260, 0 });
-
-    // Other TextObjects.
-    lives_title = gameData().object_factory->createText("Lives:", { 750, 30 }, 0.7f,
-        ASGE::COLOURS::DARKORANGE);
-
-    mega_mode_bar = gameData().object_factory->createText("", { 35, 700 }, 1.15f,
-        ASGE::COLOURS::WHITE);
-}
-
-
-
 void StateGameplay::initAliens()
 {
     aliens_direction = MoveDirection::RIGHT;
@@ -328,7 +333,7 @@ void StateGameplay::initAliens()
 
 void StateGameplay::makeAlienBlock()
 {
-    Vector2 alien_start{ 100, 100.0f + (current_round * 10) };
+    Vector2 alien_start{ 100, 100.0f + (current_wave * 10) };
     int max_rows = ALIEN_ROWS_MAX;
     int max_columns = ALIEN_COLUMNS_MAX;
     int padding_x = 10;
@@ -647,14 +652,17 @@ void StateGameplay::determineInvasion() const
 
 void StateGameplay::updateAlienTickDelay()
 {
-    alien_tick_delay = aliens->remainingObjects() * ALIEN_TICK_DELAY_MIN;
+    float temp_delay = aliens->remainingObjects() * ALIEN_TICK_DELAY_MIN;
+    float tick_delay_max = ALIEN_TICK_DELAY_ROOF / (current_wave * CURRENT_WAVE_FACTOR);
+
+    alien_tick_delay = JMath::clamp(temp_delay, ALIEN_TICK_DELAY_MIN, tick_delay_max);
 }
 
 
 
 void StateGameplay::nextWave()
 {
-    ++current_round;
+    ++current_wave;
 
     aliens_direction = MoveDirection::RIGHT;
 
@@ -675,11 +683,26 @@ void StateGameplay::addLife(const SoundEnabled _setting)
         gameData().audio_engine->play2D((AUDIO_PATH + EXTRA_LIFE_CUE).c_str(), false);
     }
 
-    if (lives_block && lives_block->remainingObjects() < MAX_DISPLAYED_LIVES)
+    if (!lives_block)
     {
+        return;
+    }
+
+    if (lives_block->remainingObjects() < MAX_DISPLAYED_LIVES)
+    {
+        lives_block->setVisible(true);
+        lives_text->setVisible(false);
+
         lives_block->addObject(std::move(gameData().object_factory->createSprite(
             TEXTURE_PATH + PLAYER_IMG, { 0, 0 })));
     }
+    else
+    {
+        lives_block->setVisible(false);
+        lives_text->setVisible(true);
+    }
+
+    lives_text->setString(std::to_string(player_lives));
 }
 
 
@@ -703,8 +726,13 @@ void StateGameplay::removeLife(const SoundEnabled _setting)
     {
         lives_block->popBack();
     }
+    else if (player_lives <= MAX_DISPLAYED_LIVES)
+    {
+        lives_block->setVisible(true);
+        lives_text->setVisible(false);
+    }
 
-
+    lives_text->setString(std::to_string(player_lives));
 }
 
 
@@ -721,7 +749,7 @@ void StateGameplay::respawnPlayer()
 
 void StateGameplay::resetState()
 {
-    current_round = 0;
+    current_wave = 0;
 
     score_since_last_life = 0;
     gameData().score = 0;
@@ -731,8 +759,8 @@ void StateGameplay::resetState()
     deactivateMegaMode();
 
     initCollisionManager();
-    initPlayer();
     initTitles();
+    initPlayer();
     initLives();
     initAliens();
     initBarriers();
@@ -754,6 +782,7 @@ void StateGameplay::destroyAllObjects()
 
     lives_title = nullptr;
     lives_block = nullptr;
+    lives_text = nullptr;
 
     barrier_one = nullptr;
     barrier_two = nullptr;
@@ -762,6 +791,7 @@ void StateGameplay::destroyAllObjects()
     if (aliens)
     {
         aliens->clear();
+        aliens = nullptr;
     }
 
     alien_projectiles.clear();
@@ -826,7 +856,7 @@ void StateGameplay::increaseScore(int _amount)
     if (score_since_last_life >= EXTRA_LIFE_THRESHOLD)
     {
         addLife();
-        score_since_last_life -= EXTRA_LIFE_THRESHOLD;
+        score_since_last_life = 0 + (gameData().score % EXTRA_LIFE_THRESHOLD);
     }
 }
 
@@ -958,11 +988,7 @@ void StateGameplay::handleLifeBurn()
     if (player_lives > 1)
     {
         removeLife();
-        
-        for (int i = 0; i < LIFE_BURN_MULTIPLIER_INCREASE; ++i)
-        {
-            increaseScoreMult();
-        }
+        activateMegaMode();
     }
 }
 

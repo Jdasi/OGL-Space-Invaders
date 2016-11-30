@@ -13,6 +13,6 @@ struct GameData
 
     irrklang::ISoundEngine* audio_engine;
     ObjectFactory* object_factory;
-    int score;
-    int highest_score_multiplier;
+    unsigned int score;
+    unsigned int highest_score_multiplier;
 };
