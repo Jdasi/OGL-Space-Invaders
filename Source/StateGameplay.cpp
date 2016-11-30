@@ -333,7 +333,7 @@ void StateGameplay::initAliens()
 
 void StateGameplay::makeAlienBlock()
 {
-    Vector2 alien_start{ 100, 100.0f + (current_wave * 10) };
+    Vector2 alien_start{ 100, 100.0f + (current_wave * CURRENT_WAVE_OFFSET) };
     int max_rows = ALIEN_ROWS_MAX;
     int max_columns = ALIEN_COLUMNS_MAX;
     int padding_x = 10;
@@ -804,9 +804,9 @@ void StateGameplay::destroyAllObjects()
 
 
 
-void StateGameplay::hideObjectsForPause(bool value) const
+void StateGameplay::hideObjectsForPause(bool _b) const
 {
-    bool actual = !value;
+    bool actual = !_b;
 
     if (player_projectile)
     {
@@ -1017,7 +1017,7 @@ void StateGameplay::garbageCollectExplosions()
 
 
 
-void StateGameplay::createExplosion(Vector2 _pos)
+void StateGameplay::createExplosion(const Vector2 _pos)
 {
     gameData().audio_engine->play2D((AUDIO_PATH + ALIEN_DEATH_CUE).c_str(), false);
 

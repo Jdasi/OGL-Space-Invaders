@@ -18,10 +18,10 @@ class ObjectBlock
 {
 public:
     ObjectBlock() = delete;
-    ObjectBlock(Vector2 _start_pos, int _max_columns, int _max_rows, int _padding_x, 
+    ObjectBlock(const Vector2 _start_pos, int _max_columns, int _max_rows, int _padding_x, 
         int _padding_y);
     ~ObjectBlock() = default;
-
+    
     AnimatedSprite* getObject(unsigned int _id) const;
     Vector2 getRandomShootingPosition() const;
     void addObject(std::unique_ptr<SpriteObject> _object);
@@ -35,7 +35,7 @@ public:
 
     int remainingObjects() const;
 
-    void setVisible(bool b) const;
+    void setVisible(bool _b) const;
     void setNextAnimationFrame() const;
 
     void removeObjectByPtr(SpriteObject* object);
@@ -48,7 +48,7 @@ private:
     void updateShootingPoints();
 
     Vector2 start_pos;
-    int max_columns;
+    unsigned int max_columns;
     int padding_x;
     int padding_y;
 

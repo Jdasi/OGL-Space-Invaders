@@ -92,12 +92,12 @@ private:
 
     void resetState();
     void destroyAllObjects();
-    void hideObjectsForPause(bool value) const;
+    void hideObjectsForPause(bool _b) const;
 
     void updateScoreText() const;
     void updateScoreMultText() const;
 
-    void increaseScore(int amount);
+    void increaseScore(int _amount);
     void increaseScoreMult();
     void resetScoreMult();
 
@@ -109,7 +109,7 @@ private:
 
     void updateExplosions(float _dt);
     void garbageCollectExplosions();
-    void createExplosion(Vector2 _pos);
+    void createExplosion(const Vector2 _pos);
 
     std::unique_ptr<CollisionManager> collision_manager;
 

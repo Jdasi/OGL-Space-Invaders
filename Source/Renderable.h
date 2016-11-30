@@ -22,7 +22,7 @@ public:
     virtual ~Renderable();
 
     bool isVisible() const;
-    void setVisible(bool _visible);
+    void setVisible(bool _b);
 
     Vector2 getPosition() const;
     void setPosition(const Vector2 _pos);

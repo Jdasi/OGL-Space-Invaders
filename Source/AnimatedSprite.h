@@ -16,10 +16,10 @@ public:
     AnimatedSprite(std::vector<std::unique_ptr<SpriteObject>> _sprites);
     virtual ~AnimatedSprite() = default;
 
-    void setVisible(bool visible);
+    void setVisible(bool _b);
 
     int getAnimationFrame() const;
-    void setAnimationFrame(const int frame);
+    void setAnimationFrame(const int _frame);
     void setNextAnimationFrame();
 
     Vector2 getSize() const;
@@ -29,7 +29,7 @@ public:
     void setPosition(const Vector2 _pos) const;
     void modifyPosition(const Vector2 _pos) const;
     
-    bool containsSpriteObject(SpriteObject* _object) const;
+    bool ownsSpriteObject(SpriteObject* _object) const;
 
 private:
     void hideAllSprites() const;

@@ -30,9 +30,9 @@ bool State::shouldExit() const
 
 
 
-void State::setExit(bool b)
+void State::setExit(bool _b)
 {
-    exit = b;
+    exit = _b;
 }
 
 

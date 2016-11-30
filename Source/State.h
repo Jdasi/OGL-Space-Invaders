@@ -19,7 +19,6 @@ class State
 friend class StateHandler;
 
 public:
-    explicit State(GameData& _game_data);
     virtual ~State() = default;
 
     State(const State&) = delete;
@@ -32,11 +31,13 @@ public:
     virtual void onCommand(const Command _command, const CommandState _command_state) = 0;
 
 protected:
+    explicit State(GameData& _game_data);
+
     StateHandler* getHandler() const;
     GameData& gameData() const;
 
     bool shouldExit() const;
-    void setExit(bool b);
+    void setExit(bool _b);
 
 private:
     void setHandler(StateHandler* _handler);

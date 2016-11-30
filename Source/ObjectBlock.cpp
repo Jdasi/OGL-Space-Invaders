@@ -4,7 +4,7 @@
 #include "AnimatedSprite.h"
 #include "Constants.h"
 
-ObjectBlock::ObjectBlock(Vector2 _start_pos, int _max_rows, int _max_columns, 
+ObjectBlock::ObjectBlock(const Vector2 _start_pos, int _max_rows, int _max_columns, 
     int _padding_x, int _padding_y)
     : start_pos(_start_pos)
     , max_columns(_max_columns)
@@ -107,11 +107,11 @@ int ObjectBlock::remainingObjects() const
 
 
 
-void ObjectBlock::setVisible(bool b) const
+void ObjectBlock::setVisible(bool _b) const
 {
     for (auto& obj : objects)
     {
-        obj->setVisible(b);
+        obj->setVisible(_b);
     }
 }
 
@@ -132,7 +132,7 @@ void ObjectBlock::removeObjectByPtr(SpriteObject* object)
     objects.erase(std::remove_if(
         objects.begin(),
         objects.end(),
-        [object](const std::unique_ptr<AnimatedSprite>& anim_spr) { return anim_spr->containsSpriteObject(object); }),
+        [object](const std::unique_ptr<AnimatedSprite>& anim_spr) { return anim_spr->ownsSpriteObject(object); }),
         objects.end());
 
     updateEdges();

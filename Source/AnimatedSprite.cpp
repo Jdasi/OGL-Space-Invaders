@@ -9,9 +9,9 @@ AnimatedSprite::AnimatedSprite(std::vector<std::unique_ptr<SpriteObject>> _sprit
 
 
 
-void AnimatedSprite::setVisible(bool visible)
+void AnimatedSprite::setVisible(bool _b)
 {
-    if (visible)
+    if (_b)
     {
         setAnimationFrame(animation_frame);
     }
@@ -30,11 +30,11 @@ int AnimatedSprite::getAnimationFrame() const
 
 
 
-void AnimatedSprite::setAnimationFrame(const int frame)
+void AnimatedSprite::setAnimationFrame(const int _frame)
 {
     hideAllSprites();
-    sprites[frame]->setVisible(true);
-    animation_frame = frame;
+    sprites[_frame]->setVisible(true);
+    animation_frame = _frame;
 }
 
 
@@ -96,7 +96,7 @@ void AnimatedSprite::modifyPosition(const Vector2 _pos) const
 
 
 
-bool AnimatedSprite::containsSpriteObject(SpriteObject* _object) const
+bool AnimatedSprite::ownsSpriteObject(SpriteObject* _object) const
 {
     for (auto& sprite : sprites)
     {

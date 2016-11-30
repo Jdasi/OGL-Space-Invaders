@@ -25,9 +25,9 @@ bool Renderable::isVisible() const
 
 
 
-void Renderable::setVisible(bool _visible)
+void Renderable::setVisible(bool _b)
 {
-    visible = _visible;
+    visible = _b;
 }
 
 

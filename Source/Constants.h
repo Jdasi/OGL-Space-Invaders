@@ -33,14 +33,16 @@ static const int EXTRA_LIFE_THRESHOLD           = 5000; // Score to achieve.
 static const int ALIEN_ROWS_MAX                 = 5;
 static const int ALIEN_COLUMNS_MAX              = 11;
 static const float ALIEN_SIDE_SPEED             = 5.0f; // Alien X movement per tick.
-static const float ALIEN_DOWN_SPEED             = 20.0f; // Alien Y movement per tick.
+static const float ALIEN_DOWN_SPEED             = 20.0f; // Alien Y movement at edge.
+
 static const float ALIEN_PROJECTILE_SPEED       = 250.0f;
 static const float ALIEN_SHOOT_DELAY_MIN        = 0.05f;
 static const float ALIEN_SHOOT_DELAY_SOFT_MAX   = 1.0f; // Before modifier addition.
-static const float ALIEN_TICK_DELAY_MIN         = 0.02f; // Minimum frequency of movement.
 
-static const float ALIEN_TICK_DELAY_ROOF        = 0.9f; // Used in update tick delay.
-static const float CURRENT_WAVE_FACTOR          = 0.2; // Used in update tick delay.
+static const float ALIEN_TICK_DELAY_MIN         = 0.02f; // Minimum frequency of movement.
+static const float ALIEN_TICK_DELAY_ROOF        = 0.5f; // Used in update tick delay.
+static const float CURRENT_WAVE_FACTOR          = 0.35f; // Used in update tick delay.
+static const int CURRENT_WAVE_OFFSET            = 5; // How far down each wave spawns.
 
 static const int TOP_ALIEN_VALUE                = 5;
 static const int MIDDLE_ALIEN_VALUE             = 2;
