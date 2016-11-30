@@ -9,6 +9,16 @@ StateHandler::StateHandler()
 
 void StateHandler::tick(float _dt)
 {
+    /* Because input is on a different thread and we sometimes push states from input, 
+     * we need some protection against two threads simultaneously trying to access the 
+     * same data.
+     *
+     * When a thread triggers the lock guard, all other threads must wait for that same
+     * thread to unlock the guard again before any thread can access the data.
+     *
+     * Without this, the program has a chance to crash seemingly at random when two
+     * threads access the same data while it is potentially changing.
+     */
     {
         std::lock_guard<std::mutex> guard(states_to_trigger_mutex);
         if (!states_to_trigger.empty())
@@ -45,6 +55,9 @@ void StateHandler::registerState(GameState _game_state, std::unique_ptr<State> _
 
 
 
+/* Adds a state transition to the queue.
+ * The StateHandler's tick will carry out the transition when possible.
+ */
 void StateHandler::pushState(const GameState _state)
 {
     std::lock_guard<std::mutex> guard(states_to_trigger_mutex);
@@ -65,6 +78,10 @@ bool StateHandler::shouldExit() const
 
 
 
+/* Tries to find the passed GameState. Throws an exception if it can't.
+ * If the GameState is found, the current state changes to the new state.
+ * The appropriate onStateLeave and onStateEnter functions are called for each state.
+ */
 void StateHandler::triggerState(const GameState _state)
 {
     auto result = state_map.find(_state);

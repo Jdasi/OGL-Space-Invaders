@@ -29,6 +29,7 @@ std::unique_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _t
     {
         if (object->getCollisionType() != CollisionType::NONE)
         {
+            // The CollisionManager only wants objects that need collision.
             collision_manager->addCollisionObject(object.get());
         }
     }
@@ -52,6 +53,9 @@ std::unique_ptr<TextObject> ObjectRenderer::createText(const std::string& _str,
 
 
 
+/* Function given to all Renderables so that they can remove themselves from the 
+ * render objects vector when they fall out of scope.
+ */
 void ObjectRenderer::deleteRenderObject(Renderable* object)
 {
     for (auto iter = render_objects.begin(); iter != render_objects.end(); ++iter)

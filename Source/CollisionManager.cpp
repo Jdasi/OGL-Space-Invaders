@@ -23,6 +23,7 @@ void CollisionManager::tick() const
 void CollisionManager::addCollisionObject(SpriteObject* _object)
 {
     // Pass collision object a function so it can delete itself from collision_objects.
+    // Lambda-ception.
     _object->registerDeleteEvent([_object, this]()
         {
             collision_objects.erase(std::remove_if(
@@ -37,6 +38,11 @@ void CollisionManager::addCollisionObject(SpriteObject* _object)
 
 
 
+/* Cycles through all collision objects and uses their BoundingBox to determine
+ * if a collision has occured.
+ * When a collision does happen, the function returns early if a change was made
+ * to the vector.
+ */
 void CollisionManager::testForCollisions() const
 {
     for (auto& object : collision_objects)
@@ -57,22 +63,14 @@ void CollisionManager::testForCollisions() const
 
         for (auto& other : collision_objects)
         {
-            if (object == other)
+            if (object == other ||
+                object->getCollisionType() == other->getCollisionType() ||
+                !other->isVisible())
             {
                 continue;
             }
 
-            if (object->getCollisionType() == other->getCollisionType())
-            {
-                continue;
-            }
-
-            if (!other->isVisible())
-            {
-                continue;
-            }
-
-            if (object->getBoundingBox().contains(other->getBoundingBox()))
+            if (object->getBoundingBox().overlaps(other->getBoundingBox()))
             {
                 if (on_collision_event(object, other))
                 {

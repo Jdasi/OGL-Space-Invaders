@@ -39,6 +39,11 @@ Vector2 ObjectBlock::getRandomShootingPosition() const
 
 
 
+/* Convenience function to allow for SpriteObjects to be added in the same way
+ * that AnimatedSprites are.
+ * In an ideal world, ObjectBlock would be templated to avoid the unecessary
+ * littering of vectors.
+ */
 void ObjectBlock::addObject(std::unique_ptr<SpriteObject> _object)
 {
     std::vector<std::unique_ptr<SpriteObject>> animationSprites;
@@ -59,6 +64,10 @@ void ObjectBlock::addObject(std::unique_ptr<AnimatedSprite> _object)
 
 
 
+/* Moves all of the objects owned by the block, and also updates interal
+ * variables that keep track of the shooting positions and edges.
+ * The last two things are especially important for the aliens.
+ */
 void ObjectBlock::moveBlock(const Vector2 _pos)
 {
     for (auto& obj : objects)
@@ -144,6 +153,9 @@ void ObjectBlock::removeObjectByPtr(SpriteObject* object)
 void ObjectBlock::popBack()
 {
     objects.pop_back();
+
+    updateEdges();
+    updateShootingPoints();
 }
 
 
@@ -155,6 +167,10 @@ void ObjectBlock::clear()
 
 
 
+/* Formats the block of objects based on the passed dimensions and padding values.
+ * Objects will be neatly laid out based on these variables, depending on how many
+ * exist in the vector.
+ */
 void ObjectBlock::updateLayout()
 {
     int column = 0;
@@ -178,6 +194,9 @@ void ObjectBlock::updateLayout()
 
 
 
+/* Emulates a sort of BoundingBox for the entirety of the ObjectBlock.
+ * We're not concerned with the top edge in this version of Space Invaders, though.
+ */
 void ObjectBlock::updateEdges()
 {
     edge_left = WINDOW_WIDTH;
@@ -212,7 +231,14 @@ void ObjectBlock::updateShootingPoints()
 {
     shooting_positions.clear();
 
-    // Find all the rows.
+    findAllRows();
+    findLowestPointInAllColumns();
+}
+
+
+
+void ObjectBlock::findAllRows()
+{
     for (auto& obj : objects)
     {
         Vector2 obj_pos = { obj->getPosition().x + (obj->getSize().x / 2), 0 };
@@ -228,8 +254,12 @@ void ObjectBlock::updateShootingPoints()
             break;
         }
     }
+}
 
-    // Find the lowest position in each column, offset y position by object size.
+
+
+void ObjectBlock::findLowestPointInAllColumns()
+{
     for (auto& obj : objects)
     {
         Vector2 obj_size = obj->getSize();

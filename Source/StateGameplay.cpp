@@ -298,6 +298,10 @@ void StateGameplay::initPlayer()
 
 
 
+/* Creates the ObjectBlock to display the number of player lives.
+ * Uses the addLife function for giving lives to the player so that the ObjectBlock
+ * is properly maintained.
+ */
 void StateGameplay::initLives()
 {
     player_lives = 0;
@@ -331,6 +335,9 @@ void StateGameplay::initAliens()
 
 
 
+/* Creates the block of aliens that the player is going to fight.
+ * The different aliens are hard coded into rows inside this function.
+ */
 void StateGameplay::makeAlienBlock()
 {
     Vector2 alien_start{ 100, 100.0f + (current_wave * CURRENT_WAVE_OFFSET) };
@@ -416,6 +423,9 @@ void StateGameplay::initBarriers()
 
 
 
+/* Convenience function as the creation of all 3 barriers creates a lot of code
+ * duplication.
+ */
 void StateGameplay::makeBarrier(std::unique_ptr<ObjectBlock>& _block,
     const std::string& _img, const Vector2 _pos, int _max_rows, int _max_columns,
     int _padding_x, int _padding_y) const
@@ -434,6 +444,9 @@ void StateGameplay::makeBarrier(std::unique_ptr<ObjectBlock>& _block,
 
 
 
+/* Determines if the player can shoot, and if so which image and sound should be 
+ * used for the projectile.
+ */
 void StateGameplay::handlePlayerShot()
 {
     if (player_shooting && !player_projectile)
@@ -456,6 +469,8 @@ void StateGameplay::handlePlayerShot()
 
 
 
+/* While the player's projectile is active, move it towards the top of the screen.
+ */
 void StateGameplay::updatePlayerProjectile(float _dt)
 {
     if (player_projectile)
@@ -468,6 +483,9 @@ void StateGameplay::updatePlayerProjectile(float _dt)
 
 
 
+/* Delete the player's projectile if it reaches the top of the screen.
+ * The player's score multiplier is also reset here, but only if mega mode is not active.
+ */
 void StateGameplay::destroyPlayerProjectileAtScreenTop()
 {
     if (player_projectile && player_projectile->getPosition().y <= WINDOW_MARGIN)
@@ -504,6 +522,11 @@ void StateGameplay::handlePlayerMovement(float _dt) const
 
 
 
+/* The primary function for determining the movement action the aliens take.
+ * Movement frequency is based on the alien tick delay.
+ * The last edge hit variable is the driving factor for a change in direction.
+ * Once a movement action has been chosen, aliens are moved and animated.
+ */
 void StateGameplay::handleAlienMovement(float _dt)
 {
     alien_move_timer += _dt;
@@ -544,6 +567,9 @@ void StateGameplay::handleAlienMovement(float _dt)
 
 
 
+/* Moves the alien block based on the resulting MoveDirection as processed in
+ * handleAlienMovement.
+ */
 void StateGameplay::moveAliens(float _dt) const
 {
     switch (aliens_direction)
@@ -580,6 +606,9 @@ void StateGameplay::animateAliens() const
 
 
 
+/* The aliens shoot delay is based on the remaining number of aliens.
+ * When there are less aliens, more shots are fired.
+ */
 void StateGameplay::generateAlienShootDelay()
 {
     float delay_modifier = (aliens->remainingObjects() - 1) * ALIEN_SHOOT_DELAY_MIN;
@@ -590,6 +619,9 @@ void StateGameplay::generateAlienShootDelay()
 
 
 
+/* Determines when an alien should shoot. After a shot is fired, a new random delay
+ * is chosen and the cycle repeats.
+ */
 void StateGameplay::handleAlienShot(float _dt)
 {
     alien_shoot_timer += _dt;
@@ -611,6 +643,10 @@ void StateGameplay::handleAlienShot(float _dt)
 
 
 
+/* Moves all alien projectiles towards the bottom of the screen.
+ * Once the projectiles have been iterated through, any objects that no longer point to
+ * data are removed from the vector.
+ */
 void StateGameplay::updateAlienProjectiles(float _dt)
 {
     for (auto& projectile : alien_projectiles)
@@ -629,6 +665,9 @@ void StateGameplay::updateAlienProjectiles(float _dt)
 
 
 
+/* Removes an alien projectile if it is equal to the passed parameter.
+ * Cheekily used for collecting nullptrs also.
+ */
 void StateGameplay::garbageCollectAlienProjectiles(SpriteObject* _object)
 {
     alien_projectiles.erase(std::remove_if(
@@ -660,6 +699,10 @@ void StateGameplay::updateAlienTickDelay()
 
 
 
+/* When all aliens in the block have been destroyed, a new wave starts.
+ * All active projectiles are cleared when this occurs to avoid collisions from 
+ * stray objects.
+ */
 void StateGameplay::nextWave()
 {
     ++current_wave;
@@ -674,6 +717,9 @@ void StateGameplay::nextWave()
 
 
 
+/* Increments the player's life count. A sound is played if SoundSetting::TRUE is passed.
+ * The display of the lives block and lives text is also updated here.
+ */
 void StateGameplay::addLife(const SoundEnabled _setting)
 {
     ++player_lives;
@@ -707,6 +753,10 @@ void StateGameplay::addLife(const SoundEnabled _setting)
 
 
 
+/* Decrements the player's life count. A sound is played if SoundSetting::TRUE is passed.
+ * The display of the lives block and lives text is also updated here.
+ * The game ends if the player loses their last life.
+ */
 void StateGameplay::removeLife(const SoundEnabled _setting)
 {
     --player_lives;
@@ -737,6 +787,9 @@ void StateGameplay::removeLife(const SoundEnabled _setting)
 
 
 
+/* Occurs when the player is hit by an alien projectile.
+ * Anything that needs to happen when the player dies should go here.
+ */
 void StateGameplay::respawnPlayer()
 {
     removeLife();
@@ -747,6 +800,9 @@ void StateGameplay::respawnPlayer()
 
 
 
+/* Occurs when transitioning to this state and reset_on_enter is true.
+ * All values that need to be reset should be put here.
+ */
 void StateGameplay::resetState()
 {
     current_wave = 0;
@@ -913,6 +969,11 @@ void StateGameplay::activateMegaMode()
 
 void StateGameplay::deactivateMegaMode()
 {
+    if (!mega_mode)
+    {
+        return;
+    }
+
     mega_mode = false;
     mega_mode_timer = 0;
 
@@ -1006,6 +1067,9 @@ void StateGameplay::updateExplosions(float _dt)
 
 
 
+/* Check to see if any explosions have expired since their last tick call
+ * and remove them from the vector if they have.
+ */
 void StateGameplay::garbageCollectExplosions()
 {
     explosions.erase(std::remove_if(

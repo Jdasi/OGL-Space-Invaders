@@ -45,7 +45,10 @@ public:
 private:
     void updateLayout();
     void updateEdges();
+
     void updateShootingPoints();
+    void findAllRows();
+    void findLowestPointInAllColumns();
 
     Vector2 start_pos;
     unsigned int max_columns;

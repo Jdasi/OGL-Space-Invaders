@@ -118,3 +118,5 @@ void AnimatedSprite::hideAllSprites() const
         sprite->setVisible(false);
     }
 }
+
+

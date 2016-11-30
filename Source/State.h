@@ -24,10 +24,14 @@ public:
     State(const State&) = delete;
     State& operator=(const State&) = delete;
 
+    // Typically handles the re-initialisation of a state.
     virtual void onStateEnter() = 0;
+    // Typically handles the deletion or hiding of objects.
     virtual void onStateLeave() = 0;
 
+    // All state loop behaviour should be contained here.
     virtual void tick(float _dt) = 0;
+    // All input handling should be contained here.
     virtual void onCommand(const Command _command, const CommandState _command_state) = 0;
 
 protected:

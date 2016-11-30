@@ -28,7 +28,10 @@ void BoundingBox::setSize(const Vector2 _size)
 
 
 
-bool BoundingBox::contains(const BoundingBox& _other) const
+/* Checks to see if this instance overlaps with the passed BoundingBox.
+ * Returns true of they overlap, or false if they don't.
+ */
+bool BoundingBox::overlaps(const BoundingBox& _other) const
 {
     if (position.x + size.x >= _other.getPosition().x &&
         position.x <= (_other.getPosition().x + _other.getSize().x) &&
