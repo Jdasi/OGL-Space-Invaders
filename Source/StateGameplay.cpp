@@ -178,6 +178,13 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 
 
 
+/* The collision event passed to the CollisionManager.
+ * This gets called whenever the CollisionManager detects an overlap between
+ * two BoundingBoxes.
+ *
+ * _object tends to be a projectile, since most other objects in this game
+ * never collide with each other.
+ */
 bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
 {
     if (_object->getCollisionType() == CollisionType::PROJECTILE &&
@@ -246,6 +253,9 @@ bool StateGameplay::onCollision(SpriteObject* _object, SpriteObject* _other)
 
 
 
+/* Creates the CollisionManager and links it to the ObjectFactory so that
+ * any new SpriteObjects that require collision can be added to the correct list.
+ */
 void StateGameplay::initCollisionManager()
 {
     collision_manager = std::make_unique<CollisionManager>(std::bind(
@@ -423,7 +433,7 @@ void StateGameplay::initBarriers()
 
 
 
-/* Convenience function as the creation of all 3 barriers creates a lot of code
+/* Convenience function as the creation of all 3 barriers results in a lot of code
  * duplication.
  */
 void StateGameplay::makeBarrier(std::unique_ptr<ObjectBlock>& _block,
@@ -606,15 +616,13 @@ void StateGameplay::animateAliens() const
 
 
 
-/* The aliens shoot delay is based on the remaining number of aliens.
- * When there are less aliens, more shots are fired.
+/* The alien shoot delay limited by a min and max value, and modified by
+ * the alien tick delay. The quicker the aliens move, the more likely they are to fire.
  */
 void StateGameplay::generateAlienShootDelay()
 {
-    float delay_modifier = (aliens->remainingObjects() - 1) * ALIEN_SHOOT_DELAY_MIN;
-
     alien_shoot_delay = random_engine.randomFloat(ALIEN_SHOOT_DELAY_MIN, 
-        ALIEN_SHOOT_DELAY_SOFT_MAX + delay_modifier);
+        ALIEN_SHOOT_DELAY_SOFT_MAX + alien_tick_delay);
 }
 
 
@@ -1002,7 +1010,7 @@ void StateGameplay::updateMegaMode(float _dt)
 
         if (mega_mode_timer <= 0)
         {
-            // Wait for the last mega mode projectile to expire
+            // Wait for the last mega mode projectile to expire.
             if (player_projectile)
             {
                 return;

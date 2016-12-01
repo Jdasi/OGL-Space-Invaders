@@ -19,8 +19,8 @@ class ObjectBlock;
  * Only references to these objects are passed to the CollisionManager and ObjectFactory 
  * for the purposes of maintaining a list of collision objects and render objects.
  *
- * The Gameplay State is the only State that can be paused, so we handle that special
- * functionality in this State's onStateEnter and onStateLeave events.
+ * The Gameplay State is the only State that transitions to State Pause, so we handle 
+ * that special functionality in this State's onStateEnter and onStateLeave events.
  */
 class StateGameplay : public State
 {

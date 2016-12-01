@@ -20,7 +20,8 @@
 **D**: 		Move Right  
 **Space**:	Shoot / Menu Accept  
 **Enter**:	Shoot / Menu Accept  
-**Escape**:	Return to Main Menu / Quit   
+**Escape**:	Return to Main Menu / Quit  
+**P**:		Pause / Unpause
 
 ## 2. GAMEPLAY FEATURES
 ### 2.1. Alien Score Values
@@ -49,10 +50,10 @@ While Mega Mode is active, you receive the following benefits:
 Mega Mode deactivates immediately if you are killed while it is active.
 
 ### 2.4. Life Burn
-If you have two or more lives, you can press 'W' to expend a life to immediately activate Mega Mode.
+If you have two or more lives, you can press 'W' to expend a life to instantly activate Mega Mode.
 
 ### 2.5. Extra Lives
-You are rewarded an extra life for every 5000 Score you achieve.  
+You are awarded an extra life for every 5000 Score you achieve.  
 
 ## 3. IRRKLANG SOUND ENGINE
 This game uses the irrKlang sound engine.  

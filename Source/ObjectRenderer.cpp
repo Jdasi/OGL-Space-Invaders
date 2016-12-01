@@ -27,9 +27,9 @@ std::unique_ptr<SpriteObject> ObjectRenderer::createSprite(const std::string& _t
 
     if (collision_manager)
     {
+        // The CollisionManager only wants objects that need collision.
         if (object->getCollisionType() != CollisionType::NONE)
         {
-            // The CollisionManager only wants objects that need collision.
             collision_manager->addCollisionObject(object.get());
         }
     }

@@ -296,10 +296,6 @@ void InvadersGame::input(int _key, int _action) const
             break;
         }
     }
-
-    // Input debug.
-    std::cout << "command: " << static_cast<int>(_key) << " " 
-              << static_cast<int>(_action) << std::endl;
 }
 
 

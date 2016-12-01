@@ -136,12 +136,20 @@ void ObjectBlock::setNextAnimationFrame() const
 
 
 
-void ObjectBlock::removeObjectByPtr(SpriteObject* object)
+/* Funky way of removing SpriteObjects from the ObjectBlock.
+ * Because collisons happen with SpriteObjects and not AnimatedSprites, we first
+ * need to find out which AnimatedSprite owns the SpriteObject, and then remove
+ * it from that AnimatedSprite.
+ */
+void ObjectBlock::removeObjectByPtr(SpriteObject* _object)
 {
     objects.erase(std::remove_if(
         objects.begin(),
         objects.end(),
-        [object](const std::unique_ptr<AnimatedSprite>& anim_spr) { return anim_spr->ownsSpriteObject(object); }),
+        [_object](const std::unique_ptr<AnimatedSprite>& _anim_spr) 
+            { 
+                return _anim_spr->ownsSpriteObject(_object); 
+            }),
         objects.end());
 
     updateEdges();
@@ -173,8 +181,8 @@ void ObjectBlock::clear()
  */
 void ObjectBlock::updateLayout()
 {
-    int column = 0;
-    int row = 0;
+    unsigned int column = 0;
+    unsigned int row = 0;
     for (auto& obj : objects)
     {
         obj->setPosition(start_pos);
@@ -246,6 +254,7 @@ void ObjectBlock::findAllRows()
         if (std::find(shooting_positions.begin(), shooting_positions.end(), obj_pos) 
             == shooting_positions.end())
         {
+            // Row not found in vector.
             shooting_positions.push_back(obj_pos);
         }
         else

@@ -38,7 +38,7 @@ public:
     void setVisible(bool _b) const;
     void setNextAnimationFrame() const;
 
-    void removeObjectByPtr(SpriteObject* object);
+    void removeObjectByPtr(SpriteObject* _object);
     void popBack();
     void clear();
 
