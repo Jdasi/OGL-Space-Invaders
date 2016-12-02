@@ -113,30 +113,30 @@ void StateGameplay::onCommand(const Command _command, const CommandState _comman
 {
     if (_command == Command::MOVE_LEFT)
     {
-        if (_command_state == CommandState::PRESSED || 
+        if (_command_state == CommandState::PRESSED ||
             _command_state == CommandState::REPEATING)
         {
             player_direction = MoveDirection::LEFT;
         }
-        else
+        else if (_command_state == CommandState::RELEASED)
         {
             player_direction = MoveDirection::NONE;
         }
     }
-
-    if (_command == Command::MOVE_RIGHT)
+    else if (_command == Command::MOVE_RIGHT)
     {
-        if (_command_state == CommandState::PRESSED || 
+        if (_command_state == CommandState::PRESSED ||
             _command_state == CommandState::REPEATING)
         {
             player_direction = MoveDirection::RIGHT;
+
         }
-        else
+        else if (_command_state == CommandState::RELEASED)
         {
             player_direction = MoveDirection::NONE;
         }
     }
-
+    
     if (_command == Command::SHOOT || _command == Command::MOVE_DOWN)
     {
         if (_command_state == CommandState::PRESSED || 

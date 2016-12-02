@@ -56,7 +56,7 @@ void StateStart::onCommand(const Command _command, const CommandState _command_s
     {
         if (_command_state == CommandState::PRESSED)
         {
-            setExit(true);
+            gameData().exit = true;
         }
     }
 
@@ -87,7 +87,7 @@ void StateStart::initMenuItems()
 
     menu_items.push_back(MenuItem(gameData().object_factory->createText(
         "Quit Game", { 500, 450 }, 1.0f, ASGE::COLOURS::WHITE),
-        [this]() { setExit(true); }));
+        [this]() { gameData().exit = true; }));
 }
 
 

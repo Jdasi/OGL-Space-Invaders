@@ -107,7 +107,7 @@ bool InvadersGame::run()
 */
 bool InvadersGame::shouldExit() const
 {
-	return (renderer->exit() || state_handler->shouldExit());
+	return (renderer->exit() || game_data.exit);
 }
 
 

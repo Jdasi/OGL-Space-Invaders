@@ -66,18 +66,6 @@ void StateHandler::pushState(const GameState _state)
 
 
 
-bool StateHandler::shouldExit() const
-{
-    if (current_state)
-    {
-        return current_state->shouldExit();
-    }
-
-    return false;
-}
-
-
-
 /* Tries to find the passed GameState. Throws an exception if it can't.
  * If the GameState is found, the current state changes to the new state.
  * The appropriate onStateLeave and onStateEnter functions are called for each state.

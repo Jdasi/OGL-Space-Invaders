@@ -40,13 +40,9 @@ protected:
     StateHandler* getHandler() const;
     GameData& gameData() const;
 
-    bool shouldExit() const;
-    void setExit(bool _b);
-
 private:
     void setHandler(StateHandler* _handler);
 
     GameData& game_data;
     StateHandler* handler;
-    bool exit;
 };

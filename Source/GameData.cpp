@@ -5,6 +5,7 @@ GameData::GameData()
     , object_factory(nullptr)
     , score(0)
     , highest_score_multiplier(0)
+    , exit(false)
 {
 }
 

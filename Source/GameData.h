@@ -1,4 +1,6 @@
 #pragma once
+#include <atomic>
+
 #include <irrKlang.h>
 
 #include "ObjectFactory.h"
@@ -15,4 +17,5 @@ struct GameData
     ObjectFactory* object_factory;
     unsigned int score;
     unsigned int highest_score_multiplier;
+    std::atomic<bool> exit;
 };
