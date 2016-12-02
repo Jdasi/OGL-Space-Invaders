@@ -12,9 +12,7 @@ ObjectRenderer::ObjectRenderer(std::shared_ptr<ASGE::Renderer>& _renderer)
 
 
 
-ObjectRenderer::~ObjectRenderer()
-{
-}
+ObjectRenderer::~ObjectRenderer() = default;
 
 
 
