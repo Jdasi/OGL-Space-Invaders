@@ -46,13 +46,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(solutionDir)..\Libs\irrKlang\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(solutionDir)..\Libs\irrKlang\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\include;$(ProjectDir)Files;$(ProjectDir)Files\Libs\Engine\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Joe\Dropbox\UWE\2nd Year Modules\UFCFXG-30-2 Low-level Programming for Games\Assignment 1\Libs\irrKlang\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(solutionDir)..\Libs\irrKlang\include;$(ProjectDir)Files;$(ProjectDir)Files\Libs\Engine\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(solutionDir)..\Libs\irrKlang\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
